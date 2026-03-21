@@ -1,0 +1,458 @@
+import { useState, useEffect } from “react”;
+
+const palette = {
+bg: “#FFF8F0”,
+card: “#FFFFFF”,
+red: “#E8433A”,
+gold: “#F5A623”,
+pink: “#FF6B8A”,
+mint: “#4ECDC4”,
+purple: “#9B59B6”,
+dark: “#2C1810”,
+muted: “#8B7355”,
+light: “#FFE8D6”,
+};
+
+const categories = [
+{
+id: “daily”,
+label: “ชีวิตประจำวัน”,
+emoji: “☀️”,
+color: “#F5A623”,
+bg: “#FFF8E1”,
+desc: “ภาษาจีนพื้นฐานใช้ทุกวัน”,
+words: [
+{ zh: “你好”, zhuyin: “ㄋㄧˇ ㄏㄠˇ”, th: “สวัสดี”, pinyin: “nǐ hǎo” },
+{ zh: “謝謝”, zhuyin: “ㄒㄧㄝˋ ㄒㄧㄝ”, th: “ขอบคุณ”, pinyin: “xiè xie” },
+{ zh: “對不起”, zhuyin: “ㄉㄨㄟˋ ㄅㄨˋ ㄑㄧˇ”, th: “ขอโทษ”, pinyin: “duì bu qǐ” },
+{ zh: “再見”, zhuyin: “ㄗㄞˋ ㄐㄧㄢˋ”, th: “ลาก่อน”, pinyin: “zài jiàn” },
+{ zh: “吃飯”, zhuyin: “ㄔ ㄈㄢˋ”, th: “กินข้าว”, pinyin: “chī fàn” },
+{ zh: “睡覺”, zhuyin: “ㄕㄨㄟˋ ㄐㄧㄠˋ”, th: “นอนหลับ”, pinyin: “shuì jiào” },
+{ zh: “買東西”, zhuyin: “ㄇㄞˇ ㄉㄨㄥ ㄒㄧ”, th: “ช้อปปิ้ง”, pinyin: “mǎi dōng xi” },
+{ zh: “工作”, zhuyin: “ㄍㄨㄥ ㄗㄨㄛˋ”, th: “ทำงาน”, pinyin: “gōng zuò” },
+],
+},
+{
+id: “love”,
+label: “ความรัก”,
+emoji: “💕”,
+color: “#FF6B8A”,
+bg: “#FFF0F4”,
+desc: “ภาษาจีนสำหรับคนรัก”,
+words: [
+{ zh: “我愛你”, zhuyin: “ㄨㄛˇ ㄞˋ ㄋㄧˇ”, th: “ฉันรักคุณ”, pinyin: “wǒ ài nǐ” },
+{ zh: “喜歡你”, zhuyin: “ㄒㄧˇ ㄏㄨㄢ ㄋㄧˇ”, th: “ชอบคุณ”, pinyin: “xǐ huān nǐ” },
+{ zh: “好看”, zhuyin: “ㄏㄠˇ ㄎㄢˋ”, th: “สวย/หล่อ”, pinyin: “hǎo kàn” },
+{ zh: “想你”, zhuyin: “ㄒㄧㄤˇ ㄋㄧˇ”, th: “คิดถึงคุณ”, pinyin: “xiǎng nǐ” },
+{ zh: “在一起”, zhuyin: “ㄗㄞˋ ㄧˋ ㄑㄧˇ”, th: “อยู่ด้วยกัน”, pinyin: “zài yī qǐ” },
+{ zh: “甜蜜蜜”, zhuyin: “ㄊㄧㄢˊ ㄇㄧˋ ㄇㄧˋ”, th: “หวานมาก”, pinyin: “tián mì mì” },
+{ zh: “緣分”, zhuyin: “ㄩㄢˊ ㄈㄣˋ”, th: “บุพเพสันนิวาส”, pinyin: “yuán fèn” },
+{ zh: “心跳”, zhuyin: “ㄒㄧㄣ ㄊㄧㄠˋ”, th: “หัวใจเต้น”, pinyin: “xīn tiào” },
+],
+},
+{
+id: “job”,
+label: “สัมภาษณ์งาน”,
+emoji: “💼”,
+color: “#4ECDC4”,
+bg: “#F0FFFE”,
+desc: “ภาษาจีนในโลกธุรกิจ”,
+words: [
+{ zh: “請問”, zhuyin: “ㄑㄧㄥˇ ㄨㄣˋ”, th: “ขอถาม”, pinyin: “qǐng wèn” },
+{ zh: “經驗”, zhuyin: “ㄐㄧㄥ ㄧㄢˋ”, th: “ประสบการณ์”, pinyin: “jīng yàn” },
+{ zh: “能力”, zhuyin: “ㄋㄥˊ ㄌㄧˋ”, th: “ความสามารถ”, pinyin: “néng lì” },
+{ zh: “薪水”, zhuyin: “ㄒㄧㄣ ㄕㄨㄟˇ”, th: “เงินเดือน”, pinyin: “xīn shuǐ” },
+{ zh: “上班”, zhuyin: “ㄕㄤˋ ㄅㄢ”, th: “เริ่มงาน”, pinyin: “shàng bān” },
+{ zh: “團隊合作”, zhuyin: “ㄊㄨㄢˊ ㄉㄨㄟˋ ㄏㄜˊ ㄗㄨㄛˋ”, th: “ทีมเวิร์ค”, pinyin: “tuán duì hé zuò” },
+{ zh: “專業”, zhuyin: “ㄓㄨㄢ ㄧㄝˋ”, th: “มืออาชีพ”, pinyin: “zhuān yè” },
+{ zh: “努力”, zhuyin: “ㄋㄨˇ ㄌㄧˋ”, th: “ขยันหมั่นเพียร”, pinyin: “nǔ lì” },
+],
+},
+];
+
+// –– Flashcard Game ––
+function FlashcardGame({ words, color }) {
+const [idx, setIdx] = useState(0);
+const [flipped, setFlipped] = useState(false);
+const [score, setScore] = useState(0);
+const [done, setDone] = useState([]);
+
+const card = words[idx];
+
+const next = (knew) => {
+if (knew) setScore((s) => s + 1);
+setDone((d) => […d, idx]);
+setFlipped(false);
+setTimeout(() => {
+if (idx < words.length - 1) setIdx((i) => i + 1);
+else setIdx(words.length); // finished
+}, 200);
+};
+
+const restart = () => { setIdx(0); setFlipped(false); setScore(0); setDone([]); };
+
+if (idx >= words.length) return (
+<div style={{ textAlign: “center”, padding: “40px 20px” }}>
+<div style={{ fontSize: 64 }}>🎉</div>
+<div style={{ fontSize: 28, fontWeight: 800, color: palette.dark, margin: “12px 0 4px” }}>
+ทำได้เยี่ยมมาก!
+</div>
+<div style={{ color: palette.muted, fontSize: 16, marginBottom: 24 }}>
+คุณรู้จำได้ {score} / {words.length} คำ
+</div>
+<div style={{ display: “flex”, gap: 12, justifyContent: “center” }}>
+{Array.from({ length: words.length }).map((_, i) => (
+<span key={i} style={{ fontSize: 20 }}>{done.includes(i) ? “⭐” : “☆”}</span>
+))}
+</div>
+<button onClick={restart} style={{ marginTop: 28, padding: “12px 32px”, borderRadius: 999, background: color, color: “#fff”, border: “none”, fontWeight: 700, fontSize: 16, cursor: “pointer” }}>
+เล่นอีกครั้ง
+</button>
+</div>
+);
+
+return (
+<div style={{ padding: “16px 0” }}>
+<div style={{ display: “flex”, justifyContent: “space-between”, alignItems: “center”, marginBottom: 16 }}>
+<span style={{ color: palette.muted, fontSize: 14 }}>คำที่ {idx + 1} / {words.length}</span>
+<span style={{ color: color, fontWeight: 700, fontSize: 14 }}>⭐ {score} คะแนน</span>
+</div>
+
+```
+  {/* Progress bar */}
+  <div style={{ background: "#F0EDE8", borderRadius: 999, height: 6, marginBottom: 24 }}>
+    <div style={{ background: color, width: `${((idx) / words.length) * 100}%`, height: "100%", borderRadius: 999, transition: "width 0.3s" }} />
+  </div>
+
+  {/* Card */}
+  <div
+    onClick={() => setFlipped((f) => !f)}
+    style={{
+      background: flipped ? color : "#fff",
+      border: `3px solid ${color}`,
+      borderRadius: 24,
+      padding: "48px 24px",
+      textAlign: "center",
+      cursor: "pointer",
+      transition: "all 0.3s",
+      boxShadow: `0 8px 32px ${color}33`,
+      minHeight: 200,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+    }}
+  >
+    {!flipped ? (
+      <>
+        <div style={{ fontSize: 72, fontWeight: 900, color: palette.dark }}>{card.zh}</div>
+        <div style={{ fontSize: 20, color: palette.muted }}>{card.zhuyin}</div>
+        <div style={{ fontSize: 13, color: "#bbb", marginTop: 8 }}>แตะเพื่อดูคำตอบ 👆</div>
+      </>
+    ) : (
+      <>
+        <div style={{ fontSize: 48, fontWeight: 900, color: "#fff" }}>{card.zh}</div>
+        <div style={{ fontSize: 28, color: "rgba(255,255,255,0.9)", fontWeight: 700 }}>{card.th}</div>
+        <div style={{ fontSize: 16, color: "rgba(255,255,255,0.75)" }}>{card.pinyin}</div>
+      </>
+    )}
+  </div>
+
+  {flipped && (
+    <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
+      <button onClick={() => next(false)} style={{ flex: 1, padding: "14px", borderRadius: 16, background: "#FFE8E8", border: "2px solid #FFB3B3", color: "#E84040", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
+        😅 ยังไม่รู้
+      </button>
+      <button onClick={() => next(true)} style={{ flex: 1, padding: "14px", borderRadius: 16, background: "#E8FFE8", border: "2px solid #80D980", color: "#2D8A2D", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
+        ✅ รู้แล้ว!
+      </button>
+    </div>
+  )}
+</div>
+```
+
+);
+}
+
+// –– Matching Game ––
+function MatchingGame({ words, color }) {
+const pool = words.slice(0, 6);
+const shuffle = (arr) => […arr].sort(() => Math.random() - 0.5);
+
+const [lefts] = useState(() => shuffle(pool));
+const [rights] = useState(() => shuffle(pool));
+const [selL, setSelL] = useState(null);
+const [selR, setSelR] = useState(null);
+const [matched, setMatched] = useState([]);
+const [wrong, setWrong] = useState([]);
+const [tries, setTries] = useState(0);
+
+useEffect(() => {
+if (selL !== null && selR !== null) {
+setTries((t) => t + 1);
+if (selL === selR) {
+setMatched((m) => […m, selL]);
+setSelL(null); setSelR(null);
+} else {
+setWrong([selL, selR]);
+setTimeout(() => { setWrong([]); setSelL(null); setSelR(null); }, 700);
+}
+}
+}, [selL, selR]);
+
+const done = matched.length === pool.length;
+const [key, setKey] = useState(0);
+if (done && key === 0) { /* show done */ }
+
+const restart = () => { setMatched([]); setWrong([]); setSelL(null); setSelR(null); setTries(0); setKey(k => k + 1); };
+
+return (
+<div key={key} style={{ padding: “16px 0” }}>
+<div style={{ display: “flex”, justifyContent: “space-between”, marginBottom: 16 }}>
+<span style={{ color: palette.muted, fontSize: 14 }}>จับคู่ให้ครบ 6 คำ</span>
+<span style={{ color: color, fontWeight: 700, fontSize: 14 }}>🎯 {tries} ครั้ง</span>
+</div>
+
+```
+  {done ? (
+    <div style={{ textAlign: "center", padding: "32px 0" }}>
+      <div style={{ fontSize: 56 }}>🏆</div>
+      <div style={{ fontSize: 24, fontWeight: 800, color: palette.dark, margin: "12px 0 4px" }}>จับคู่สำเร็จ!</div>
+      <div style={{ color: palette.muted }}>ใช้ {tries} ครั้ง</div>
+      <button onClick={restart} style={{ marginTop: 20, padding: "12px 28px", borderRadius: 999, background: color, color: "#fff", border: "none", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>เล่นอีกครั้ง</button>
+    </div>
+  ) : (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      {/* Left column - Chinese */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {lefts.map((w) => {
+          const isMatched = matched.includes(w.zh);
+          const isSelected = selL === w.zh;
+          const isWrong = wrong.includes(w.zh);
+          return (
+            <button
+              key={w.zh}
+              disabled={isMatched}
+              onClick={() => !isMatched && setSelL(w.zh)}
+              style={{
+                padding: "14px 10px",
+                borderRadius: 16,
+                border: `2.5px solid ${isMatched ? "#80D980" : isWrong ? "#E84040" : isSelected ? color : "#E0D8D0"}`,
+                background: isMatched ? "#E8FFE8" : isWrong ? "#FFE8E8" : isSelected ? `${color}18` : "#fff",
+                color: isMatched ? "#2D8A2D" : palette.dark,
+                fontWeight: 800,
+                fontSize: 22,
+                cursor: isMatched ? "default" : "pointer",
+                transition: "all 0.2s",
+                opacity: isMatched ? 0.6 : 1,
+              }}
+            >
+              {w.zh}
+              <div style={{ fontSize: 11, color: palette.muted, fontWeight: 400 }}>{w.zhuyin}</div>
+            </button>
+          );
+        })}
+      </div>
+      {/* Right column - Thai */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {rights.map((w) => {
+          const isMatched = matched.includes(w.zh);
+          const isSelected = selR === w.zh;
+          const isWrong = wrong.includes(w.zh);
+          return (
+            <button
+              key={w.zh}
+              disabled={isMatched}
+              onClick={() => !isMatched && selL && setSelR(w.zh)}
+              style={{
+                padding: "14px 10px",
+                borderRadius: 16,
+                border: `2.5px solid ${isMatched ? "#80D980" : isWrong ? "#E84040" : isSelected ? color : "#E0D8D0"}`,
+                background: isMatched ? "#E8FFE8" : isWrong ? "#FFE8E8" : isSelected ? `${color}18` : "#fff",
+                color: isMatched ? "#2D8A2D" : palette.dark,
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: isMatched ? "default" : !selL ? "not-allowed" : "pointer",
+                transition: "all 0.2s",
+                opacity: isMatched ? 0.6 : !selL ? 0.7 : 1,
+              }}
+            >
+              {w.th}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  )}
+</div>
+```
+
+);
+}
+
+// –– Vocabulary List ––
+function VocabList({ words }) {
+return (
+<div style={{ display: “flex”, flexDirection: “column”, gap: 10 }}>
+{words.map((w, i) => (
+<div key={i} style={{
+background: “#fff”,
+borderRadius: 18,
+padding: “16px 18px”,
+display: “flex”,
+alignItems: “center”,
+gap: 16,
+boxShadow: “0 2px 8px rgba(0,0,0,0.06)”,
+border: “1.5px solid #F0EDE8”,
+}}>
+<div style={{ fontSize: 36, fontWeight: 900, color: palette.dark, minWidth: 64 }}>{w.zh}</div>
+<div style={{ flex: 1 }}>
+<div style={{ fontSize: 13, color: palette.muted, marginBottom: 2 }}>{w.zhuyin}</div>
+<div style={{ fontSize: 17, fontWeight: 700, color: palette.dark }}>{w.th}</div>
+<div style={{ fontSize: 12, color: “#bbb” }}>{w.pinyin}</div>
+</div>
+</div>
+))}
+</div>
+);
+}
+
+// –– Main App ––
+export default function App() {
+const [activeCat, setActiveCat] = useState(null);
+const [activeTab, setActiveTab] = useState(“vocab”); // vocab | flashcard | match
+
+const cat = categories.find((c) => c.id === activeCat);
+
+if (!activeCat) {
+return (
+<div style={{ minHeight: “100vh”, background: palette.bg, fontFamily: “‘Noto Sans TC’, ‘Noto Sans Thai’, sans-serif” }}>
+{/* Header */}
+<div style={{
+background: “linear-gradient(135deg, #E8433A 0%, #F5A623 100%)”,
+padding: “48px 24px 64px”,
+textAlign: “center”,
+position: “relative”,
+overflow: “hidden”,
+}}>
+<div style={{ position: “absolute”, top: -20, right: -20, fontSize: 120, opacity: 0.15 }}>學</div>
+<div style={{ position: “absolute”, bottom: -10, left: 10, fontSize: 80, opacity: 0.12 }}>中文</div>
+<div style={{ fontSize: 48, marginBottom: 8 }}>🀄</div>
+<h1 style={{ color: “#fff”, fontSize: 32, fontWeight: 900, margin: “0 0 8px”, textShadow: “0 2px 8px rgba(0,0,0,0.2)” }}>
+เรียนภาษาจีน
+</h1>
+<p style={{ color: “rgba(255,255,255,0.85)”, fontSize: 16, margin: 0 }}>
+學中文 • 學中文 • 學中文
+</p>
+</div>
+
+```
+    {/* Categories */}
+    <div style={{ padding: "0 20px", marginTop: -28 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            onClick={() => { setActiveCat(c.id); setActiveTab("vocab"); }}
+            style={{
+              background: c.bg,
+              border: `3px solid ${c.color}`,
+              borderRadius: 24,
+              padding: "22px 24px",
+              display: "flex",
+              alignItems: "center",
+              gap: 18,
+              cursor: "pointer",
+              textAlign: "left",
+              boxShadow: `0 6px 24px ${c.color}28`,
+              transition: "transform 0.15s, box-shadow 0.15s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 10px 32px ${c.color}44`; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = `0 6px 24px ${c.color}28`; }}
+          >
+            <span style={{ fontSize: 40 }}>{c.emoji}</span>
+            <div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: palette.dark }}>{c.label}</div>
+              <div style={{ fontSize: 14, color: palette.muted, marginTop: 2 }}>{c.desc}</div>
+              <div style={{ marginTop: 8, display: "flex", gap: 6 }}>
+                {["📖 คำศัพท์", "🃏 Flashcard", "🎯 จับคู่"].map(tag => (
+                  <span key={tag} style={{ fontSize: 11, padding: "3px 8px", borderRadius: 999, background: c.color + "22", color: c.color, fontWeight: 700 }}>{tag}</span>
+                ))}
+              </div>
+            </div>
+            <span style={{ marginLeft: "auto", fontSize: 22, color: c.color }}>›</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div style={{ textAlign: "center", padding: "40px 20px 24px", color: palette.muted, fontSize: 13 }}>
+      {categories.reduce((a, c) => a + c.words.length, 0)} คำศัพท์ • 3 หมวดหมู่ • 2 เกม
+    </div>
+  </div>
+);
+```
+
+}
+
+return (
+<div style={{ minHeight: “100vh”, background: cat.bg, fontFamily: “‘Noto Sans TC’, ‘Noto Sans Thai’, sans-serif” }}>
+{/* Header */}
+<div style={{
+background: `linear-gradient(135deg, ${cat.color} 0%, ${cat.color}CC 100%)`,
+padding: “32px 20px 48px”,
+position: “relative”,
+overflow: “hidden”,
+}}>
+<button
+onClick={() => setActiveCat(null)}
+style={{ background: “rgba(255,255,255,0.25)”, border: “none”, borderRadius: 999, padding: “8px 16px”, color: “#fff”, fontWeight: 700, cursor: “pointer”, fontSize: 14, marginBottom: 16 }}
+>
+← กลับ
+</button>
+<div style={{ position: “absolute”, top: 0, right: 16, fontSize: 100, opacity: 0.15 }}>{cat.emoji}</div>
+<h2 style={{ color: “#fff”, fontSize: 28, fontWeight: 900, margin: “0 0 4px” }}>{cat.emoji} {cat.label}</h2>
+<p style={{ color: “rgba(255,255,255,0.8)”, fontSize: 14, margin: 0 }}>{cat.desc}</p>
+</div>
+
+```
+  {/* Tabs */}
+  <div style={{ display: "flex", gap: 0, margin: "0 20px", marginTop: -22, borderRadius: 18, overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
+    {[
+      { id: "vocab", label: "📖 คำศัพท์" },
+      { id: "flashcard", label: "🃏 Flashcard" },
+      { id: "match", label: "🎯 จับคู่" },
+    ].map((tab) => (
+      <button
+        key={tab.id}
+        onClick={() => setActiveTab(tab.id)}
+        style={{
+          flex: 1,
+          padding: "14px 8px",
+          border: "none",
+          background: activeTab === tab.id ? cat.color : "#fff",
+          color: activeTab === tab.id ? "#fff" : palette.muted,
+          fontWeight: 700,
+          fontSize: 13,
+          cursor: "pointer",
+          transition: "all 0.2s",
+        }}
+      >
+        {tab.label}
+      </button>
+    ))}
+  </div>
+
+  {/* Content */}
+  <div style={{ padding: "20px" }}>
+    {activeTab === "vocab" && <VocabList words={cat.words} />}
+    {activeTab === "flashcard" && <FlashcardGame key={cat.id + "fc"} words={cat.words} color={cat.color} />}
+    {activeTab === "match" && <MatchingGame key={cat.id + "mg"} words={cat.words} color={cat.color} />}
+  </div>
+</div>
+```
+
+);
+}
