@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { useAuth } from "@workspace/replit-auth-web";
 
 // ===================== DATA =====================
 const categories = [
@@ -362,41 +361,8 @@ return (
 );
 }
 
-// ===================== LOGIN SCREEN =====================
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
-return (
-<div style={{ minHeight: "100vh", background: "linear-gradient(160deg,#E8433A 0%,#F5A623 60%,#FF6B8A 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Noto Sans TC','Noto Sans Thai',sans-serif", padding: "24px 20px", textAlign: "center" }}>
-  <div style={{ position: "absolute", top: -20, right: -20, fontSize: 200, opacity: 0.07, pointerEvents: "none" }}>學</div>
-  <div style={{ position: "absolute", bottom: -40, left: -20, fontSize: 200, opacity: 0.07, pointerEvents: "none" }}>語</div>
-  <div style={{ fontSize: 72, marginBottom: 8 }}>🀄</div>
-  <h1 style={{ color: "#fff", fontSize: 34, fontWeight: 900, margin: "0 0 8px", textShadow: "0 2px 12px rgba(0,0,0,0.15)" }}>เรียนภาษาจีน</h1>
-  <p style={{ color: "rgba(255,255,255,0.9)", fontSize: 16, margin: "0 0 32px", lineHeight: 1.6 }}>有声音 • มีเสียง • มี AI ครู</p>
-  <div style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)", borderRadius: 24, padding: "28px 24px", marginBottom: 32, maxWidth: 340, width: "100%", border: "1.5px solid rgba(255,255,255,0.35)" }}>
-    {[
-      ["📚", "คำศัพท์ 60+ คำ", "3 หมวดหมู่ชีวิตจริง"],
-      ["🎮", "เกมฝึกจำ", "Flashcard & จับคู่"],
-      ["🤖", "AI ครูส่วนตัว", "ถามได้ทุกเรื่องภาษาจีน"],
-    ].map(([icon, title, sub], i) => (
-      <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 0", borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.2)" : "none" }}>
-        <span style={{ fontSize: 28, width: 40, textAlign: "center" }}>{icon}</span>
-        <div style={{ textAlign: "left" }}>
-          <div style={{ color: "#fff", fontWeight: 700, fontSize: 15 }}>{title}</div>
-          <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12 }}>{sub}</div>
-        </div>
-      </div>
-    ))}
-  </div>
-  <button onClick={onLogin} style={{ background: "#fff", color: "#E8433A", border: "none", borderRadius: 999, padding: "16px 48px", fontSize: 17, fontWeight: 900, cursor: "pointer", boxShadow: "0 8px 28px rgba(0,0,0,0.2)", letterSpacing: 0.5, display: "flex", alignItems: "center", gap: 10, transition: "transform 0.1s" }}>
-    <span style={{ fontSize: 20 }}>🔑</span> เข้าสู่ระบบ
-  </button>
-  <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, marginTop: 16 }}>เข้าสู่ระบบเพื่อปลดล็อคคำศัพท์ครบทุกคำ ฟรี!</p>
-</div>
-);
-}
-
 // ===================== MAIN APP =====================
 export default function App() {
-const { user, isLoading, isAuthenticated, login, logout } = useAuth();
 const [screen, setScreen] = useState("home"); // home | category | chat
 const [activeCat, setActiveCat] = useState(null);
 const [catTab, setCatTab] = useState("vocab");
@@ -405,41 +371,11 @@ const [showPremium, setShowPremium] = useState(false);
 
 const cat = categories.find(c => c.id === activeCat);
 
-// Tier-based limits: logged in users get full vocab access and more AI messages
-const wordLimit = isAuthenticated ? Infinity : FREE_WORD_LIMIT;
-const msgLimit = isAuthenticated ? 20 : FREE_MSG_LIMIT;
-const effectiveIsPremium = isPremium || isAuthenticated;
-
-if (isLoading) return (
-<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(160deg,#E8433A,#F5A623)", fontFamily: "'Noto Sans TC',sans-serif" }}>
-  <div style={{ textAlign: "center" }}>
-    <div style={{ fontSize: 60, marginBottom: 12 }}>🀄</div>
-    <div style={{ color: "rgba(255,255,255,0.9)", fontSize: 16 }}>กำลังโหลด...</div>
-  </div>
-</div>
-);
-
-if (!isAuthenticated) return <LoginScreen onLogin={login} />;
-
 // HOME
 if (screen === "home") return (
 <div style={{ minHeight: "100vh", background: palette.bg, fontFamily: "'Noto Sans TC','Noto Sans Thai',sans-serif" }}>
 <div style={{ background: "linear-gradient(135deg,#E8433A,#F5A623)", padding: "44px 20px 56px", textAlign: "center", position: "relative", overflow: "hidden" }}>
 <div style={{ position: "absolute", top: -10, right: 10, fontSize: 110, opacity: 0.12 }}>學</div>
-{/* User profile top-right */}
-<div style={{ position: "absolute", top: 14, right: 14, display: "flex", alignItems: "center", gap: 8 }}>
-  {user?.profileImageUrl ? (
-    <img src={user.profileImageUrl} alt="avatar" style={{ width: 36, height: 36, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.8)", objectFit: "cover" }} />
-  ) : (
-    <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.3)", border: "2px solid rgba(255,255,255,0.8)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>👤</div>
-  )}
-  <div style={{ textAlign: "left" }}>
-    <div style={{ color: "#fff", fontSize: 12, fontWeight: 700, lineHeight: 1.2, maxWidth: 90, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-      {user?.firstName || "ผู้ใช้"}
-    </div>
-    <button onClick={logout} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.75)", fontSize: 10, cursor: "pointer", padding: 0, fontFamily: "inherit" }}>ออกจากระบบ</button>
-  </div>
-</div>
 <div style={{ fontSize: 44, marginBottom: 6 }}>🀄</div>
 <h1 style={{ color: "#fff", fontSize: 30, fontWeight: 900, margin: "0 0 6px" }}>เรียนภาษาจีน</h1>
 <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 15, margin: 0 }}>有声音 • มีเสียง • มี AI ครู</p>
