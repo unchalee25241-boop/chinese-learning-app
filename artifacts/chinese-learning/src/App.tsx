@@ -270,7 +270,8 @@ messages: messages.slice(1).concat([{ role: "user", content: text }]).map(m => (
 });
 const data = await res.json();
 setMessages(p => [...p, { role: "assistant", content: data.content?.[0]?.text || "ขอโทษค่ะ ลองใหม่นะคะ" }]);
-} catch { setMessages(p => [...p, { role: "assistant", content: "ขอโทษค่ะ เกิดข้อผิดพลาด 🙏" }]); }
+} catch(err) { setMessages(p => [...p, { role: "assistant", content: `Error: ${err.message}` }]); }
+
 finally { setLoading(false); }
 };
 
