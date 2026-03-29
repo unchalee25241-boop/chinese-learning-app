@@ -1,4 +1,31 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+// ===================== STREAK =====================
+function getTodayISO() { return new Date().toISOString().split("T")[0]; }
+function getYesterdayISO() { const d = new Date(); d.setDate(d.getDate()-1); return d.toISOString().split("T")[0]; }
+function loadStreak() { try { const r = localStorage.getItem("ec_streak"); return r ? JSON.parse(r) : {currentStreak:0,longestStreak:0,lastStudyDate:null,studiedToday:false}; } catch { return {currentStreak:0,longestStreak:0,lastStudyDate:null,studiedToday:false}; } }
+function useStreak() {
+  const [streak, setStreak] = useState(() => {
+    const d = loadStreak(); const today = getTodayISO(); const yesterday = getYesterdayISO();
+    if (!d.lastStudyDate) return d;
+    if (d.lastStudyDate === today) return {...d, studiedToday: true};
+    if (d.lastStudyDate === yesterday) return {...d, studiedToday: false};
+    return {...d, currentStreak: 0, studiedToday: false};
+  });
+  const markStudied = useCallback(() => {
+    setStreak(prev => {
+      if (prev.studiedToday) return prev;
+      const today = getTodayISO(); const yesterday = getYesterdayISO();
+      const cont = prev.lastStudyDate === yesterday || prev.lastStudyDate === today;
+      const n = cont ? prev.currentStreak + 1 : 1;
+      const updated = {...prev, currentStreak: n, longestStreak: Math.max(n, prev.longestStreak), lastStudyDate: today, studiedToday: true};
+      localStorage.setItem("ec_streak", JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+  return { streak, markStudied };
+}
+
+
 
 // ===================== DATA =====================
 const categories = [
@@ -143,10 +170,10 @@ return (
 );
 }
 
-function FlashcardGame({ words, color }) {
+function FlashcardGame({ words, color, onStudied }) {
 const [idx, setIdx] = useState(0); const [flipped, setFlipped] = useState(false); const [score, setScore] = useState(0);
 const card = words[idx];
-const next = (knew) => { if (knew) setScore(s => s + 1); setFlipped(false); setTimeout(() => setIdx(i => i + 1), 150); };
+const next = (knew) =>if (knew) { setScore(s => s + 1); onStudied(); } setFlipped(false); setTimeout(() => setIdx(i => i + 1), 150); };
 if (idx >= words.length) return (
 <div style={{ textAlign: "center", padding: "40px 20px" }}>
 <div style={{ fontSize: 60 }}>🎉</div>
@@ -369,6 +396,7 @@ const [activeCat, setActiveCat] = useState(null);
 const [catTab, setCatTab] = useState("vocab");
 const [isPremium, setIsPremium] = useState(false);
 const [showPremium, setShowPremium] = useState(false);
+const { streak, markStudied } = useStreak();
 
 const cat = categories.find(c => c.id === activeCat);
 
@@ -376,7 +404,12 @@ const cat = categories.find(c => c.id === activeCat);
 if (screen === "home") return (
 <div style={{ minHeight: "100vh", background: palette.bg, fontFamily: "'Noto Sans TC','Noto Sans Thai',sans-serif" }}>
 <div style={{ background: "linear-gradient(135deg,#E8433A,#F5A623)", padding: "44px 20px 56px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-<div style={{ position: "absolute", top: -10, right: 10, fontSize: 110, opacity: 0.12 }}>學</div>
+<div style={{ position: "absolute", top: -10, right: 10, fontSize: 110, opacity: 0.12 }}>學</div> <div style={{position:"absolute",top:16,left:16,background:"rgba(255,255,255,0.2)",borderRadius:999,padding:"6px 14px",display:"flex",alignItems:"center",gap:6}}>
+  <span style={{fontSize:18,filter:streak.studiedToday?"drop-shadow(0 0 6px orange)":"grayscale(0.6)"}}>🔥</span>
+  <span style={{color:"#fff",fontWeight:800,fontSize:15}}>{streak.currentStreak}</span>
+  <span style={{color:"rgba(255,255,255,0.75)",fontSize:11}}>วัน</span>
+</div>
+
 <div style={{ fontSize: 44, marginBottom: 6 }}>🀄</div>
 <h1 style={{ color: "#fff", fontSize: 30, fontWeight: 900, margin: "0 0 6px" }}>เรียนภาษาจีน</h1>
 <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 15, margin: 0 }}>有声音 • มีเสียง • มี AI ครู</p>
@@ -434,7 +467,7 @@ if (screen === "category" && cat) return (
 
   <div style={{ padding: "16px" }}>
     {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} />}
-    {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} />}
+    {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} onStudied={markStudied} color={cat.color} />}
     {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} />}
     {!isPremium && catTab !== "vocab" && (
       <div onClick={() => setShowPremium(true)} style={{ marginTop: 16, padding: "14px", background: "#FFF8E1", borderRadius: 16, border: "1.5px dashed #F5A623", textAlign: "center", cursor: "pointer" }}>
