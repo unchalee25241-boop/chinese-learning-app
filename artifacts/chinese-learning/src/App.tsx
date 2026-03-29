@@ -1,5 +1,110 @@
-import { useState, useRef, useEffect, useCallback } from “react”;
-import { categories } from “./data/vocabulary”;
+import { useState, useRef, useEffect, useCallback } from "react";
+// ===================== STREAK =====================
+function getTodayISO() { return new Date().toISOString().split("T")[0]; }
+function getYesterdayISO() { const d = new Date(); d.setDate(d.getDate()-1); return d.toISOString().split("T")[0]; }
+function loadStreak() { try { const r = localStorage.getItem("ec_streak"); return r ? JSON.parse(r) : {currentStreak:0,longestStreak:0,lastStudyDate:null,studiedToday:false}; } catch { return {currentStreak:0,longestStreak:0,lastStudyDate:null,studiedToday:false}; } }
+function useStreak() {
+  const [streak, setStreak] = useState(() => {
+    const d = loadStreak(); const today = getTodayISO(); const yesterday = getYesterdayISO();
+    if (!d.lastStudyDate) return d;
+    if (d.lastStudyDate === today) return {...d, studiedToday: true};
+    if (d.lastStudyDate === yesterday) return {...d, studiedToday: false};
+    return {...d, currentStreak: 0, studiedToday: false};
+  });
+  const markStudied = useCallback(() => {
+    setStreak(prev => {
+      if (prev.studiedToday) return prev;
+      const today = getTodayISO(); const yesterday = getYesterdayISO();
+      const cont = prev.lastStudyDate === yesterday || prev.lastStudyDate === today;
+      const n = cont ? prev.currentStreak + 1 : 1;
+      const updated = {...prev, currentStreak: n, longestStreak: Math.max(n, prev.longestStreak), lastStudyDate: today, studiedToday: true};
+      localStorage.setItem("ec_streak", JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+  return { streak, markStudied };
+}
+
+
+
+// ===================== DATA =====================
+const categories = [
+{
+id: "daily", label: "ชีวิตประจำวัน", emoji: "☀️", color: "#F5A623", bg: "#FFF8E1",
+words: [
+{ zh: "你好", zhuyin: "ㄋㄧˇ ㄏㄠˇ", th: "สวัสดี (ทักทายทั่วไป)", pinyin: "nǐ hǎo" },
+{ zh: "你吃了嗎", zhuyin: "ㄋㄧˇ ㄔ ㄌㄜ ㄇㄚ", th: "กินข้าวยังคะ (ทักทายแบบจีน)", pinyin: "nǐ chī le ma" },
+{ zh: "還好", zhuyin: "ㄏㄞˊ ㄏㄠˇ", th: "ก็โอเคนะ / ยังงั้น", pinyin: "hái hǎo" },
+{ zh: "沒事", zhuyin: "ㄇㄟˊ ㄕˋ", th: "ไม่เป็นไร / ว่างอยู่", pinyin: "méi shì" },
+{ zh: "隨便", zhuyin: "ㄙㄨㄟˊ ㄅㄧㄢˋ", th: "แล้วแต่เลย / อะไรก็ได้", pinyin: "suí biàn" },
+{ zh: "差不多", zhuyin: "ㄔㄚ ㄅㄨˋ ㄉㄨㄛ", th: "พอๆ กัน / ก็แถวนั้น", pinyin: "chà bu duō" },
+{ zh: "趕快", zhuyin: "ㄍㄢˇ ㄎㄨㄞˋ", th: "รีบๆ หน่อย!", pinyin: "gǎn kuài" },
+{ zh: "慢慢來", zhuyin: "ㄇㄢˋ ㄇㄢˋ ㄌㄞˊ", th: "ค่อยๆ ทำ ไม่ต้องรีบ", pinyin: "màn màn lái" },
+{ zh: "搞定", zhuyin: "ㄍㄠˇ ㄉㄧㄥˋ", th: "เสร็จแล้ว! / จัดการได้แล้ว", pinyin: "gǎo dìng" },
+{ zh: "算了", zhuyin: "ㄙㄨㄢˋ ㄌㄜ", th: "ช่างเถอะ / ปล่อยวาง", pinyin: "suàn le" },
+{ zh: "不一定", zhuyin: "ㄅㄨˋ ㄧˊ ㄉㄧㄥˋ", th: "ไม่แน่นอน / อาจจะ", pinyin: "bù yī dìng" },
+{ zh: "有夠...", zhuyin: "ㄧㄡˇ ㄍㄡˋ", th: "มากเลย / สุดๆ เลย (ไต้หวัน)", pinyin: "yǒu gòu" },
+{ zh: "挖賽", zhuyin: "ㄨㄚ ㄙㄞˋ", th: "โอ้โห! / ว้าว! (ไต้หวัน)", pinyin: "wā sài" },
+{ zh: "不客氣", zhuyin: "ㄅㄨˋ ㄎㄜˋ ㄑㄧˋ", th: "ไม่ต้องเกรงใจ", pinyin: "bù kè qì" },
+{ zh: "辛苦了", zhuyin: "ㄒㄧㄣ ㄎㄨˇ ㄌㄜ", th: "เหนื่อยมากนะ (ขอบคุณที่ทำงานหนัก)", pinyin: "xīn kǔ le" },
+{ zh: "加油", zhuyin: "ㄐㄧㄚ ㄧㄡˊ", th: "สู้ๆ! / เชียร์ใจ", pinyin: "jiā yóu" },
+{ zh: "沒關係", zhuyin: "ㄇㄟˊ ㄍㄨㄢ ㄒㄧ", th: "ไม่เป็นไรเลย", pinyin: "méi guān xi" },
+{ zh: "等一下", zhuyin: "ㄉㄥˇ ㄧˊ ㄒㄧㄚˋ", th: "รอแป๊บนึงนะ", pinyin: "děng yī xià" },
+{ zh: "好險", zhuyin: "ㄏㄠˇ ㄒㄧㄢˇ", th: "เฮ้อ โชคดีนะ! / หวุดหวิดเลย", pinyin: "hǎo xiǎn" },
+{ zh: "麻煩你了", zhuyin: "ㄇㄚˊ ㄈㄢˊ ㄋㄧˇ ㄌㄜ", th: "ขอรบกวนด้วยนะคะ", pinyin: "má fán nǐ le" },
+],
+},
+{
+id: "love", label: "ความรัก", emoji: "💕", color: "#FF6B8A", bg: "#FFF0F4",
+words: [
+{ zh: "我喜歡你", zhuyin: "ㄨㄛˇ ㄒㄧˇ ㄏㄨㄢ ㄋㄧˇ", th: "ฉันชอบคุณนะ (บอกรักแบบอ่อนๆ)", pinyin: "wǒ xǐ huān nǐ" },
+{ zh: "我愛你", zhuyin: "ㄨㄛˇ ㄞˋ ㄋㄧˇ", th: "ฉันรักคุณ (จริงจังกว่า)", pinyin: "wǒ ài nǐ" },
+{ zh: "你今天特別好看", zhuyin: "ㄋㄧˇ ㄐㄧㄣ ㄊㄧㄢ ㄊㄜˋ ㄅㄧㄝˊ ㄏㄠˇ ㄎㄢˋ", th: "วันนี้สวย/หล่อเป็นพิเศษเลย", pinyin: "nǐ jīn tiān tè bié hǎo kàn" },
+{ zh: "想你", zhuyin: "ㄒㄧㄤˇ ㄋㄧˇ", th: "คิดถึงนะ", pinyin: "xiǎng nǐ" },
+{ zh: "你在幹嘛", zhuyin: "ㄋㄧˇ ㄗㄞˋ ㄍㄢˋ ㄇㄚ", th: "ทำอะไรอยู่คะ (ทักตอนคิดถึง)", pinyin: "nǐ zài gàn ma" },
+{ zh: "陪我", zhuyin: "ㄆㄟˊ ㄨㄛˇ", th: "อยู่เป็นเพื่อนฉันได้ไหม", pinyin: "péi wǒ" },
+{ zh: "你讓我心動", zhuyin: "ㄋㄧˇ ㄖㄤˋ ㄨㄛˇ ㄒㄧㄣ ㄉㄨㄥˋ", th: "คุณทำให้หัวใจฉันเต้นแรงเลย", pinyin: "nǐ ràng wǒ xīn dòng" },
+{ zh: "我們在一起吧", zhuyin: "ㄨㄛˇ ㄇㄣ ㄗㄞˋ ㄧˋ ㄑㄧˇ ㄅㄚ", th: "เราคบกันเถอะนะ", pinyin: "wǒ men zài yī qǐ ba" },
+{ zh: "吃醋", zhuyin: "ㄔ ㄘㄨˋ", th: "หึงหวง / อิจฉา (ในความรัก)", pinyin: "chī cù" },
+{ zh: "放電", zhuyin: "ㄈㄤˋ ㄉㄧㄢˋ", th: "ปล่อยแรงดึงดูด / จีบอยู่นะ", pinyin: "fàng diàn" },
+{ zh: "暖男", zhuyin: "ㄋㄨㄢˇ ㄋㄢˊ", th: "ผู้ชายที่ใจดีอบอุ่นมาก", pinyin: "nuǎn nán" },
+{ zh: "撒嬌", zhuyin: "ㄙㄚ ㄐㄧㄠ", th: "ทำตัวน่ารักเอาใจ / ง้อ", pinyin: "sā jiāo" },
+{ zh: "曖昧", zhuyin: "ㄞˋ ㄇㄟˋ", th: "กำกวม / ยังไม่ชัดเจนว่าคบกัน", pinyin: "ài mèi" },
+{ zh: "緣分", zhuyin: "ㄩㄢˊ ㄈㄣˋ", th: "บุพเพสันนิวาส / โชคชะตา", pinyin: "yuán fèn" },
+{ zh: "你笑起來好好看", zhuyin: "ㄋㄧˇ ㄒㄧㄠˋ ㄑㄧˇ ㄌㄞˊ ㄏㄠˇ ㄏㄠˇ ㄎㄢˋ", th: "ยิ้มแล้วสวยมากเลยนะ", pinyin: "nǐ xiào qǐ lái hǎo hǎo kàn" },
+{ zh: "我只有你", zhuyin: "ㄨㄛˇ ㄓˇ ㄧㄡˇ ㄋㄧˇ", th: "ฉันมีแค่คุณคนเดียว", pinyin: "wǒ zhǐ yǒu nǐ" },
+{ zh: "不理我了嗎", zhuyin: "ㄅㄨˋ ㄌㄧˇ ㄨㄛˇ ㄌㄜ ㄇㄚ", th: "จะไม่คุยกับฉันแล้วหรอ", pinyin: "bù lǐ wǒ le ma" },
+{ zh: "我捨不得你", zhuyin: "ㄨㄛˇ ㄕㄜˇ ㄅㄨˋ ㄉㄜˊ ㄋㄧˇ", th: "อาลัยคุณมาก / ใจไม่ยอมปล่อย", pinyin: "wǒ shě bù dé nǐ" },
+{ zh: "你是我的寶貝", zhuyin: "ㄋㄧˇ ㄕˋ ㄨㄛˇ ㄉㄜ ㄅㄠˇ ㄅㄟˋ", th: "คุณคือสมบัติของฉันเลย", pinyin: "nǐ shì wǒ de bǎo bèi" },
+{ zh: "晚安", zhuyin: "ㄨㄢˇ ㄢ", th: "ราตรีสวัสดิ์ (ส่งก่อนนอน)", pinyin: "wǎn ān" },
+],
+},
+{
+id: "job", label: "สัมภาษณ์งาน", emoji: "💼", color: "#4ECDC4", bg: "#F0FFFE",
+words: [
+{ zh: "自我介紹", zhuyin: "ㄗˋ ㄨㄛˇ ㄐㄧㄝˋ ㄕㄠˋ", th: "แนะนำตัวเอง", pinyin: "zì wǒ jiè shào" },
+{ zh: "我對這個職位很感興趣", zhuyin: "ㄨㄛˇ ㄉㄨㄟˋ ㄓㄜˋ ㄍㄜ ㄓˊ ㄨㄟˋ ㄏㄣˇ ㄍㄢˇ ㄒㄧㄥˋ ㄑㄩˋ", th: "ฉันสนใจตำแหน่งนี้มากเลย", pinyin: "wǒ duì zhè ge zhí wèi hěn gǎn xìng qù" },
+{ zh: "我的強項是...", zhuyin: "ㄨㄛˇ ㄉㄜ ㄑㄧㄤˊ ㄒㄧㄤˋ ㄕˋ", th: "จุดแข็งของฉันคือ...", pinyin: "wǒ de qiáng xiàng shì" },
+{ zh: "我有三年的經驗", zhuyin: "ㄨㄛˇ ㄧㄡˇ ㄙㄢ ㄋㄧㄢˊ ㄉㄜ ㄐㄧㄥ ㄧㄢˋ", th: "ฉันมีประสบการณ์ 3 ปี", pinyin: "wǒ yǒu sān nián de jīng yàn" },
+{ zh: "請問薪資範圍是多少", zhuyin: "ㄑㄧㄥˇ ㄨㄣˋ ㄒㄧㄣ ㄗ ㄈㄢˋ ㄨㄟˊ ㄕˋ ㄉㄨㄛ ㄕㄠˇ", th: "ขออนุญาตถามว่าช่วงเงินเดือนเท่าไหร่คะ", pinyin: "qǐng wèn xīn zī fàn wéi shì duō shǎo" },
+{ zh: "我可以配合加班", zhuyin: "ㄨㄛˇ ㄎㄜˇ ㄧˇ ㄆㄟˋ ㄏㄜˊ ㄐㄧㄚ ㄅㄢ", th: "ฉันทำงานล่วงเวลาได้นะคะ", pinyin: "wǒ kě yǐ pèi hé jiā bān" },
+{ zh: "我學東西很快", zhuyin: "ㄨㄛˇ ㄒㄩㄝˊ ㄉㄨㄥ ㄒㄧ ㄏㄣˇ ㄎㄨㄞˋ", th: "ฉันเรียนรู้เร็วมาก", pinyin: "wǒ xué dōng xi hěn kuài" },
+{ zh: "團隊合作", zhuyin: "ㄊㄨㄢˊ ㄉㄨㄟˋ ㄏㄜˊ ㄗㄨㄛˋ", th: "การทำงานเป็นทีม", pinyin: "tuán duì hé zuò" },
+{ zh: "壓力下工作", zhuyin: "ㄧㄚ ㄌㄧˋ ㄒㄧㄚˋ ㄍㄨㄥ ㄗㄨㄛˋ", th: "ทำงานภายใต้ความกดดันได้", pinyin: "yā lì xià gōng zuò" },
+{ zh: "請問什麼時候會有消息", zhuyin: "ㄑㄧㄥˇ ㄨㄣˋ ㄕㄣˊ ㄇㄜ ㄕˊ ㄏㄡˋ ㄏㄨㄟˋ ㄧㄡˇ ㄒㄧㄠ ㄒㄧ", th: "ขอถามว่าจะทราบผลเมื่อไหร่คะ", pinyin: "qǐng wèn shén me shí hòu huì yǒu xiāo xi" },
+{ zh: "我期待加入貴公司", zhuyin: "ㄨㄛˇ ㄑㄧ ㄉㄞˋ ㄐㄧㄚ ㄖㄨˋ ㄍㄨㄟˋ ㄍㄨㄥ ㄙ", th: "ฉันหวังว่าจะได้ร่วมงานกับบริษัทค่ะ", pinyin: "wǒ qī dài jiā rù guì gōng sī" },
+{ zh: "這個工作很有挑戰性", zhuyin: "ㄓㄜˋ ㄍㄜ ㄍㄨㄥ ㄗㄨㄛˋ ㄏㄣˇ ㄧㄡˇ ㄊㄧㄠˇ ㄓㄢˋ ㄒㄧㄥˋ", th: "งานนี้ท้าทายดีมากเลย", pinyin: "zhè ge gōng zuò hěn yǒu tiǎo zhàn xìng" },
+{ zh: "我希望能成長", zhuyin: "ㄨㄛˇ ㄒㄧ ㄨㄤˋ ㄋㄥˊ ㄔㄥˊ ㄓㄤˇ", th: "ฉันอยากเติบโตในสายงานนี้", pinyin: "wǒ xī wàng néng chéng zhǎng" },
+{ zh: "彈性上班", zhuyin: "ㄊㄢˊ ㄒㄧㄥˋ ㄕㄤˋ ㄅㄢ", th: "ทำงานแบบยืดหยุ่นเวลาได้", pinyin: "tán xìng shàng bān" },
+{ zh: "遠距工作", zhuyin: "ㄩㄢˇ ㄐㄩˋ ㄍㄨㄥ ㄗㄨㄛˋ", th: "Work from home / ทำงานทางไกล", pinyin: "yuǎn jù gōng zuò" },
+{ zh: "我的目標是...", zhuyin: "ㄨㄛˇ ㄉㄜ ㄇㄨˋ ㄅㄧㄠ ㄕˋ", th: "เป้าหมายของฉันคือ...", pinyin: "wǒ de mù biāo shì" },
+{ zh: "解決問題", zhuyin: "ㄐㄧㄝˇ ㄐㄩㄝˊ ㄨㄣˋ ㄊㄧˊ", th: "แก้ปัญหาได้", pinyin: "jiě jué wèn tí" },
+{ zh: "我很期待這個機會", zhuyin: "ㄨㄛˇ ㄏㄣˇ ㄑㄧ ㄉㄞˋ ㄓㄜˋ ㄍㄜ ㄐㄧ ㄏㄨㄟˋ", th: "ฉันตื่นเต้นกับโอกาสนี้มากค่ะ", pinyin: "wǒ hěn qī dài zhè ge jī huì" },
+{ zh: "請多指教", zhuyin: "ㄑㄧㄥˇ ㄉㄨㄛ ㄓˇ ㄐㄧㄠˋ", th: "ยินดีรับคำแนะนำด้วยนะคะ", pinyin: "qǐng duō zhǐ jiào" },
+{ zh: "我會盡力而為", zhuyin: "ㄨㄛˇ ㄏㄨㄟˋ ㄐㄧㄣˋ ㄌㄧˋ ㄦˊ ㄨㄟˊ", th: "ฉันจะทำเต็มที่ที่สุดค่ะ", pinyin: "wǒ huì jìn lì ér wéi" },
+],
+},
+];
 
 // ===================== CONFIG =====================
 const FREE_WORD_LIMIT = 50;
@@ -120,17 +225,10 @@ return (
 );
 }
 
-// ★ รับ onStudied prop เพิ่มมา
 function FlashcardGame({ words, color, onStudied }) {
 const [idx, setIdx] = useState(0); const [flipped, setFlipped] = useState(false); const [score, setScore] = useState(0);
 const card = words[idx];
-const next = (knew) => {
-if (knew) {
-setScore(s => s + 1);
-onStudied(); // ★ นับ streak เมื่อกด “รู้แล้ว!”
-}
-setFlipped(false); setTimeout(() => setIdx(i => i + 1), 150);
-};
+const next = (knew) =>if (knew) { setScore(s => s + 1); onStudied(); } setFlipped(false); setTimeout(() => setIdx(i => i + 1), 150); };
 if (idx >= words.length) return (
 <div style={{ textAlign: “center”, padding: “40px 20px” }}>
 <div style={{ fontSize: 60 }}>🎉</div>
@@ -367,47 +465,33 @@ const [activeCat, setActiveCat] = useState(null);
 const [catTab, setCatTab] = useState(“vocab”);
 const [isPremium, setIsPremium] = useState(false);
 const [showPremium, setShowPremium] = useState(false);
+const { streak, markStudied } = useStreak();
 
 // ★ Streak
 const { streak, markStudied } = useStreak();
 
 const cat = categories.find(c => c.id === activeCat);
 
-if (screen === “home”) return (
-<div style={{ minHeight: “100vh”, background: palette.bg, fontFamily: “‘Noto Sans TC’,‘Noto Sans Thai’,sans-serif” }}>
-<div style={{ background: “linear-gradient(135deg,#E8433A,#F5A623)”, padding: “44px 20px 56px”, textAlign: “center”, position: “relative”, overflow: “hidden” }}>
-<div style={{ position: “absolute”, top: -10, right: 10, fontSize: 110, opacity: 0.12 }}>學</div>
+// HOME
+if (screen === "home") return (
+<div style={{ minHeight: "100vh", background: palette.bg, fontFamily: "'Noto Sans TC','Noto Sans Thai',sans-serif" }}>
+<div style={{ background: "linear-gradient(135deg,#E8433A,#F5A623)", padding: "44px 20px 56px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+<div style={{ position: "absolute", top: -10, right: 10, fontSize: 110, opacity: 0.12 }}>學</div> <div style={{position:"absolute",top:16,left:16,background:"rgba(255,255,255,0.2)",borderRadius:999,padding:"6px 14px",display:"flex",alignItems:"center",gap:6}}>
+  <span style={{fontSize:18,filter:streak.studiedToday?"drop-shadow(0 0 6px orange)":"grayscale(0.6)"}}>🔥</span>
+  <span style={{color:"#fff",fontWeight:800,fontSize:15}}>{streak.currentStreak}</span>
+  <span style={{color:"rgba(255,255,255,0.75)",fontSize:11}}>วัน</span>
+</div>
 
-```
-    {/* ★ Streak badge มุมซ้ายบน */}
-    <div style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,255,255,0.2)", borderRadius: 999, padding: "6px 14px", display: "flex", alignItems: "center", gap: 6 }}>
-      <span style={{ fontSize: 18, filter: streak.studiedToday ? "drop-shadow(0 0 6px orange)" : "grayscale(0.6) opacity(0.6)" }}>🔥</span>
-      <span style={{ color: "#fff", fontWeight: 800, fontSize: 15 }}>{streak.currentStreak}</span>
-      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 11 }}>วัน</span>
-    </div>
-
-    <div style={{ fontSize: 44, marginBottom: 6 }}>🀄</div>
-    <h1 style={{ color: "#fff", fontSize: 30, fontWeight: 900, margin: "0 0 6px" }}>เรียนภาษาจีน</h1>
-    <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 15, margin: 0 }}>有声音 • มีเสียง • มี AI ครู</p>
-    {!isPremium && (
-      <button onClick={() => setShowPremium(true)} style={{ marginTop: 16, padding: "8px 20px", borderRadius: 999, background: "rgba(255,255,255,0.25)", border: "2px solid rgba(255,255,255,0.5)", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
-        👑 อัปเกรด Premium
-      </button>
-    )}
-    {isPremium && <div style={{ marginTop: 12, fontSize: 13, color: "rgba(255,255,255,0.9)", fontWeight: 700 }}>👑 Premium Member</div>}
-
-    {/* ★ Streak status ใต้ header */}
-    {!streak.studiedToday && (
-      <div style={{ marginTop: 10, fontSize: 12, color: "rgba(255,255,255,0.7)" }}>
-        ⏰ ยังไม่ได้เรียนวันนี้ — ไปเล่น Flashcard เลย!
-      </div>
-    )}
-    {streak.studiedToday && (
-      <div style={{ marginTop: 10, fontSize: 12, color: "rgba(255,255,255,0.85)", fontWeight: 600 }}>
-        ✅ เรียนแล้ววันนี้ ยอดเยี่ยม!
-      </div>
-    )}
-  </div>
+<div style={{ fontSize: 44, marginBottom: 6 }}>🀄</div>
+<h1 style={{ color: "#fff", fontSize: 30, fontWeight: 900, margin: "0 0 6px" }}>เรียนภาษาจีน</h1>
+<p style={{ color: "rgba(255,255,255,0.8)", fontSize: 15, margin: 0 }}>有声音 • มีเสียง • มี AI ครู</p>
+{!isPremium && (
+<button onClick={() => setShowPremium(true)} style={{ marginTop: 16, padding: "8px 20px", borderRadius: 999, background: "rgba(255,255,255,0.25)", border: "2px solid rgba(255,255,255,0.5)", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+👑 อัปเกรด Premium
+</button>
+)}
+{isPremium && <div style={{ marginTop: 12, fontSize: 13, color: "rgba(255,255,255,0.9)", fontWeight: 700 }}>👑 Premium Member</div>}
+</div>
 
   <div style={{ padding: "0 16px", marginTop: -28 }}>
     {categories.map(c => (
@@ -464,8 +548,7 @@ if (screen === “category” && cat) return (
 
   <div style={{ padding: "16px" }}>
     {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} />}
-    {/* ★ ส่ง onStudied={markStudied} เข้า FlashcardGame */}
-    {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} />}
+    {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} onStudied={markStudied} color={cat.color} />}
     {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} />}
     {!isPremium && catTab !== "vocab" && cat.words.length > FREE_WORD_LIMIT && (
       <div onClick={() => setShowPremium(true)} style={{ marginTop: 16, padding: "14px", background: "#FFF8E1", borderRadius: 16, border: "1.5px dashed #F5A623", textAlign: "center", cursor: "pointer" }}>
