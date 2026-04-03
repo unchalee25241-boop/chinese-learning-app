@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SpeakButton } from "../shared/SpeakButton";
 import { Mode } from "../../hooks/useMode";
 
-interface Word { zh: string; zhSimplified?: string; zhuyin: string; pinyin: string; th: string; }
+interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; pinyin: string; th: string; }
 interface Props { words: Word[]; color: string; onStudied: () => void; mode: Mode; }
 
 export function FlashcardGame({ words, color, onStudied, mode }: Props) {
@@ -10,7 +10,7 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
   const [flipped, setFlipped] = useState(false);
   const [score, setScore] = useState(0);
   const card = words[idx];
-  const displayZh = (w: Word) => mode === "cn" && w.zhSimplified ? w.zhSimplified : w.zh;
+  const displayZh = (w: Word) => mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh;
   const next = (knew: boolean) => {
     if (knew) { setScore(s => s + 1); onStudied(); }
     setFlipped(false);
