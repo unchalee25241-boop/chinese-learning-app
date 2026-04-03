@@ -36,7 +36,7 @@ export default function App() {
         )}
         {isPremium && <div style={{ fontSize: 13, color: "rgba(255,255,255,0.9)", fontWeight: 700 }}>👑 Premium Member</div>}
       </div>
-      <div style={{ padding: "0 16px 32px", marginTop: -28 }}>
+      <div style={{ padding: "0 16px 32px", marginTop: 8 }}>
         <div style={{ background: "linear-gradient(135deg,#27AE60,#2ECC71)", borderRadius: 20, padding: "18px 22px", display: "flex", alignItems: "center", gap: 14, marginBottom: 22, boxShadow: "0 4px 20px rgba(39,174,96,0.35)" }}>
           <span style={{ fontSize: 36 }}>🔥</span>
           <div>
