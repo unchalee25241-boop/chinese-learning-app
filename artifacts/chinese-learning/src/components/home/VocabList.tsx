@@ -12,17 +12,23 @@ export function VocabList({ words, isPremium, color, onUpgrade, mode }: Props) {
   return (
     <div>
       {visible.map((w, i) => (
-        <div key={i} style={{ background: "#1E1E30", borderRadius: 18, padding: "14px 16px", display: "flex", alignItems: "center", gap: 14, border: `1.5px solid ${color}33`, marginBottom: 10 }}>
-          <div style={{ flex: 1 }}>
+        <div key={i} style={{ background: `linear-gradient(135deg, ${color}22, ${color}11)`, borderRadius: 18, padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, border: `2px solid ${color}66`, marginBottom: 10, position: "relative", overflow: "hidden" }}>
+          {/* ตัวจีนใหญ่โปร่งใสด้านหลัง */}
+          <div style={{ position: "absolute", right: 60, top: "50%", transform: "translateY(-50%)", fontSize: 56, fontWeight: 900, color: `${color}20`, lineHeight: 1, pointerEvents: "none" }}>
+            {mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh}
+          </div>
+          <div style={{ flex: 1, zIndex: 1 }}>
             <div style={{ fontSize: 34, fontWeight: 900, color: "#fff" }}>
               {mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh}
             </div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>
+            <div style={{ fontSize: 12, color: `${color}cc`, marginTop: 2 }}>
               {mode === "cn" ? w.pinyin : `${w.zhuyin} • ${w.pinyin}`}
             </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.85)", marginTop: 2 }}>{w.th}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.9)", marginTop: 4 }}>{w.th}</div>
           </div>
-          <SpeakButton text={mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh} color={color} lang={mode === "cn" ? "zh-CN" : "zh-TW"} />
+          <div style={{ zIndex: 1 }}>
+            <SpeakButton text={mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh} color={color} lang={mode === "cn" ? "zh-CN" : "zh-TW"} />
+          </div>
         </div>
       ))}
       {locked.map((_, i) => <LockBadge key={i} onUpgrade={onUpgrade} />)}
