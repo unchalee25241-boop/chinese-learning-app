@@ -33,10 +33,7 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
       <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 999, height: 5, marginBottom: 20 }}>
         <div style={{ background: color, width: `${(idx / words.length) * 100}%`, height: "100%", borderRadius: 999, transition: "width 0.3s" }} />
       </div>
-
-      {/* Card */}
       <div onClick={() => setFlipped(f => !f)} style={{ background: `linear-gradient(135deg, ${color}, ${color}aa)`, borderRadius: 24, padding: "32px 20px", textAlign: "center", cursor: "pointer", transition: "all 0.3s", boxShadow: `0 8px 28px ${color}44`, minHeight: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, position: "relative", overflow: "hidden" }}>
-        {/* ตัวจีนใหญ่โปร่งใส */}
         <div style={{ position: "absolute", fontSize: 120, fontWeight: 900, color: "rgba(255,255,255,0.12)", lineHeight: 1, pointerEvents: "none" }}>
           {displayZh(card)}
         </div>
