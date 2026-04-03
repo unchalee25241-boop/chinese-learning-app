@@ -22,7 +22,7 @@ export function VocabList({ words, isPremium, color, onUpgrade, mode }: Props) {
               {mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh}
             </div>
             <div style={{ fontSize: 12, color: `${color}cc`, marginTop: 2 }}>
-              {mode === "cn" ? w.pinyin : `${w.zhuyin} • ${w.pinyin}`}
+              {mode === "cn" ? (w.pinyinCN ?? w.pinyin) : `${w.zhuyin} • ${w.pinyin}`}
             </div>
             <div style={{ fontSize: 15, fontWeight: 700, color: "rgba(255,255,255,0.9)", marginTop: 4 }}>{w.th}</div>
           </div>
