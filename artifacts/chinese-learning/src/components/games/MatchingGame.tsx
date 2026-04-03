@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Mode } from "../../hooks/useMode";
 
-interface Word { zh: string; zhSimplified?: string; zhuyin: string; th: string; }
+interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; th: string; }
 interface Props { words: Word[]; color: string; mode: Mode; }
 
 export function MatchingGame({ words, color, mode }: Props) {
   const pool = words.slice(0, 5);
-  const displayZh = (w: Word) => mode === "cn" && w.zhSimplified ? w.zhSimplified : w.zh;
+  const displayZh = (w: Word) => mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh;
   const [lefts] = useState(() => [...pool].sort(() => Math.random() - 0.5));
   const [rights] = useState(() => [...pool].sort(() => Math.random() - 0.5));
   const [selL, setSelL] = useState<string|null>(null);
