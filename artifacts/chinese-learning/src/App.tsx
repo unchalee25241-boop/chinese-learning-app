@@ -100,7 +100,7 @@ export default function App() {
         <div style={{ position: "absolute", top: 0, right: 12, fontSize: 100, opacity: 0.12, color: "#fff", fontWeight: 900 }}>{cat.emoji}</div>
         <h2 style={{ color: "#fff", fontSize: 26, fontWeight: 900, margin: "0 0 3px" }}>{cat.emoji} {cat.label}</h2>
       </div>
-      <div style={{ display: "flex", margin: "0 16px", marginTop: -20, borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.3)" }}>
+      <div style={{ display: "flex", margin: "0 16px", marginTop: 8, borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.3)" }}>
         {[{ id: "vocab", label: "📖 คำศัพท์" }, { id: "flashcard", label: "🃏 Flashcard" }, { id: "match", label: "🎯 จับคู่" }].map(t => (
           <button key={t.id} onClick={() => setCatTab(t.id)} style={{ flex: 1, padding: "13px 6px", border: "none", background: catTab === t.id ? cat.color : dark.card, color: catTab === t.id ? "#fff" : dark.subtext, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>{t.label}</button>
         ))}
