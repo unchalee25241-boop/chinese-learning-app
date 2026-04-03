@@ -7,6 +7,8 @@ import { FlashcardGame } from "./components/games/FlashcardGame";
 import { MatchingGame } from "./components/games/MatchingGame";
 import { AIChatbot } from "./components/chat/AIChatbot";
 import { PremiumModal } from "./components/modals/PremiumModal";
+import { useMode } from "./hooks/useMode";
+import { ModeToggle } from "./components/shared/ModeToggle";
 
 const dark = {
   bg: "#12121E", card: "#1E1E30", surface: "#252538",
@@ -19,7 +21,8 @@ export default function App() {
   const [catTab, setCatTab] = useState("vocab");
   const [isPremium, setIsPremium] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
-  const { streak, markStudied } = useStreak();
+  const { streak, markStudied } = useStreak();const { mode, toggleMode } = useMode();
+
   const cat = categories.find(c => c.id === activeCat);
 
   if (screen === "home") return (
@@ -34,7 +37,12 @@ export default function App() {
             👑 อัปเกรด Premium
           </button>
         )}
-        {isPremium && <div style={{ fontSize: 13, color: "rgba(255,255,255,0.9)", fontWeight: 700 }}>👑 Premium Member</div>}
+<div style={{ marginTop: 12 }}>
+  <ModeToggle mode={mode} onToggle={toggleMode} />
+</div>
+
+
+     {isPremium && <div style={{ fontSize: 13, color: "rgba(255,255,255,0.9)", fontWeight: 700 }}>👑 Premium Member</div>}
       </div>
       <div style={{ padding: "0 16px 32px", marginTop: 8 }}>
         <div style={{ background: "linear-gradient(135deg,#27AE60,#2ECC71)", borderRadius: 20, padding: "18px 22px", display: "flex", alignItems: "center", gap: 14, marginBottom: 22, boxShadow: "0 4px 20px rgba(39,174,96,0.35)" }}>
