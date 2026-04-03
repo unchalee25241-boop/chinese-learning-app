@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { Mode } from "../../hooks/useMode";
 
-interface Word { zh: string; zhuyin: string; th: string; }
-interface Props { words: Word[]; color: string; }
+interface Word { zh: string; zhSimplified?: string; zhuyin: string; th: string; }
+interface Props { words: Word[]; color: string; mode: Mode; }
 
-export function MatchingGame({ words, color }: Props) {
+export function MatchingGame({ words, color, mode }: Props) {
   const pool = words.slice(0, 5);
+  const displayZh = (w: Word) => mode === "cn" && w.zhSimplified ? w.zhSimplified : w.zh;
   const [lefts] = useState(() => [...pool].sort(() => Math.random() - 0.5));
   const [rights] = useState(() => [...pool].sort(() => Math.random() - 0.5));
   const [selL, setSelL] = useState<string|null>(null);
@@ -41,7 +43,8 @@ export function MatchingGame({ words, color }: Props) {
             {lefts.map(w => {
               const isM = matched.includes(w.zh), isSel = selL === w.zh, isW = wrong.includes(w.zh);
               return <button key={w.zh} disabled={isM} onClick={() => !isM && setSelL(w.zh)} style={{ padding: "12px 8px", borderRadius: 14, border: `2.5px solid ${isM ? "#80D980" : isW ? "#E84040" : isSel ? color : "rgba(255,255,255,0.15)"}`, background: isM ? "#152D15" : isW ? "#2D1515" : isSel ? `${color}22` : "#1E1E30", fontWeight: 800, fontSize: 20, color: "#fff", cursor: isM ? "default" : "pointer", opacity: isM ? 0.5 : 1, transition: "all 0.2s" }}>
-                {w.zh}<div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", fontWeight: 400 }}>{w.zhuyin}</div>
+                {displayZh(w)}
+                {mode === "tw" && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", fontWeight: 400 }}>{w.zhuyin}</div>}
               </button>;
             })}
           </div>
