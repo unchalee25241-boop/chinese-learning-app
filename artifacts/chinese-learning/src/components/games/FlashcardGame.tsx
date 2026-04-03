@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SpeakButton } from "../shared/SpeakButton";
 import { Mode } from "../../hooks/useMode";
 
-interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; pinyin: string; th: string; }
+interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; pinyin: string; pinyinCN?: string; th: string; }
 interface Props { words: Word[]; color: string; onStudied: () => void; mode: Mode; }
 
 export function FlashcardGame({ words, color, onStudied, mode }: Props) {
@@ -41,7 +41,7 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
           <>
             <div style={{ fontSize: 64, fontWeight: 900, color: "#fff", position: "relative", zIndex: 1 }}>{displayZh(card)}</div>
             {mode === "tw" && <div style={{ fontSize: 16, color: "rgba(255,255,255,0.7)", position: "relative", zIndex: 1 }}>{card.zhuyin}</div>}
-            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", fontStyle: "italic", position: "relative", zIndex: 1 }}>{card.pinyin}</div>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", fontStyle: "italic", position: "relative", zIndex: 1 }}>{mode === "cn" ? (card.pinyinCN ?? card.pinyin) : card.pinyin}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4, position: "relative", zIndex: 1 }}>แตะเพื่อดูคำตอบ 👆</div>
             <div style={{ marginTop: 8, position: "relative", zIndex: 1 }}>
               <SpeakButton text={displayZh(card)} color="#fff" lang={mode === "cn" ? "zh-CN" : "zh-TW"} />
@@ -51,7 +51,7 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
           <>
             <div style={{ fontSize: 44, fontWeight: 900, color: "#fff", position: "relative", zIndex: 1 }}>{displayZh(card)}</div>
             {mode === "tw" && <div style={{ fontSize: 15, color: "rgba(255,255,255,0.85)", position: "relative", zIndex: 1 }}>{card.zhuyin}</div>}
-            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", fontStyle: "italic", position: "relative", zIndex: 1 }}>{card.pinyin}</div>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", fontStyle: "italic", position: "relative", zIndex: 1 }}>{mode === "cn" ? (card.pinyinCN ?? card.pinyin) : card.pinyin}</div>
             <div style={{ fontSize: 28, color: "#fff", fontWeight: 700, marginTop: 4, position: "relative", zIndex: 1 }}>{card.th}</div>
           </>
         )}
