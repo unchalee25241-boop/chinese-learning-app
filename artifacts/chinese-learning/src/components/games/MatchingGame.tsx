@@ -42,18 +42,34 @@ export function MatchingGame({ words, color, mode }: Props) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {lefts.map(w => {
               const isM = matched.includes(w.zh), isSel = selL === w.zh, isW = wrong.includes(w.zh);
-              return <button key={w.zh} disabled={isM} onClick={() => !isM && setSelL(w.zh)} style={{ padding: "12px 8px", borderRadius: 14, border: `2.5px solid ${isM ? "#80D980" : isW ? "#E84040" : isSel ? color : "rgba(255,255,255,0.15)"}`, background: isM ? "#152D15" : isW ? "#2D1515" : isSel ? `${color}22` : "#1E1E30", fontWeight: 800, fontSize: 20, color: "#fff", cursor: isM ? "default" : "pointer", opacity: isM ? 0.5 : 1, transition: "all 0.2s" }}>
-                {displayZh(w)}
-                {mode === "tw" && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", fontWeight: 400 }}>{w.zhuyin}</div>}
-              </button>;
+              return (
+                <button key={w.zh} disabled={isM} onClick={() => !isM && setSelL(w.zh)}
+                  style={{ padding: "14px 8px", borderRadius: 16, border: "none", fontWeight: 800, fontSize: 22, color: "#fff", cursor: isM ? "default" : "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden",
+                    background: isM ? `linear-gradient(135deg, ${color}88, ${color}44)` : isW ? "#2D1515" : isSel ? `linear-gradient(135deg, ${color}, ${color}aa)` : `linear-gradient(135deg, ${color}33, ${color}11)`,
+                    boxShadow: isSel ? `0 4px 20px ${color}44` : "none",
+                    opacity: isM ? 0.6 : 1,
+                    border: isW ? "2px solid #E84040" : isM ? `2px solid ${color}66` : isSel ? `2px solid ${color}` : `2px solid ${color}33`,
+                  } as React.CSSProperties}>
+                  {displayZh(w)}
+                  {mode === "tw" && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", fontWeight: 400, marginTop: 2 }}>{w.zhuyin}</div>}
+                </button>
+              );
             })}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {rights.map(w => {
               const isM = matched.includes(w.zh), isSel = selR === w.zh, isW = wrong.includes(w.zh);
-              return <button key={w.zh} disabled={isM} onClick={() => !isM && selL && setSelR(w.zh)} style={{ padding: "12px 8px", borderRadius: 14, border: `2.5px solid ${isM ? "#80D980" : isW ? "#E84040" : isSel ? color : "rgba(255,255,255,0.15)"}`, background: isM ? "#152D15" : isW ? "#2D1515" : isSel ? `${color}22` : "#1E1E30", fontWeight: 600, fontSize: 13, color: "#fff", cursor: isM ? "default" : !selL ? "not-allowed" : "pointer", opacity: isM ? 0.5 : !selL ? 0.6 : 1, transition: "all 0.2s" }}>
-                {w.th}
-              </button>;
+              return (
+                <button key={w.zh} disabled={isM} onClick={() => !isM && selL && setSelR(w.zh)}
+                  style={{ padding: "14px 8px", borderRadius: 16, border: "none", fontWeight: 600, fontSize: 13, color: "#fff", cursor: isM ? "default" : !selL ? "not-allowed" : "pointer", transition: "all 0.2s",
+                    background: isM ? `linear-gradient(135deg, ${color}88, ${color}44)` : isW ? "#2D1515" : isSel ? `linear-gradient(135deg, ${color}, ${color}aa)` : `linear-gradient(135deg, ${color}33, ${color}11)`,
+                    boxShadow: isSel ? `0 4px 20px ${color}44` : "none",
+                    opacity: isM ? 0.6 : !selL ? 0.5 : 1,
+                    border: isW ? "2px solid #E84040" : isM ? `2px solid ${color}66` : isSel ? `2px solid ${color}` : `2px solid ${color}33`,
+                  } as React.CSSProperties}>
+                  {w.th}
+                </button>
+              );
             })}
           </div>
         </div>
