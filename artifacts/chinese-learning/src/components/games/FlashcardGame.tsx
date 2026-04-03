@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { SpeakButton } from "../shared/SpeakButton";
+import { Mode } from "../../hooks/useMode";
 
-interface Word { zh: string; zhuyin: string; pinyin: string; th: string; }
-interface Props { words: Word[]; color: string; onStudied: () => void; }
+interface Word { zh: string; zhSimplified?: string; zhuyin: string; pinyin: string; th: string; }
+interface Props { words: Word[]; color: string; onStudied: () => void; mode: Mode; }
 
-export function FlashcardGame({ words, color, onStudied }: Props) {
+export function FlashcardGame({ words, color, onStudied, mode }: Props) {
   const [idx, setIdx] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [score, setScore] = useState(0);
   const card = words[idx];
+  const displayZh = (w: Word) => mode === "cn" && w.zhSimplified ? w.zhSimplified : w.zh;
   const next = (knew: boolean) => {
     if (knew) { setScore(s => s + 1); onStudied(); }
     setFlipped(false);
@@ -34,16 +36,16 @@ export function FlashcardGame({ words, color, onStudied }: Props) {
       <div onClick={() => setFlipped(f => !f)} style={{ background: flipped ? color : "#1E1E30", border: `3px solid ${color}`, borderRadius: 24, padding: "32px 20px", textAlign: "center", cursor: "pointer", transition: "all 0.3s", boxShadow: `0 8px 28px ${color}33`, minHeight: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6 }}>
         {!flipped ? (
           <>
-            <div style={{ fontSize: 64, fontWeight: 900, color: "#fff" }}>{card.zh}</div>
-            <div style={{ fontSize: 16, color: "rgba(255,255,255,0.5)" }}>{card.zhuyin}</div>
+            <div style={{ fontSize: 64, fontWeight: 900, color: "#fff" }}>{displayZh(card)}</div>
+            {mode === "tw" && <div style={{ fontSize: 16, color: "rgba(255,255,255,0.5)" }}>{card.zhuyin}</div>}
             <div style={{ fontSize: 14, color: color, fontWeight: 600 }}>{card.pinyin}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 4 }}>แตะเพื่อดูคำตอบ 👆</div>
-            <div style={{ marginTop: 8 }}><SpeakButton text={card.zh} color={color} /></div>
+            <div style={{ marginTop: 8 }}><SpeakButton text={displayZh(card)} color={color} lang={mode === "cn" ? "zh-CN" : "zh-TW"} /></div>
           </>
         ) : (
           <>
-            <div style={{ fontSize: 44, fontWeight: 900, color: "#fff" }}>{card.zh}</div>
-            <div style={{ fontSize: 15, color: "rgba(255,255,255,0.85)" }}>{card.zhuyin}</div>
+            <div style={{ fontSize: 44, fontWeight: 900, color: "#fff" }}>{displayZh(card)}</div>
+            {mode === "tw" && <div style={{ fontSize: 15, color: "rgba(255,255,255,0.85)" }}>{card.zhuyin}</div>}
             <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", fontStyle: "italic" }}>{card.pinyin}</div>
             <div style={{ fontSize: 26, color: "#fff", fontWeight: 700, marginTop: 4 }}>{card.th}</div>
           </>
