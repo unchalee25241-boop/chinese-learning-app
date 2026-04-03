@@ -106,9 +106,9 @@ export default function App() {
         ))}
       </div>
       <div style={{ padding: "16px" }}>
-        {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} />}
-        {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} />}
-        {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} />}
+        {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)}mode={mode} />}
+        {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied}mode={mode} />}
+        {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color}mode={mode} />}
         {!isPremium && catTab !== "vocab" && cat.words.length > FREE_WORD_LIMIT && (
           <div onClick={() => setShowPremium(true)} style={{ marginTop: 16, padding: "14px", background: dark.surface, borderRadius: 16, border: "1.5px dashed #F5A623", textAlign: "center", cursor: "pointer" }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>👑 อัปเกรดเพื่อเล่นกับคำศัพท์ครบทุกคำ</div>
