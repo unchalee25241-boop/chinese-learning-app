@@ -33,24 +33,33 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
       <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 999, height: 5, marginBottom: 20 }}>
         <div style={{ background: color, width: `${(idx / words.length) * 100}%`, height: "100%", borderRadius: 999, transition: "width 0.3s" }} />
       </div>
-      <div onClick={() => setFlipped(f => !f)} style={{ background: flipped ? color : "#1E1E30", border: `3px solid ${color}`, borderRadius: 24, padding: "32px 20px", textAlign: "center", cursor: "pointer", transition: "all 0.3s", boxShadow: `0 8px 28px ${color}33`, minHeight: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6 }}>
+
+      {/* Card */}
+      <div onClick={() => setFlipped(f => !f)} style={{ background: `linear-gradient(135deg, ${color}, ${color}aa)`, borderRadius: 24, padding: "32px 20px", textAlign: "center", cursor: "pointer", transition: "all 0.3s", boxShadow: `0 8px 28px ${color}44`, minHeight: 200, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, position: "relative", overflow: "hidden" }}>
+        {/* ตัวจีนใหญ่โปร่งใส */}
+        <div style={{ position: "absolute", fontSize: 120, fontWeight: 900, color: "rgba(255,255,255,0.12)", lineHeight: 1, pointerEvents: "none" }}>
+          {displayZh(card)}
+        </div>
         {!flipped ? (
           <>
-            <div style={{ fontSize: 64, fontWeight: 900, color: "#fff" }}>{displayZh(card)}</div>
-            {mode === "tw" && <div style={{ fontSize: 16, color: "rgba(255,255,255,0.5)" }}>{card.zhuyin}</div>}
-            <div style={{ fontSize: 14, color: color, fontWeight: 600 }}>{card.pinyin}</div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 4 }}>แตะเพื่อดูคำตอบ 👆</div>
-            <div style={{ marginTop: 8 }}><SpeakButton text={displayZh(card)} color={color} lang={mode === "cn" ? "zh-CN" : "zh-TW"} /></div>
+            <div style={{ fontSize: 64, fontWeight: 900, color: "#fff", position: "relative", zIndex: 1 }}>{displayZh(card)}</div>
+            {mode === "tw" && <div style={{ fontSize: 16, color: "rgba(255,255,255,0.7)", position: "relative", zIndex: 1 }}>{card.zhuyin}</div>}
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", fontStyle: "italic", position: "relative", zIndex: 1 }}>{card.pinyin}</div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4, position: "relative", zIndex: 1 }}>แตะเพื่อดูคำตอบ 👆</div>
+            <div style={{ marginTop: 8, position: "relative", zIndex: 1 }}>
+              <SpeakButton text={displayZh(card)} color="#fff" lang={mode === "cn" ? "zh-CN" : "zh-TW"} />
+            </div>
           </>
         ) : (
           <>
-            <div style={{ fontSize: 44, fontWeight: 900, color: "#fff" }}>{displayZh(card)}</div>
-            {mode === "tw" && <div style={{ fontSize: 15, color: "rgba(255,255,255,0.85)" }}>{card.zhuyin}</div>}
-            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", fontStyle: "italic" }}>{card.pinyin}</div>
-            <div style={{ fontSize: 26, color: "#fff", fontWeight: 700, marginTop: 4 }}>{card.th}</div>
+            <div style={{ fontSize: 44, fontWeight: 900, color: "#fff", position: "relative", zIndex: 1 }}>{displayZh(card)}</div>
+            {mode === "tw" && <div style={{ fontSize: 15, color: "rgba(255,255,255,0.85)", position: "relative", zIndex: 1 }}>{card.zhuyin}</div>}
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", fontStyle: "italic", position: "relative", zIndex: 1 }}>{card.pinyin}</div>
+            <div style={{ fontSize: 28, color: "#fff", fontWeight: 700, marginTop: 4, position: "relative", zIndex: 1 }}>{card.th}</div>
           </>
         )}
       </div>
+
       {flipped && (
         <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
           <button onClick={() => next(false)} style={{ flex: 1, padding: 14, borderRadius: 14, background: "#2D1515", border: "2px solid #E84040", color: "#E84040", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>😅 ยังไม่รู้</button>
