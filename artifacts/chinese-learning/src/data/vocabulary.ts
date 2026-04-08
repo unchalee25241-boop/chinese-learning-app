@@ -5,10 +5,12 @@ export interface Word {
   zhuyin: string;
   th: string;
   pinyin: string;
-  examples?: {
+    examples?: {
     zh: string;
+    zhCN?: string;
     zhuyin: string;
     pinyin: string;
+    pinyinCN?: string;
     th: string;
   }[];
 }
