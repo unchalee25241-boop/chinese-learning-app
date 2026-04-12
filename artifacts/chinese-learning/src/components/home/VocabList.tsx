@@ -40,7 +40,7 @@ export function VocabList({ words, isPremium, color, onUpgrade, mode }: Props) {
               {w.examples.map((ex, j) => (
                 <div key={j} style={{ marginBottom: 8, background: `${color}22`, borderRadius: 10, padding: "8px 10px" }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{mode === "cn" ? (ex.zhCN ?? ex.zh) : ex.zh}</div>
-                  <div style={{ fontSize: 11, color: `${color}ee` }}>{mode === "cn" ? (ex.pinyinCN ?? ex.pinyin) : `${ex.zhuyin} • ${ex.pinyin}`}</div>
+                  <div style={{ fontSize: 11, color: color + "ee" }}>{mode === "cn" ? (ex.pinyinCN ?? ex.pinyin) : `${ex.zhuyin} • ${ex.pinyin}`}</div>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)" }}>{ex.th}</div>
                 </div>
                 <div style={{ fontSize: 11, color: `${color}ee` }}>{mode === "cn" ? (ex.pinyinCN ?? ex.pinyin) : `${ex.zhuyin} • ${ex.pinyin}`}</div>
