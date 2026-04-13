@@ -5,16 +5,16 @@ import { Mode } from "../../hooks/useMode";
 
 interface Example { zh: string; zhCN?: string; zhuyin: string; pinyin: string; pinyinCN?: string; th: string; }
 interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; pinyin: string; pinyinCN?: string; th: string; examples?: Example[]; }
-interface Props { words: Word[]; isPremium: boolean; color: string; onUpgrade: () => void; mode: Mode; }
+interface Props { words: Word[]; isPremium: boolean; color: string; onUpgrade: () => void; mode: Mode; onView?: (word: string) => void; }
 
-export function VocabList({ words, isPremium, color, onUpgrade, mode }: Props) {
+export function VocabList({ words, isPremium, color, onUpgrade, mode, onView }: Props) {
   const visible = isPremium ? words : words.slice(0, FREE_WORD_LIMIT);
   const locked = isPremium ? [] : words.slice(FREE_WORD_LIMIT);
   return (
     <div>
-      {visible.map((w, i) => (
-        <div key={i} style={{ background: `linear-gradient(135deg, ${color}22, ${color}11)`, borderRadius: 18, padding: "16px 16px", border: `2px solid ${color}66`, marginBottom: 10, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", right: 60, top: "50%", transform: "translateY(-50%)", fontSize: 56, fontWeight: 900, color: color + "20", lineHeight: 1, pointerEvents: "none" }}>
+            {visible.map((w, i) => (
+        <div key={i} onMouseEnter={() => onView?.(w.zh)} onClick={() => onView?.(w.zh)} style={{ background: `linear-gradient(135deg, ${color}22, ${color}11)`, borderRadius: 18, padding: "16px 16px", border: `2px solid ${color}66`, marginBottom: 10, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", right: 60, top: "50%", transform: "translateY(-50%)", fontSize: 56, fontWeight: 900, color: color + "20", lineHeight: 1, pointerEvents: "none" }}>
             {mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
