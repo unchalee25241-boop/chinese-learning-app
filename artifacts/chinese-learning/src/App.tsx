@@ -8,7 +8,7 @@ import { MatchingGame } from "./components/games/MatchingGame";
 import { AIChatbot } from "./components/chat/AIChatbot";
 import { PremiumModal } from "./components/modals/PremiumModal";
 import { useMode } from "./hooks/useMode";
-import { ModeToggle } from "./components/shared/ModeToggle";
+import { ModeToggle } from "./components/shared/ModeToggle"; import { useProgress } from "./hooks/useProgress";
 
 const dark = {
   bg: "#12121E", card: "#1E1E30", surface: "#252538",
@@ -25,7 +25,7 @@ export default function App() {
   const { streak, markStudied } = useStreak();
   const { mode, toggleMode } = useMode();
 
-  const cat = categories.find(c => c.id === activeCat);
+  const cat = categories.find(c => c.id === activeCat);   const { markWord, getCount } = useProgress();
 
   const searchResults = searchQuery.trim().length > 0
     ? categories.flatMap(c =>
