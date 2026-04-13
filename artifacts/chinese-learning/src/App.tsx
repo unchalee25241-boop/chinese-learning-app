@@ -141,8 +141,17 @@ export default function App() {
                     <span style={{ background: "rgba(255,255,255,0.25)", color: "#fff", borderRadius: 999, padding: "2px 10px", fontSize: 11, fontWeight: 700 }}>ฟรี {Math.min(FREE_WORD_LIMIT, c.words.length)} คำ</span>
                     <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 11, marginLeft: 6 }}>/ ทั้งหมด {c.words.length} คำ</span>
                   </div>
+                  <div style={{ marginTop: 8 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.7)" }}>เรียนแล้ว</span>
+                      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.9)", fontWeight: 700 }}>{getCount(c.id)}/{c.words.length}</span>
+                    </div>
+                    <div style={{ background: "rgba(0,0,0,0.25)", borderRadius: 999, height: 5, overflow: "hidden" }}>
+                      <div style={{ height: "100%", borderRadius: 999, background: "rgba(255,255,255,0.9)", width: `${Math.min(100, (getCount(c.id) / c.words.length) * 100)}%`, transition: "width 0.4s ease" }} />
+                    </div>
+                  </div>
                 </div>
-                <div style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 16, flexShrink: 0 }}>›</div>
+                <div style={{ width: 30,height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 16, flexShrink: 0 }}>›</div>
               </button>
             ))}
           </div>
@@ -185,7 +194,7 @@ export default function App() {
         ))}
       </div>
       <div style={{ padding: "16px" }}>
-        {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} mode={mode} />}
+        {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} mode={mode} onView={(word) => markWord(cat.id, word)} />}
         {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} mode={mode} />}
         {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
         {!isPremium && catTab !== "vocab" && cat.words.length > FREE_WORD_LIMIT && (
