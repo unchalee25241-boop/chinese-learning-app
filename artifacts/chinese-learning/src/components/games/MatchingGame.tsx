@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Mode } from "../../hooks/useMode";
+
 interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; th: string; }
 interface Props { words: Word[]; color: string; mode: Mode; }
 
@@ -42,7 +43,8 @@ export function MatchingGame({ words, color, mode }: Props) {
   const [matched, setMatched] = useState<string[]>([]);
   const [wrong, setWrong] = useState<string[]>([]);
   const [tries, setTries] = useState(0);
-    useEffect(() => {
+
+  useEffect(() => {
     if (selL && selR) {
       setTries(t => t + 1);
       if (selL === selR) { playSound(true); setMatched(m => [...m, selL]); setSelL(null); setSelR(null); }
