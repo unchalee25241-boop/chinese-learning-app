@@ -8,27 +8,32 @@ interface Props { words: Word[]; color: string; onStudied: () => void; mode: Mod
 export function FlashcardGame({ words, color, onStudied, mode }: Props) {
   const [idx, setIdx] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [score, setScore] = useState(0);
   const card = words[idx];
   const displayZh = (w: Word) => mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh;
-  const next = (knew: boolean) => {
-    if (knew) { setScore(s => s + 1); onStudied(); }
+
+  const next = () => {
+    onStudied();
     setFlipped(false);
-    setTimeout(() => setIdx(i => i + 1), 150);
+    setTimeout(() => setIdx(i => Math.min(i + 1, words.length)), 150);
   };
+  const prev = () => {
+    setFlipped(false);
+    setTimeout(() => setIdx(i => Math.max(i - 1, 0)), 150);
+  };
+
   if (idx >= words.length) return (
     <div style={{ textAlign: "center", padding: "40px 20px" }}>
       <div style={{ fontSize: 60 }}>🎉</div>
       <div style={{ fontSize: 26, fontWeight: 800, color: "#fff", margin: "12px 0 4px" }}>จบแล้วค่ะ!</div>
-      <div style={{ color: "rgba(255,255,255,0.5)", marginBottom: 24 }}>จำได้ {score}/{words.length} คำ</div>
-      <button onClick={() => { setIdx(0); setScore(0); setFlipped(false); }} style={{ padding: "12px 32px", borderRadius: 999, background: color, color: "#fff", border: "none", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>เล่นอีกครั้ง</button>
+      <div style={{ color: "rgba(255,255,255,0.5)", marginBottom: 24 }}>ดูครบ {words.length} คำแล้ว</div>
+      <button onClick={() => { setIdx(0); setFlipped(false); }} style={{ padding: "12px 32px", borderRadius: 999, background: color, color: "#fff", border: "none", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>เล่นอีกครั้ง</button>
     </div>
   );
+
   return (
     <div style={{ padding: "8px 0" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
         <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>{idx + 1}/{words.length}</span>
-        <span style={{ color: color, fontWeight: 700, fontSize: 13 }}>⭐ {score}</span>
       </div>
       <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 999, height: 5, marginBottom: 20 }}>
         <div style={{ background: color, width: `${(idx / words.length) * 100}%`, height: "100%", borderRadius: 999, transition: "width 0.3s" }} />
@@ -57,12 +62,16 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
         )}
       </div>
 
-      {flipped && (
-        <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-          <button onClick={() => next(false)} style={{ flex: 1, padding: 14, borderRadius: 14, background: "#2D1515", border: "2px solid #E84040", color: "#E84040", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>😅 ยังไม่รู้</button>
-          <button onClick={() => next(true)} style={{ flex: 1, padding: 14, borderRadius: 14, background: "#152D15", border: "2px solid #80D980", color: "#80D980", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>✅ รู้แล้ว!</button>
-        </div>
-      )}
+      <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+        <button onClick={prev} disabled={idx === 0}
+          style={{ flex: 1, padding: 14, borderRadius: 14, background: idx === 0 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.1)", border: "2px solid rgba(255,255,255,0.2)", color: idx === 0 ? "rgba(255,255,255,0.3)" : "#fff", fontWeight: 700, fontSize: 14, cursor: idx === 0 ? "not-allowed" : "pointer" }}>
+          ← ย้อนกลับ
+        </button>
+        <button onClick={next}
+          style={{ flex: 1, padding: 14, borderRadius: 14, background: color, border: "none", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+          ถัดไป →
+        </button>
+      </div>
     </div>
   );
 }
