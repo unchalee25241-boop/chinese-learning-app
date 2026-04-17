@@ -42,11 +42,11 @@ export function MatchingGame({ words, color, mode }: Props) {
   const [matched, setMatched] = useState<string[]>([]);
   const [wrong, setWrong] = useState<string[]>([]);
   const [tries, setTries] = useState(0);
-
-  useEffect(() => {
+    useEffect(() => {
+    if (selL && selR) {
+      setTries(t => t + 1);
       if (selL === selR) { playSound(true); setMatched(m => [...m, selL]); setSelL(null); setSelR(null); }
       else { playSound(false); setWrong([selL, selR]); setTimeout(() => { setWrong([]); setSelL(null); setSelR(null); }, 600); }
-
     }
   }, [selL, selR]);
 
