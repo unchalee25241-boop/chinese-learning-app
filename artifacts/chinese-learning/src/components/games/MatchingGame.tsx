@@ -1,8 +1,29 @@
 import { useState, useEffect } from "react";
 import { Mode } from "../../hooks/useMode";
-
 interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; th: string; }
 interface Props { words: Word[]; color: string; mode: Mode; }
+
+function playSound(correct: boolean) {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    if (correct) {
+      osc.frequency.setValueAtTime(523, ctx.currentTime);
+      osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    } else {
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.setValueAtTime(200, ctx.currentTime + 0.1);
+    }
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch {}
+}
 
 function getPool(words: Word[], used: string[]): Word[] {
   const remaining = words.filter(w => !used.includes(w.zh));
@@ -23,10 +44,9 @@ export function MatchingGame({ words, color, mode }: Props) {
   const [tries, setTries] = useState(0);
 
   useEffect(() => {
-    if (selL && selR) {
-      setTries(t => t + 1);
-      if (selL === selR) { setMatched(m => [...m, selL]); setSelL(null); setSelR(null); }
-      else { setWrong([selL, selR]); setTimeout(() => { setWrong([]); setSelL(null); setSelR(null); }, 600); }
+      if (selL === selR) { playSound(true); setMatched(m => [...m, selL]); setSelL(null); setSelR(null); }
+      else { playSound(false); setWrong([selL, selR]); setTimeout(() => { setWrong([]); setSelL(null); setSelR(null); }, 600); }
+
     }
   }, [selL, selR]);
 
