@@ -4,7 +4,7 @@ import { useStreak } from "./hooks/useStreak";
 import { FREE_WORD_LIMIT, FREE_MSG_LIMIT } from "./utils/constants";
 import { VocabList } from "./components/home/VocabList";
 import { FlashcardGame } from "./components/games/FlashcardGame";
-import { MatchingGame } from "./components/games/MatchingGame";
+import { MatchingGame } from "./components/games/MatchingGame"; import { QuizGame } from "./components/games/QuizGame";
 import { AIChatbot } from "./components/chat/AIChatbot";
 import { PremiumModal } from "./components/modals/PremiumModal";
 import { useMode } from "./hooks/useMode";
@@ -189,14 +189,14 @@ export default function App() {
         <h2 style={{ color: "#fff", fontSize: 26, fontWeight: 900, margin: "0 0 3px" }}>{cat.emoji} {cat.label}</h2>
       </div>
       <div style={{ display: "flex", margin: "0 16px", marginTop: 8, borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.3)" }}>
-        {[{ id: "vocab", label: "📖 คำศัพท์" }, { id: "flashcard", label: "🃏 Flashcard" }, { id: "match", label: "🎯 จับคู่" }].map(t => (
+        {[{ id: "vocab", label: "📖 คำศัพท์" }, { id: "flashcard", label: "🃏 Flashcard" }, { id: "match", label: "🎯 จับคู่" }, { id: "quiz", label: "❓ Quiz" }].map(t => (
           <button key={t.id} onClick={() => setCatTab(t.id)} style={{ flex: 1, padding: "13px 6px", border: "none", background: catTab === t.id ? cat.color : dark.card, color: catTab === t.id ? "#fff" : dark.subtext, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>{t.label}</button>
         ))}
       </div>
       <div style={{ padding: "16px" }}>
         {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} mode={mode} onView={(word) => markWord(cat.id, word)} />}
         {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} mode={mode} />}
-        {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
+        {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}         {catTab === "quiz" && <QuizGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
         {!isPremium && catTab !== "vocab" && cat.words.length > FREE_WORD_LIMIT && (
           <div onClick={() => setShowPremium(true)} style={{ marginTop: 16, padding: "14px", background: dark.surface, borderRadius: 16, border: "1.5px dashed #F5A623", textAlign: "center", cursor: "pointer" }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>👑 อัปเกรดเพื่อเล่นกับคำศัพท์ครบทุกคำ</div>
