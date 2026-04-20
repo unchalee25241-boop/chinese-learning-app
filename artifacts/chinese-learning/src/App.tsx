@@ -11,6 +11,7 @@ import { PremiumModal } from "./components/modals/PremiumModal";
 import { useMode } from "./hooks/useMode";
 import { ModeToggle } from "./components/shared/ModeToggle";
 import { BottomNav } from "./components/shared/BottomNav";
+import { PageTransition } from "./components/shared/PageTransition";
 import { useProgress } from "./hooks/useProgress";
 
 const dark = {
@@ -85,7 +86,8 @@ export default function App() {
       paddingBottom: 70,
     }}>
 
-      {/* HOME */}
+     <PageTransition screen={screen}>
+       {/* HOME */}
       {screen === "home" && (
         <div>
           <TopHeader
@@ -333,7 +335,8 @@ export default function App() {
       )}
 
       {/* Bottom Nav */}
-      <BottomNav
+      </PageTransition>
+       <BottomNav
         screen={screen}
         onNavigate={navigate}
         isPremium={isPremium}
