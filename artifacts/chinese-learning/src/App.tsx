@@ -333,9 +333,8 @@ export default function App() {
           </div>
         </div>
       )}
-
-      {/* Bottom Nav */}
       </PageTransition>
+      {/* Bottom Nav */}
        <BottomNav
         screen={screen}
         onNavigate={navigate}
