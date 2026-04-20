@@ -107,7 +107,7 @@ export default function App() {
 
           <div style={{ padding: "16px 16px 32px" }}>
             {/* Streak Card */}
-            <div style={{
+            <div className="streak-card" style={{
               background: "linear-gradient(135deg,#27AE60,#2ECC71)",
               borderRadius: 20, padding: "16px 20px",
               display: "flex", alignItems: "center", gap: 14,
@@ -195,7 +195,7 @@ export default function App() {
                 <div style={{ color: dark.subtext, fontSize: 12, fontWeight: 700, letterSpacing: 1, marginBottom: 10, textTransform: "uppercase" }}>หมวดคำศัพท์</div>
                 {categories.map(c => (
                   <button key={c.id}
-                    onClick={() => { setActiveCat(c.id); setCatTab("vocab"); setScreen("category"); }}
+                    className="cat-card" onClick={() => { setActiveCat(c.id); setCatTab("vocab"); setScreen("category"); }}
                     style={{
                       width: "100%", background: c.color, borderRadius: 20,
                       padding: "18px 18px", display: "flex", alignItems: "center",
