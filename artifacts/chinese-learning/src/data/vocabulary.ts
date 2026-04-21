@@ -176,9 +176,6 @@ export const categories: Category[] = [
       { zh: "你的號碼是多少", zhSimplified: "你的号码是多少", zhuyin: "ㄋㄧˇ ㄉㄜ ㄏㄠˋ ㄇㄚˇ ㄕˋ ㄉㄨㄛ ㄕㄠˇ", th: "เบอร์ของคุณคืออะไร", pinyin: "nǐ de hào mǎ shì duō shǎo" },
     ],
   },
-
-    ],
-  },
   {
     id: "love", label: "ความรัก", emoji: "💕", color: "#FF6B8A", bg: "#FFF0F4",
     words: [
@@ -263,9 +260,6 @@ export const categories: Category[] = [
       { zh: "你懂我", zhSimplified: "你懂我", zhuyin: "ㄋㄧˇ ㄉㄨㄥˇ ㄨㄛˇ", th: "คุณเข้าใจฉัน", pinyin: "nǐ dǒng wǒ", examples: [{ zh: "只有你懂我，謝謝你", zhCN: "只有你懂我，谢谢你", zhuyin: "ㄓˇ ㄧㄡˇ ㄋㄧˇ ㄉㄨㄥˇ ㄨㄛˇ ㄒㄧㄝˋ ㄒㄧㄝˋ ㄋㄧˇ", pinyin: "zhǐ yǒu nǐ dǒng wǒ, xiè xiè nǐ", th: "มีแค่คุณคนเดียวที่เข้าใจฉัน ขอบคุณนะ" }] },
       { zh: "吵架了", zhSimplified: "吵架了", zhuyin: "ㄔㄠˇ ㄐㄧㄚˋ ㄌㄜ", th: "ทะเลาะกันแล้ว", pinyin: "chǎo jià le", examples: [{ zh: "我們昨天吵架了，我很難過", zhCN: "我们昨天吵架了，我很难过", zhuyin: "ㄨㄛˇ ㄇㄣ ㄗㄨㄛˊ ㄊㄧㄢ ㄔㄠˇ ㄐㄧㄚˋ ㄌㄜ ㄨㄛˇ ㄏㄣˇ ㄋㄢˊ ㄍㄨㄛˋ", pinyin: "wǒ men zuó tiān chǎo jià le, wǒ hěn nán guò", th: "เราทะเลาะกันเมื่อวาน ฉันเสียใจมาก" }] },
       { zh: "和好了", zhSimplified: "和好了", zhuyin: "ㄏㄜˊ ㄏㄠˇ ㄌㄜ", th: "ดีกันแล้ว", pinyin: "hé hǎo le", examples: [{ zh: "我們和好了，比以前更好了", zhCN: "我们和好了，比以前更好了", zhuyin: "ㄨㄛˇ ㄇㄣ ㄏㄜˊ ㄏㄠˇ ㄌㄜ ㄅㄧˇ ㄧˇ ㄑㄧㄢˊ ㄍㄥˋ ㄏㄠˇ ㄌㄜ", pinyin: "wǒ men hé hǎo le, bǐ yǐ qián gèng hǎo le", th: "เราดีกันแล้ว ดีกว่าเดิมด้วย" }] },
-    ],
-  },
-
   ],
   },
   {
