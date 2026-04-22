@@ -12,7 +12,7 @@ import { useMode } from "./hooks/useMode";
 import { ModeToggle } from "./components/shared/ModeToggle";
 import { BottomNav } from "./components/shared/BottomNav";
 import { PageTransition } from "./components/shared/PageTransition";
-import { useProgress } from "./hooks/useProgress";
+import { useProgress } from "./hooks/useProgress"; import { StatsScreen } from "./components/home/StatsScreen";
 
 const dark = {
   bg: "#12121E", card: "#1E1E30", surface: "#252538",
@@ -28,7 +28,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const { streak, markStudied } = useStreak();
   const { mode, toggleMode } = useMode();
-  const { markWord, getCount } = useProgress();
+  const { markWord, getCount, getTotalStudied, getMasteryStats } = useProgress();
 
   const cat = categories.find(c => c.id === activeCat);
 
@@ -310,8 +310,14 @@ export default function App() {
         </div>
       )}
 
+            {/* STATS */}
+      {screen === "stats" && (
+        <StatsScreen onClose={() => setScreen("home")} />
+      )}
+
       {/* CHAT */}
       {screen === "chat" && (
+
         <div style={{ height: "calc(100vh - 70px)", display: "flex", flexDirection: "column" }}>
           <div style={{ background: "linear-gradient(135deg,#6C3AE8,#E8433A)", padding: "44px 16px 16px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
