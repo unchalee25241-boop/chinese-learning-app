@@ -1,6 +1,10 @@
 import { useState, useCallback } from "react";
 
 const STORAGE_KEY = "ec_progress";
+const MASTERY_KEY = "ec_mastery";
+
+// mastery: 0=ยังไม่รู้, 1=กำลังเรียน, 2=เชี่ยวชาญ
+export type MasteryLevel = 0 | 1 | 2;
 
 function loadProgress(): Record<string, Set<string>> {
   try {
@@ -8,9 +12,7 @@ function loadProgress(): Record<string, Set<string>> {
     if (!raw) return {};
     const parsed = JSON.parse(raw) as Record<string, string[]>;
     return Object.fromEntries(Object.entries(parsed).map(([k, v]) => [k, new Set(v)]));
-  } catch {
-    return {};
-  }
+  } catch { return {}; }
 }
 
 function saveProgress(data: Record<string, Set<string>>) {
@@ -18,8 +20,20 @@ function saveProgress(data: Record<string, Set<string>>) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
 }
 
+function loadMastery(): Record<string, MasteryLevel> {
+  try {
+    const raw = localStorage.getItem(MASTERY_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveMastery(data: Record<string, MasteryLevel>) {
+  localStorage.setItem(MASTERY_KEY, JSON.stringify(data));
+}
+
 export function useProgress() {
   const [progress, setProgress] = useState<Record<string, Set<string>>>(loadProgress);
+  const [mastery, setMastery] = useState<Record<string, MasteryLevel>>(loadMastery);
 
   const markWord = useCallback((catId: string, word: string) => {
     setProgress(prev => {
@@ -35,5 +49,47 @@ export function useProgress() {
     return progress[catId]?.size ?? 0;
   }, [progress]);
 
-  return { markWord, getCount };
+  const getTotalStudied = useCallback(() => {
+    return Object.values(progress).reduce((sum, s) => sum + s.size, 0);
+  }, [progress]);
+
+  const setMasteryLevel = useCallback((word: string, level: MasteryLevel) => {
+    setMastery(prev => {
+      const next = { ...prev, [word]: level };
+      saveMastery(next);
+      return next;
+    });
+  }, []);
+
+  const getMasteryLevel = useCallback((word: string): MasteryLevel => {
+    return mastery[word] ?? 0;
+  }, [mastery]);
+
+  const getMasteryStats = useCallback((words: string[]) => {
+    const unknown = words.filter(w => (mastery[w] ?? 0) === 0).length;
+    const learning = words.filter(w => (mastery[w] ?? 0) === 1).length;
+    const expert = words.filter(w => (mastery[w] ?? 0) === 2).length;
+    return { unknown, learning, expert };
+  }, [mastery]);
+
+  const getDailyStats = useCallback(() => {
+    try {
+      const raw = localStorage.getItem("ec_daily_stats");
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  }, []);
+
+  const markDailyStudy = useCallback((count: number) => {
+    const today = new Date().toISOString().split("T")[0];
+    const stats = (() => { try { return JSON.parse(localStorage.getItem("ec_daily_stats") ?? "{}"); } catch { return {}; } })();
+    stats[today] = (stats[today] ?? 0) + count;
+    localStorage.setItem("ec_daily_stats", JSON.stringify(stats));
+  }, []);
+
+  return {
+    markWord, getCount, getTotalStudied,
+    setMasteryLevel, getMasteryLevel, getMasteryStats,
+    getDailyStats, markDailyStudy,
+    progress, mastery,
+  };
 }
