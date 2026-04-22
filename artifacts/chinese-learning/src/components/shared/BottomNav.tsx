@@ -10,9 +10,11 @@ interface Props {
 const tabs = [
   { id: "home", label: "หน้าหลัก", icon: "🏠" },
   { id: "category", label: "หมวด", icon: "📚" },
+  { id: "stats", label: "สถิติ", icon: "📊" },
   { id: "chat", label: "AI ครู", icon: "🤖" },
   { id: "premium", label: "Premium", icon: "👑" },
 ];
+
 
 export function BottomNav({ screen, onNavigate, isPremium, onUpgrade }: Props) {
   const [pressed, setPressed] = useState<string | null>(null);
