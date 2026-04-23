@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Mode } from "../../hooks/useMode";
 
 interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; pinyin: string; pinyinCN?: string; th: string; }
-interface Props { words: Word[]; color: string; mode: Mode; }
+interface Props { words: Word[]; color: string; mode: Mode; onMastery?: (word: string, level: 1 | 2) => void; }
 
 const QUIZ_SIZE = 10;
 const TIME_PER_Q = 15;
@@ -40,7 +40,7 @@ function buildQuestions(words: Word[], mode: Mode) {
   });
 }
 
-export function QuizGame({ words, color, mode }: Props) {
+export function QuizGame({ words, color, mode, onMastery }: Props) {
   const [questions, setQuestions] = useState(() => buildQuestions(words, mode));
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
