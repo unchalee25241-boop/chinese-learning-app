@@ -3,9 +3,9 @@ import { SpeakButton } from "../shared/SpeakButton";
 import { Mode } from "../../hooks/useMode";
 
 interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; pinyin: string; pinyinCN?: string; th: string; }
-interface Props { words: Word[]; color: string; onStudied: () => void; mode: Mode; }
+interface Props { words: Word[]; color: string; onStudied: () => void; mode: Mode; onMastery?: (word: string, level: 1 | 2) => void; }
 
-export function FlashcardGame({ words, color, onStudied, mode }: Props) {
+export function FlashcardGame({ words, color, onStudied, mode, onMastery }: Props) {
   const [idx, setIdx] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [known, setKnown] = useState(0);
@@ -14,9 +14,11 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
   const card = words[idx];
   const displayZh = (w: Word) => mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh;
 
-  const handleKnown = () => {
+    const handleKnown = () => {
     onStudied();
+    onMastery?.(card.zh, 2);
     setKnown(k => k + 1);
+
     setFlipped(false);
     setTimeout(() => {
       if (idx + 1 >= words.length) setShowResult(true);
@@ -24,8 +26,10 @@ export function FlashcardGame({ words, color, onStudied, mode }: Props) {
     }, 150);
   };
 
-  const handleUnknown = () => {
+   const handleUnknown = () => {
+    onMastery?.(card.zh, 1);
     setUnknown(u => u + 1);
+
     setFlipped(false);
     setTimeout(() => {
       if (idx + 1 >= words.length) setShowResult(true);
