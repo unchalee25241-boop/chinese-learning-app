@@ -28,7 +28,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const { streak, markStudied } = useStreak();
   const { mode, toggleMode } = useMode();
-  const { markWord, getCount, getTotalStudied, getMasteryStats } = useProgress();
+  const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel } = useProgress();
 
   const cat = categories.find(c => c.id === activeCat);
 
@@ -297,9 +297,9 @@ export default function App() {
 
           <div style={{ padding: "16px" }}>
             {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} mode={mode} onView={(word) => markWord(cat.id, word)} />}
-            {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} mode={mode} />}
+            {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} mode={mode} onMastery={(word, level) => setMasteryLevel(word, level)} />}
             {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
-            {catTab === "quiz" && <QuizGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
+            {catTab === "quiz" && <QuizGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} onMastery={(word, level) => setMasteryLevel(word, level)} />}
             {!isPremium && catTab !== "vocab" && cat.words.length > FREE_WORD_LIMIT && (
               <div onClick={() => setShowPremium(true)}
                 style={{ marginTop: 16, padding: "14px", background: dark.surface, borderRadius: 16, border: "1.5px dashed #F5A623", textAlign: "center", cursor: "pointer" }}>
