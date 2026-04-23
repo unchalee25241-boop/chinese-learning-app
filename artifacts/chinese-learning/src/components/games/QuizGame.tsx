@@ -76,17 +76,21 @@ export function QuizGame({ words, color, mode, onMastery }: Props) {
     clearInterval(timerRef.current);
     setSelected(choice);
     const isCorrect = choice === q.answer;
-    if (isCorrect) {
+       if (isCorrect) {
       playSound(true);
+      onMastery?.(q.word.zh, 2);
       const bonus = timeLeft > 10 ? 15 : timeLeft > 5 ? 10 : 5;
+
       setScore(s => s + bonus);
       const newStreak = streak + 1;
       setStreak(newStreak);
       setMaxStreak(m => Math.max(m, newStreak));
-    } else {
+         } else {
       playSound(false);
+      onMastery?.(q.word.zh, 1);
       setStreak(0);
     }
+
     setResults(r => [...r, isCorrect]);
     setTimeout(() => {
       if (idx + 1 >= questions.length) setDone(true);
