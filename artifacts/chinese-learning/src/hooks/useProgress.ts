@@ -3,7 +3,6 @@ import { useState, useCallback } from "react";
 const STORAGE_KEY = "ec_progress";
 const MASTERY_KEY = "ec_mastery";
 
-// mastery: 0=ยังไม่รู้, 1=กำลังเรียน, 2=เชี่ยวชาญ
 export type MasteryLevel = 0 | 1 | 2;
 
 function loadProgress(): Record<string, Set<string>> {
@@ -34,6 +33,12 @@ function saveMastery(data: Record<string, MasteryLevel>) {
 export function useProgress() {
   const [progress, setProgress] = useState<Record<string, Set<string>>>(loadProgress);
   const [mastery, setMastery] = useState<Record<string, MasteryLevel>>(loadMastery);
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
+    try {
+      const raw = localStorage.getItem("ec_favorites");
+      return raw ? new Set(JSON.parse(raw)) : new Set();
+    } catch { return new Set(); }
+  });
 
   const markWord = useCallback((catId: string, word: string) => {
     setProgress(prev => {
@@ -86,10 +91,25 @@ export function useProgress() {
     localStorage.setItem("ec_daily_stats", JSON.stringify(stats));
   }, []);
 
+  const toggleFavorite = useCallback((word: string) => {
+    setFavorites(prev => {
+      const next = new Set(prev);
+      if (next.has(word)) next.delete(word);
+      else next.add(word);
+      localStorage.setItem("ec_favorites", JSON.stringify([...next]));
+      return next;
+    });
+  }, []);
+
+  const isFavorite = useCallback((word: string) => {
+    return favorites.has(word);
+  }, [favorites]);
+
   return {
     markWord, getCount, getTotalStudied,
     setMasteryLevel, getMasteryLevel, getMasteryStats,
     getDailyStats, markDailyStudy,
+    toggleFavorite, isFavorite, favorites,
     progress, mastery,
   };
 }
