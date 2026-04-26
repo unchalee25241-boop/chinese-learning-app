@@ -1,20 +1,14 @@
-const CACHE_NAME = 'easy-chinese-v1';
+const CACHE_NAME = "easy-chinese-v1";
+const STATIC_ASSETS = ["/", "/index.html"];
 
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-];
-
-// Install — cache หน้าหลัก
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
 });
 
-// Activate — ลบ cache เก่า
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
@@ -25,22 +19,17 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch — Network First, fallback to cache
-self.addEventListener('fetch', (event) => {
-  // ข้าม TTS proxy และ API calls
+self.addEventListener("fetch", (event) => {
   if (
-    event.request.url.includes('tts-proxy') ||
-    event.request.url.includes('anthropic') ||
-    event.request.url.includes('api.') ||
-    event.request.method !== 'GET'
-  ) {
-    return;
-  }
+    event.request.url.includes("tts-proxy") ||
+    event.request.url.includes("anthropic") ||
+    event.request.url.includes("api.") ||
+    event.request.method !== "GET"
+  ) return;
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // cache response ใหม่
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
