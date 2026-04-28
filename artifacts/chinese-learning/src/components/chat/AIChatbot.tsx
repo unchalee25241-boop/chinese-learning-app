@@ -19,8 +19,7 @@ export function AIChatbot({ isPremium, onUpgrade }: Props) {
     try {
       const res = await fetch("https://ai-proxy.unchalee25241.workers.dev", {
         method: "POST",
-        headers: { "Content-Type": "application/json","anthropic-version": "2023-06-01"
-  "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: "คุณคือครูสอนภาษาจีนสำหรับนักเรียนไทย ตอบเป็นภาษาไทยเสมอ แสดงตัวอักษรจีน จู้อิน พินอิน และคำแปลไทยในคำตอบ ใช้ emoji ให้สนุก ตอบกระชับ 3-4 ประโยค", messages: messages.slice(1).concat([{ role: "user", content: text }]).map(m => ({ role: m.role, content: m.content })) })
       });
       const data = await res.json();
