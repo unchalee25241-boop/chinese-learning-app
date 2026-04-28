@@ -52,7 +52,7 @@ export function AIChatbot({ isPremium, onUpgrade }: Props) {
           <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
             <span style={{ fontSize: 24 }}>🤖</span>
             <div style={{ padding: "11px 16px", borderRadius: "18px 18px 18px 4px", background: "#1E1E30", border: "1.5px solid rgba(255,255,255,0.08)" }}>
-              {[0,1,2].map(i => <span key={i} style={{ display: "inline-block", width: 6, height: 6, background: "rgba(255,255,255,0.3)", borderRadius: "50%", margin: "0 2px", animation: `bounce 0.9s ${i*0.2}s infinite` }} />)}
+              {[0,1,2].map(i => <span key={i} style={{ display: "inline-block", width: 6, height: 6, background: "rgba(255,255,255,0.3)", borderRadius: "50%", margin: "0 2px", animation: `bounce 0.9s ${i*0.2}s infinite ease-in-out` }} />)}
             </div>
           </div>
         )}
