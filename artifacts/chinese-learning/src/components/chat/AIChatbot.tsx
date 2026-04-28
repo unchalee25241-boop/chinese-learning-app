@@ -23,7 +23,7 @@ export function AIChatbot({ isPremium, onUpgrade }: Props) {
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: "คุณคือครูสอนภาษาจีนสำหรับนักเรียนไทย ตอบเป็นภาษาไทยเสมอ แสดงตัวอักษรจีน จู้อิน พินอิน และคำแปลไทยในคำตอบ ใช้ emoji ให้สนุก ตอบกระชับ 3-4 ประโยค", messages: messages.slice(1).concat([{ role: "user", content: text }]).map(m => ({ role: m.role, content: m.content })) })
       });
       const data = await res.json();
-      setMessages(p => [...p, { role: "assistant", content: data.content?.[0]?.text || "ขอโทษค่ะ ลองใหม่นะคะ" }]);
+      setMessages(p => [...p, { role: "assistant", content: data.content?.[0]?.text || "Error: " + JSON.stringify(data) }]);
     } catch(err: any) { setMessages(p => [...p, { role: "assistant", content: "Error: " + err.message }]); }
     finally { setLoading(false); }
   };
