@@ -79,12 +79,21 @@ export default function App() {
     </div>
   );
 
+    if (loading) return (
+    <div style={{ minHeight: "100vh", background: dark.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ color: "#fff", fontSize: 24 }}>🀄</div>
+    </div>
+  );
+
+  if (!user) return <AuthModal onClose={() => {}} />;
+
   return (
     <div style={{
       minHeight: "100vh", background: dark.bg,
       fontFamily: "'Noto Sans TC','Noto Sans Thai',sans-serif",
       paddingBottom: 70,
     }}>
+
 
      <PageTransition screen={screen}>
        {/* HOME */}
