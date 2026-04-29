@@ -1,4 +1,4 @@
-import { useState } from "react"; import { useAuth } from "./hooks/useAuth"; import { AuthModal } from "./components/auth/AuthModal";
+import { useState } from "react"; import { useAuth } from "./hooks/useAuth"; import { AuthModal } from "./components/auth/AuthModal"; import { supabase } from "./lib/supabase";
 import { categories } from "./data/vocabulary";
 import { useStreak } from "./hooks/useStreak";
 import { FREE_WORD_LIMIT, FREE_MSG_LIMIT } from "./utils/constants";
@@ -30,7 +30,7 @@ export default function App() {
   const { mode, toggleMode } = useMode();
   const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel } = useProgress();
 
-  const cat = categories.find(c => c.id === activeCat);
+  const cat = categories.find(c => c.id === activeCat);    const handleLogout = async () => {     await supabase.auth.signOut();   };
 
   const navigate = (s: string) => {
     if (s === "category") {
@@ -68,16 +68,20 @@ export default function App() {
             background: "rgba(255,255,255,0.2)", borderRadius: 999,
             padding: "5px 14px", display: "flex", alignItems: "center", gap: 6,
           }}>
-            <span>🔥</span>
+                      <span>🔥</span>
             <span style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>
               {streak.currentStreak}
             </span>
           </div>
+          <button onClick={handleLogout} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 999, padding: "5px 12px", color: "#fff", fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>
+            ออก
+          </button>
         </div>
       </div>
       <ModeToggle mode={mode} onToggle={toggleMode} />
     </div>
   );
+  
 
     if (loading) return (
     <div style={{ minHeight: "100vh", background: dark.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
