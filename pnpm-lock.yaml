@@ -220,6 +220,11 @@ importers:
         version: 3.1.0
 
   artifacts/chinese-learning:
+      dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.49.4
+        version: 2.49.4
+
     devDependencies:
       '@hookform/resolvers':
         specifier: ^3.10.0
