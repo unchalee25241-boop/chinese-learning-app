@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { supabase } from "../lib/supabase";
 
 const STORAGE_KEY = "ec_progress";
 const MASTERY_KEY = "ec_mastery";
@@ -40,12 +41,55 @@ export function useProgress() {
     } catch { return new Set(); }
   });
 
+  // Sync from Supabase on mount
+  useEffect(() => {
+    const syncFromSupabase = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("user_progress")
+        .select("category_id, word_id, mastery_level")
+        .eq("user_id", user.id);
+
+      if (!data || data.length === 0) return;
+
+      const newProgress: Record<string, Set<string>> = {};
+      const newMastery: Record<string, MasteryLevel> = {};
+
+      data.forEach(row => {
+        if (!newProgress[row.category_id]) newProgress[row.category_id] = new Set();
+        newProgress[row.category_id].add(row.word_id);
+        newMastery[row.word_id] = row.mastery_level as MasteryLevel;
+      });
+
+      setProgress(newProgress);
+      setMastery(newMastery);
+      saveProgress(newProgress);
+      saveMastery(newMastery);
+    };
+
+    syncFromSupabase();
+  }, []);
+
   const markWord = useCallback((catId: string, word: string) => {
     setProgress(prev => {
       const next = { ...prev, [catId]: new Set(prev[catId] ?? []) };
       if (next[catId].has(word)) return prev;
       next[catId].add(word);
       saveProgress(next);
+
+      // Sync to Supabase
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (!user) return;
+        supabase.from("user_progress").upsert({
+          user_id: user.id,
+          category_id: catId,
+          word_id: word,
+          mastery_level: 0,
+        }, { onConflict: "user_id,category_id,word_id" });
+      });
+
       return next;
     });
   }, []);
@@ -62,6 +106,16 @@ export function useProgress() {
     setMastery(prev => {
       const next = { ...prev, [word]: level };
       saveMastery(next);
+
+      // Sync to Supabase
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (!user) return;
+        supabase.from("user_progress")
+          .update({ mastery_level: level })
+          .eq("user_id", user.id)
+          .eq("word_id", word);
+      });
+
       return next;
     });
   }, []);
