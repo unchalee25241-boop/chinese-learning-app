@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"; import { useAuth } from "./hooks/useAuth"; import { AuthModal } from "./components/auth/AuthModal";
 import { categories } from "./data/vocabulary";
 import { useStreak } from "./hooks/useStreak";
 import { FREE_WORD_LIMIT, FREE_MSG_LIMIT } from "./utils/constants";
@@ -26,7 +26,7 @@ export default function App() {
   const [isPremium, setIsPremium] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { streak, markStudied } = useStreak();
+  const { user, loading } = useAuth();   const [showAuth, setShowAuth] = useState(false);   const { streak, markStudied } = useStreak();
   const { mode, toggleMode } = useMode();
   const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel } = useProgress();
 
@@ -348,7 +348,7 @@ export default function App() {
         onUpgrade={() => setShowPremium(true)}
       />
 
-      {showPremium && (
+      {showAuth && (         <AuthModal onClose={() => setShowAuth(false)} />       )}        {showPremium && (
         <PremiumModal
           onClose={() => setShowPremium(false)}
           onUpgrade={() => { setIsPremium(true); setShowPremium(false); }}
