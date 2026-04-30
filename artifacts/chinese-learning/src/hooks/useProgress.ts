@@ -88,10 +88,8 @@ export function useProgress() {
           category_id: catId,
           word_id: word,
           mastery_level: 0,
-        }, { onConflict: "user_id,category_id,word_id" }).then(({ error }) => {
-          if (error) alert("❌ Error: " + error.message);
-          else alert("✅ Saved! user: " + user.id);
-        });
+                }, { onConflict: "user_id,category_id,word_id" });
+
       });
 
       return next;
