@@ -45,29 +45,23 @@ export function useProgress() {
     const syncFromSupabase = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-
       const { data } = await supabase
         .from("user_progress")
         .select("category_id, word_id, mastery_level")
         .eq("user_id", user.id);
-
       if (!data || data.length === 0) return;
-
       const newProgress: Record<string, Set<string>> = {};
       const newMastery: Record<string, MasteryLevel> = {};
-
       data.forEach(row => {
         if (!newProgress[row.category_id]) newProgress[row.category_id] = new Set();
         newProgress[row.category_id].add(row.word_id);
         newMastery[row.word_id] = row.mastery_level as MasteryLevel;
       });
-
       setProgress(newProgress);
       setMastery(newMastery);
       saveProgress(newProgress);
       saveMastery(newMastery);
     };
-
     syncFromSupabase();
   }, []);
 
@@ -77,20 +71,15 @@ export function useProgress() {
       if (next[catId].has(word)) return prev;
       next[catId].add(word);
       saveProgress(next);
-
       supabase.auth.getUser().then(({ data: { user } }) => {
-        if (!user) {
-        return;
-        }
+        if (!user) return;
         supabase.from("user_progress").upsert({
           user_id: user.id,
           category_id: catId,
           word_id: word,
           mastery_level: 0,
-                }, { onConflict: "user_id,category_id,word_id" });
-
+        }, { onConflict: "user_id,category_id,word_id" });
       });
-
       return next;
     });
   }, []);
@@ -107,7 +96,6 @@ export function useProgress() {
     setMastery(prev => {
       const next = { ...prev, [word]: level };
       saveMastery(next);
-
       supabase.auth.getUser().then(({ data: { user } }) => {
         if (!user) return;
         supabase.from("user_progress")
@@ -115,7 +103,6 @@ export function useProgress() {
           .eq("user_id", user.id)
           .eq("word_id", word);
       });
-
       return next;
     });
   }, []);
