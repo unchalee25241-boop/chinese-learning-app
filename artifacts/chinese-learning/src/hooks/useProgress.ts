@@ -80,8 +80,7 @@ export function useProgress() {
 
       supabase.auth.getUser().then(({ data: { user } }) => {
         if (!user) {
-          alert("❌ No user found!");
-          return;
+        return;
         }
         supabase.from("user_progress").upsert({
           user_id: user.id,
