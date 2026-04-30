@@ -41,7 +41,6 @@ export function useProgress() {
     } catch { return new Set(); }
   });
 
-  // Sync from Supabase on mount
   useEffect(() => {
     const syncFromSupabase = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -79,15 +78,20 @@ export function useProgress() {
       next[catId].add(word);
       saveProgress(next);
 
-      // Sync to Supabase
       supabase.auth.getUser().then(({ data: { user } }) => {
-        if (!user) return;
+        if (!user) {
+          alert("❌ No user found!");
+          return;
+        }
         supabase.from("user_progress").upsert({
           user_id: user.id,
           category_id: catId,
           word_id: word,
           mastery_level: 0,
-        }, { onConflict: "user_id,category_id,word_id" });
+        }, { onConflict: "user_id,category_id,word_id" }).then(({ error }) => {
+          if (error) alert("❌ Error: " + error.message);
+          else alert("✅ Saved! user: " + user.id);
+        });
       });
 
       return next;
@@ -107,7 +111,6 @@ export function useProgress() {
       const next = { ...prev, [word]: level };
       saveMastery(next);
 
-      // Sync to Supabase
       supabase.auth.getUser().then(({ data: { user } }) => {
         if (!user) return;
         supabase.from("user_progress")
