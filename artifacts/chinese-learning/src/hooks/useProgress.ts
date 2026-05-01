@@ -78,7 +78,7 @@ export function useProgress() {
           category_id: catId,
           word_id: word,
           mastery_level: 0,
-        }, { onConflict: "user_id,category_id,word_id" });
+        }, { onConflict: "user_id,category_id,word_id", ignoreDuplicates: false });
       });
       return next;
     });
