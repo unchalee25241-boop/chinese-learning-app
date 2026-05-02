@@ -20,7 +20,10 @@ export function VocabList({ words, isPremium, color, onUpgrade, mode, onView }: 
       {visible.map((w, i) => {
         const fav = isFavorite(w.zh);
         return (
-          <div key={i} onMouseEnter={() => onView?.(w.zh)} onClick={() => onView?.(w.zh)}
+          <div key={i}
+            onMouseEnter={() => onView?.(w.zh)}
+            onTouchStart={() => onView?.(w.zh)}
+            onClick={() => onView?.(w.zh)}
             style={{ background: `linear-gradient(135deg, ${color}22, ${color}11)`, borderRadius: 18, padding: "16px 16px", border: `2px solid ${color}66`, marginBottom: 10, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", right: 60, top: "50%", transform: "translateY(-50%)", fontSize: 56, fontWeight: 900, color: color + "20", lineHeight: 1, pointerEvents: "none" }}>
               {mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh}
