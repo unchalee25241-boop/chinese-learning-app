@@ -49,7 +49,7 @@ export function useProgress() {
         .from("user_progress")
         .select("category_id, word_id, mastery_level")
         .eq("user_id", user.id);
-      if (error) { console.error("[progress sync]", error.message); return; }
+      if (error) { console.error("[progress sync]", error.message); alert("[sync error] " + error.message); return; }
       if (!data || data.length === 0) return;
       const newProgress: Record<string, Set<string>> = {};
       const newMastery: Record<string, MasteryLevel> = {};
