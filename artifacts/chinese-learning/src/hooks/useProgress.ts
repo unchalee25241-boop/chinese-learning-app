@@ -45,10 +45,11 @@ export function useProgress() {
     const syncFromSupabase = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("user_progress")
         .select("category_id, word_id, mastery_level")
         .eq("user_id", user.id);
+      if (error) { console.error("[progress sync]", error.message); return; }
       if (!data || data.length === 0) return;
       const newProgress: Record<string, Set<string>> = {};
       const newMastery: Record<string, MasteryLevel> = {};
@@ -78,7 +79,8 @@ export function useProgress() {
           category_id: catId,
           word_id: word,
           mastery_level: 0,
-        }, { onConflict: "user_id,category_id,word_id", ignoreDuplicates: false });
+        }, { onConflict: "user_id,category_id,word_id", ignoreDuplicates: true })
+          .then(({ error }) => { if (error) console.error("[progress upsert]", error.message); });
       });
       return next;
     });
@@ -99,9 +101,10 @@ export function useProgress() {
       supabase.auth.getUser().then(({ data: { user } }) => {
         if (!user) return;
         supabase.from("user_progress")
-          .update({ mastery_level: level })
+          .update({ mastery_level: level, updated_at: new Date().toISOString() })
           .eq("user_id", user.id)
-          .eq("word_id", word);
+          .eq("word_id", word)
+          .then(({ error }) => { if (error) console.error("[mastery update]", error.message); });
       });
       return next;
     });
