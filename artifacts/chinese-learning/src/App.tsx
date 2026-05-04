@@ -28,7 +28,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, loading } = useAuth();   const [showAuth, setShowAuth] = useState(false);   const { streak, markStudied } = useStreak();
   const { mode, toggleMode } = useMode();
-  const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel } = useProgress();
+  const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel, markDailyStudy } = useProgress();
 
   const cat = categories.find(c => c.id === activeCat);    const handleLogout = async () => {     await supabase.auth.signOut();   };
 
@@ -358,7 +358,7 @@ export default function App() {
           </div>
 
           <div style={{ padding: "16px" }}>
-            {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} mode={mode} onView={(word) => markWord(cat.id, word)} />}
+            {catTab === "vocab" && <VocabList words={cat.words} isPremium={isPremium} color={cat.color} onUpgrade={() => setShowPremium(true)} mode={mode} onView={(word) => { markWord(cat.id, word); markDailyStudy(1); }} />}
             {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} mode={mode} onMastery={(word, level) => setMasteryLevel(word, level)} />}
             {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
             {catTab === "quiz" && <QuizGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} onMastery={(word, level) => setMasteryLevel(word, level)} />}
