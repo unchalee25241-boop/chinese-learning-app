@@ -139,8 +139,57 @@ export default function App() {
               </div>
             </div>
 
+                        {/* Daily Mission Card */}
+            {(() => {
+              const VOCAB_GOAL = 5;
+              const QUIZ_GOAL = 1;
+              const todayKey = new Date().toISOString().split("T")[0];
+              const dailyStats = (() => { try { return JSON.parse(localStorage.getItem("ec_daily_stats") ?? "{}"); } catch { return {}; } })();
+              const wordsToday = dailyStats[todayKey] ?? 0;
+              const vocabDone = wordsToday >= VOCAB_GOAL;
+              const quizDone = streak.studiedToday;
+              const allDone = vocabDone && quizDone;
+              return (
+                <div style={{
+                  background: allDone ? "linear-gradient(135deg,#27AE60,#2ECC71)" : dark.card,
+                  borderRadius: 20, padding: "14px 18px", marginBottom: 18,
+                  border: allDone ? "none" : `1.5px solid rgba(255,255,255,0.1)`,
+                  boxShadow: allDone ? "0 4px 20px rgba(39,174,96,0.3)" : "none",
+                }}>
+                  <div style={{ color: allDone ? "#fff" : "#F5A623", fontWeight: 800, fontSize: 13, marginBottom: 10 }}>
+                    {allDone ? "✅ ภารกิจวันนี้สำเร็จแล้ว!" : "🎯 ภารกิจวันนี้"}
+                  </div>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <div style={{
+                      flex: 1, background: vocabDone ? "rgba(255,255,255,0.25)" : dark.surface,
+                      borderRadius: 12, padding: "10px 12px",
+                      border: vocabDone ? "none" : "1.5px solid rgba(255,255,255,0.07)",
+                    }}>
+                      <div style={{ fontSize: 18, marginBottom: 2 }}>{vocabDone ? "✅" : "📖"}</div>
+                      <div style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>ดูคำศัพท์</div>
+                      <div style={{ color: vocabDone ? "rgba(255,255,255,0.8)" : dark.subtext, fontSize: 11, marginTop: 2 }}>
+                        {Math.min(wordsToday, VOCAB_GOAL)}/{VOCAB_GOAL} คำ
+                      </div>
+                    </div>
+                    <div style={{
+                      flex: 1, background: quizDone ? "rgba(255,255,255,0.25)" : dark.surface,
+                      borderRadius: 12, padding: "10px 12px",
+                      border: quizDone ? "none" : "1.5px solid rgba(255,255,255,0.07)",
+                    }}>
+                      <div style={{ fontSize: 18, marginBottom: 2 }}>{quizDone ? "✅" : "❓"}</div>
+                      <div style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>เล่น Quiz</div>
+                      <div style={{ color: quizDone ? "rgba(255,255,255,0.8)" : dark.subtext, fontSize: 11, marginTop: 2 }}>
+                        {quizDone ? "1/1 รอบ" : "0/1 รอบ"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Search Bar */}
             <div style={{ position: "relative", marginBottom: 18 }}>
+
               <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18, pointerEvents: "none" }}>🔍</span>
               <input
                 type="text"
