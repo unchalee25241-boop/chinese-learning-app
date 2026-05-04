@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Mode } from "../../hooks/useMode";
 
 interface Word { zh: string; zhSimplified?: string; zhCN?: string; zhuyin: string; pinyin: string; pinyinCN?: string; th: string; }
-interface Props { words: Word[]; color: string; mode: Mode; onMastery?: (word: string, level: 1 | 2) => void; }
+interface Props { words: Word[]; color: string; mode: Mode; onMastery?: (word: string, level: 1 | 2) => void; onStudied?: () => void; }
 
 const QUIZ_SIZE = 10;
 const TIME_PER_Q = 15;
@@ -40,7 +40,7 @@ function buildQuestions(words: Word[], mode: Mode) {
   });
 }
 
-export function QuizGame({ words, color, mode, onMastery }: Props) {
+export function QuizGame({ words, color, mode, onMastery, onStudied }: Props) {
   const [questions, setQuestions] = useState(() => buildQuestions(words, mode));
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -93,9 +93,10 @@ export function QuizGame({ words, color, mode, onMastery }: Props) {
 
     setResults(r => [...r, isCorrect]);
     setTimeout(() => {
-      if (idx + 1 >= questions.length) setDone(true);
+      if (idx + 1 >= questions.length) { setDone(true); onStudied?.(); }
       else { setIdx(i => i + 1); setSelected(null); }
     }, 1000);
+
   };
 
   const restart = () => {
