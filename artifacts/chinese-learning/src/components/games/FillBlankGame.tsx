@@ -24,18 +24,39 @@ export function FillBlankGame({ words, color, mode }: Props) {
   const [hint, setHint] = useState(false);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(15);
+  const [totalTime, setTotalTime] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setOrder(shuffle(words.map((_, i) => i)));
     setIndex(0); setScore(0); setDone(false);
     setInput(""); setStatus("idle"); setHint(false);
+    setTimeLeft(15); setTotalTime(0);
   }, [words]);
 
   useEffect(() => {
     setInput(""); setStatus("idle"); setHint(false);
+    setTimeLeft(15);
     setTimeout(() => inputRef.current?.focus(), 100);
   }, [index]);
+
+  useEffect(() => {
+    if (done || status !== "idle") return;
+    if (timeLeft <= 0) {
+      setStatus("wrong");
+      setTimeout(() => {
+        if (index + 1 >= Math.min(words.length, 10)) setDone(true);
+        else setIndex(i => i + 1);
+      }, 1200);
+      return;
+    }
+    const t = setTimeout(() => {
+      setTimeLeft(s => s - 1);
+      setTotalTime(s => s + 1);
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [timeLeft, status, done, index]);
 
   if (order.length === 0) return null;
   const total = Math.min(words.length, 10);
@@ -44,7 +65,6 @@ export function FillBlankGame({ words, color, mode }: Props) {
 
   const zh = mode === "cn" ? (current.zhCN ?? current.zhSimplified ?? current.zh) : current.zh;
   const reading = mode === "cn" ? current.pinyin : current.zhuyin;
-  const answer = current.th.trim().toLowerCase();
 
   const normalize = (s: string) =>
     s.trim().toLowerCase().replace(/\s+/g, "").replace(/[/\-,.!?()ๆ]/g, "");
@@ -61,7 +81,7 @@ export function FillBlankGame({ words, color, mode }: Props) {
 
   const handleSubmit = () => {
     if (status !== "idle") return;
-    const sim = similarity(input, answer);
+    const sim = similarity(input, current.th);
     const isCorrect = sim >= 0.75;
     setStatus(isCorrect ? "correct" : "wrong");
     if (isCorrect) setScore(s => s + 1);
@@ -80,41 +100,79 @@ export function FillBlankGame({ words, color, mode }: Props) {
     }, 1200);
   };
 
-  const restart = () => {
+  const restartShuffle = () => {
     setOrder(shuffle(words.map((_, i) => i)));
     setIndex(0); setScore(0); setDone(false);
     setInput(""); setStatus("idle"); setHint(false);
+    setTimeLeft(15); setTotalTime(0);
+  };
+
+  const restartSame = () => {
+    setOrder(words.map((_, i) => i));
+    setIndex(0); setScore(0); setDone(false);
+    setInput(""); setStatus("idle"); setHint(false);
+    setTimeLeft(15); setTotalTime(0);
   };
 
   if (done) {
     const pct = Math.round((score / total) * 100);
     const emoji = pct === 100 ? "🏆" : pct >= 70 ? "🎉" : pct >= 40 ? "💪" : "📚";
+    const mins = Math.floor(totalTime / 60);
+    const secs = totalTime % 60;
+    const timeStr = mins > 0 ? `${mins}:${secs.toString().padStart(2, "0")} นาที` : `${secs} วินาที`;
     return (
       <div style={{ textAlign: "center", padding: "40px 16px" }}>
         <div style={{ fontSize: 64, marginBottom: 12 }}>{emoji}</div>
-        <div style={{ fontSize: 28, fontWeight: 900, color: "#fff", marginBottom: 6 }}>{score}/{total} คะแนน</div>
-        <div style={{ fontSize: 15, color: dark.subtext, marginBottom: 28 }}>
+        <div style={{ fontSize: 28, fontWeight: 900, color: "#fff", marginBottom: 6 }}>
+          {score}/{total} คะแนน
+        </div>
+        <div style={{ fontSize: 15, color: dark.subtext, marginBottom: 6 }}>
           {pct === 100 ? "เพอร์เฟกต์! จำได้หมดเลย 🌟" : pct >= 70 ? "เก่งมาก! เกือบครบแล้ว" : pct >= 40 ? "ทำได้ดี ฝึกอีกนะ" : "ลองใหม่อีกครั้งนะ"}
         </div>
-        <button onClick={restart} style={{
-          background: color, color: "#fff", border: "none",
-          borderRadius: 16, padding: "14px 40px",
-          fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
-        }}>เล่นอีกครั้ง 🔄</button>
+        <div style={{ fontSize: 13, color: dark.subtext, marginBottom: 28 }}>
+          ⏱ ใช้เวลา {timeStr}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <button onClick={restartShuffle} style={{
+            background: color, color: "#fff", border: "none",
+            borderRadius: 16, padding: "14px 40px",
+            fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
+          }}>🔀 เล่นชุดใหม่ (สุ่ม)</button>
+          <button onClick={restartSame} style={{
+            background: dark.surface, color: "#fff",
+            border: `1.5px solid ${dark.border}`,
+            borderRadius: 16, padding: "14px 40px",
+            fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
+          }}>📋 เล่นชุดเดิมตามลำดับ</button>
+        </div>
       </div>
     );
   }
 
-  const hintText = normalize(answer).slice(0, Math.ceil(normalize(answer).length / 3));
-
   return (
     <div style={{ padding: "8px 0" }}>
-      {/* Progress */}
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+      {/* Progress + Timer */}
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
         <span style={{ color: dark.subtext, fontSize: 13, fontWeight: 700 }}>{index + 1} / {total}</span>
-        <span style={{ color: color, fontSize: 13, fontWeight: 800 }}>✨ {score} คะแนน</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{
+            color: timeLeft <= 5 ? "#E8433A" : timeLeft <= 10 ? "#F5A623" : "#27AE60",
+            fontSize: 14, fontWeight: 800,
+          }}>⏱ {timeLeft}s</span>
+          <span style={{ color: color, fontSize: 13, fontWeight: 800 }}>✨ {score} คะแนน</span>
+        </div>
       </div>
-      <div style={{ height: 6, background: dark.surface, borderRadius: 999, marginBottom: 24, overflow: "hidden" }}>
+      {/* Timer bar */}
+      <div style={{ height: 4, background: dark.surface, borderRadius: 999, marginBottom: 6, overflow: "hidden" }}>
+        <div style={{
+          height: "100%",
+          width: `${(timeLeft / 15) * 100}%`,
+          background: timeLeft <= 5 ? "#E8433A" : timeLeft <= 10 ? "#F5A623" : "#27AE60",
+          borderRadius: 999, transition: "width 1s linear, background 0.3s",
+        }} />
+      </div>
+      {/* Progress bar */}
+      <div style={{ height: 4, background: dark.surface, borderRadius: 999, marginBottom: 20, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${((index + 1) / total) * 100}%`, background: color, borderRadius: 999, transition: "width 0.3s" }} />
       </div>
 
@@ -134,7 +192,9 @@ export function FillBlankGame({ words, color, mode }: Props) {
         )}
         {hint && (
           <div style={{ marginTop: 12, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 14px", display: "inline-block" }}>
-            <span style={{ color: "#F5A623", fontSize: 13, fontWeight: 700 }}>💡 ขึ้นต้นด้วย: "{current.th.slice(0, Math.ceil(current.th.length / 3))}..."</span>
+            <span style={{ color: "#F5A623", fontSize: 13, fontWeight: 700 }}>
+              💡 ขึ้นต้นด้วย: "{current.th.slice(0, Math.ceil(current.th.length / 3))}..."
+            </span>
           </div>
         )}
       </div>
