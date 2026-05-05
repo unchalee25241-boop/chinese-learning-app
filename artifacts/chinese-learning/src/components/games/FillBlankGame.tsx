@@ -220,17 +220,51 @@ export function FillBlankGame({ words, color, mode }: Props) {
           {status === "correct" ? "✅" : status === "wrong" ? "❌" : ""}
         </span>
       </div>
-
-      {/* Show answer if wrong */}
-      {status === "wrong" && (
+        {/* Show result */}
+      {status !== "idle" && (
         <div style={{
-          background: "#E8433A22", border: "1.5px solid #E8433A55",
-          borderRadius: 12, padding: "10px 16px", marginBottom: 14, textAlign: "center",
+          background: status === "correct" ? "#27AE6022" : "#E8433A22",
+          border: `1.5px solid ${status === "correct" ? "#27AE6055" : "#E8433A55"}`,
+          borderRadius: 16, padding: "14px 16px", marginBottom: 14,
         }}>
-          <span style={{ color: dark.subtext, fontSize: 13 }}>คำตอบที่ถูก: </span>
-          <span style={{ color: "#fff", fontSize: 14, fontWeight: 800 }}>{current.th}</span>
+          {status === "wrong" && (
+            <div style={{ textAlign: "center", marginBottom: 10 }}>
+              <span style={{ color: dark.subtext, fontSize: 13 }}>คำตอบที่ถูก: </span>
+              <span style={{ color: "#fff", fontSize: 14, fontWeight: 800 }}>{current.th}</span>
+            </div>
+          )}
+          {status === "correct" && (
+            <div style={{ textAlign: "center", marginBottom: 10 }}>
+              <span style={{ color: "#2ECC71", fontSize: 14, fontWeight: 800 }}>✅ ถูกต้อง!</span>
+            </div>
+          )}
+          {/* Example sentence */}
+          {current.examples && current.examples.length > 0 && (
+            <div style={{
+              background: "rgba(255,255,255,0.05)", borderRadius: 12,
+              padding: "10px 14px",
+            }}>
+              <div style={{ fontSize: 11, color: dark.subtext, fontWeight: 700, marginBottom: 6 }}>
+                📖 ตัวอย่างประโยค
+              </div>
+              <div style={{ fontSize: 17, color: "#fff", fontWeight: 700, marginBottom: 4 }}>
+                {mode === "cn"
+                  ? (current.examples[0].zhCN ?? current.examples[0].zh)
+                  : current.examples[0].zh}
+              </div>
+              <div style={{ fontSize: 11, color: color, marginBottom: 4 }}>
+                {mode === "cn"
+                  ? current.examples[0].pinyin
+                  : `${current.examples[0].zhuyin} • ${current.examples[0].pinyin}`}
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: 600 }}>
+                {current.examples[0].th}
+              </div>
+            </div>
+          )}
         </div>
       )}
+
 
       {/* Buttons */}
       {status === "idle" && (
