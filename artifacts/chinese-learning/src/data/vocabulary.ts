@@ -597,7 +597,6 @@ export const categories: Category[] = [
       { zh: "環島旅行", zhSimplified: "环岛旅行", zhuyin: "ㄏㄨㄢˊ ㄉㄠˇ ㄌㄩˇ ㄒㄧㄥˊ", th: "ท่องเที่ยวรอบเกาะ", pinyin: "huán dǎo lǚ xíng", examples: [{ zh: "我夢想有一天可以環島旅行", zhCN: "我梦想有一天可以环岛旅行", zhuyin: "ㄨㄛˇ ㄇㄥˋ ㄒㄧㄤˇ ㄧㄡˇ ㄧˊ ㄊㄧㄢ ㄎㄜˇ ㄧˇ ㄏㄨㄢˊ ㄉㄠˇ ㄌㄩˇ ㄒㄧㄥˊ", pinyin: "wǒ mèng xiǎng yǒu yī tiān kě yǐ huán dǎo lǚ xíng", th: "ฉันฝันว่าสักวันจะได้เที่ยวรอบเกาะ" }] },
     ],
   },
-    },
   {
     id: "health", label: "สุขภาพ / โรงพยาบาล", emoji: "🏥", color: "#E53E3E", bg: "#FFF5F5",
     words: [
