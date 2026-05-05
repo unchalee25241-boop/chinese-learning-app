@@ -46,11 +46,23 @@ export function FillBlankGame({ words, color, mode }: Props) {
   const reading = mode === "cn" ? current.pinyin : current.zhuyin;
   const answer = current.th.trim().toLowerCase();
 
-  const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
+  const normalize = (s: string) =>
+    s.trim().toLowerCase().replace(/\s+/g, "").replace(/[/\-,.!?()ๆ]/g, "");
+
+  const similarity = (a: string, b: string) => {
+    const na = normalize(a);
+    const nb = normalize(b);
+    if (na === nb) return 1;
+    if (nb.includes(na) || na.includes(nb)) return 0.9;
+    let matches = 0;
+    for (const ch of na) { if (nb.includes(ch)) matches++; }
+    return matches / Math.max(na.length, nb.length);
+  };
 
   const handleSubmit = () => {
     if (status !== "idle") return;
-    const isCorrect = normalize(input) === normalize(answer);
+    const sim = similarity(input, answer);
+    const isCorrect = sim >= 0.75;
     setStatus(isCorrect ? "correct" : "wrong");
     if (isCorrect) setScore(s => s + 1);
     setTimeout(() => {
@@ -60,6 +72,7 @@ export function FillBlankGame({ words, color, mode }: Props) {
   };
 
   const handleSkip = () => {
+    if (status !== "idle") return;
     setStatus("wrong");
     setTimeout(() => {
       if (index + 1 >= total) setDone(true);
@@ -92,7 +105,7 @@ export function FillBlankGame({ words, color, mode }: Props) {
     );
   }
 
-  const hintText = answer.slice(0, Math.ceil(answer.length / 3));
+  const hintText = normalize(answer).slice(0, Math.ceil(normalize(answer).length / 3));
 
   return (
     <div style={{ padding: "8px 0" }}>
@@ -121,7 +134,7 @@ export function FillBlankGame({ words, color, mode }: Props) {
         )}
         {hint && (
           <div style={{ marginTop: 12, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 14px", display: "inline-block" }}>
-            <span style={{ color: "#F5A623", fontSize: 13, fontWeight: 700 }}>💡 ขึ้นต้นด้วย: "{hintText}..."</span>
+            <span style={{ color: "#F5A623", fontSize: 13, fontWeight: 700 }}>💡 ขึ้นต้นด้วย: "{current.th.slice(0, Math.ceil(current.th.length / 3))}..."</span>
           </div>
         )}
       </div>
@@ -143,10 +156,7 @@ export function FillBlankGame({ words, color, mode }: Props) {
             transition: "all 0.2s",
           }}
         />
-        <span style={{
-          position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)",
-          fontSize: 20,
-        }}>
+        <span style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", fontSize: 20 }}>
           {status === "correct" ? "✅" : status === "wrong" ? "❌" : ""}
         </span>
       </div>
@@ -163,34 +173,33 @@ export function FillBlankGame({ words, color, mode }: Props) {
       )}
 
       {/* Buttons */}
-      <div style={{ display: "flex", gap: 10 }}>
-        {!hint && status === "idle" && (
-          <button onClick={() => setHint(true)} style={{
-            flex: 1, padding: "14px", background: dark.surface,
-            border: `1.5px solid ${dark.border}`, borderRadius: 14,
-            color: "#F5A623", fontSize: 14, fontWeight: 700,
-            cursor: "pointer", fontFamily: "inherit",
-          }}>💡 ขอใบ้</button>
-        )}
-        {status === "idle" && (
-          <>
-            <button onClick={handleSkip} style={{
+      {status === "idle" && (
+        <div style={{ display: "flex", gap: 10 }}>
+          {!hint && (
+            <button onClick={() => setHint(true)} style={{
               flex: 1, padding: "14px", background: dark.surface,
               border: `1.5px solid ${dark.border}`, borderRadius: 14,
-              color: dark.subtext, fontSize: 14, fontWeight: 700,
+              color: "#F5A623", fontSize: 14, fontWeight: 700,
               cursor: "pointer", fontFamily: "inherit",
-            }}>ข้าม ⏭</button>
-            <button onClick={handleSubmit} disabled={!input.trim()} style={{
-              flex: 2, padding: "14px", background: input.trim() ? color : dark.surface,
-              border: "none", borderRadius: 14,
-              color: input.trim() ? "#fff" : dark.subtext,
-              fontSize: 15, fontWeight: 800,
-              cursor: input.trim() ? "pointer" : "default", fontFamily: "inherit",
-              transition: "all 0.2s",
-            }}>ตอบ ✓</button>
-          </>
-        )}
-      </div>
+            }}>💡 ขอใบ้</button>
+          )}
+          <button onClick={handleSkip} style={{
+            flex: 1, padding: "14px", background: dark.surface,
+            border: `1.5px solid ${dark.border}`, borderRadius: 14,
+            color: dark.subtext, fontSize: 14, fontWeight: 700,
+            cursor: "pointer", fontFamily: "inherit",
+          }}>ข้าม ⏭</button>
+          <button onClick={handleSubmit} disabled={!input.trim()} style={{
+            flex: 2, padding: "14px",
+            background: input.trim() ? color : dark.surface,
+            border: "none", borderRadius: 14,
+            color: input.trim() ? "#fff" : dark.subtext,
+            fontSize: 15, fontWeight: 800,
+            cursor: input.trim() ? "pointer" : "default",
+            fontFamily: "inherit", transition: "all 0.2s",
+          }}>ตอบ ✓</button>
+        </div>
+      )}
     </div>
   );
 }
