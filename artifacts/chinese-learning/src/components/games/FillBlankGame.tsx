@@ -24,7 +24,6 @@ export function FillBlankGame({ words, color, mode }: Props) {
   const [hint, setHint] = useState(false);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(15);
   const [totalTime, setTotalTime] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,31 +31,19 @@ export function FillBlankGame({ words, color, mode }: Props) {
     setOrder(shuffle(words.map((_, i) => i)));
     setIndex(0); setScore(0); setDone(false);
     setInput(""); setStatus("idle"); setHint(false);
-    setTimeLeft(15); setTotalTime(0);
+    setTotalTime(0);
   }, [words]);
 
   useEffect(() => {
     setInput(""); setStatus("idle"); setHint(false);
-    setTimeLeft(15);
     setTimeout(() => inputRef.current?.focus(), 100);
   }, [index]);
 
   useEffect(() => {
     if (done || status !== "idle") return;
-    if (timeLeft <= 0) {
-      setStatus("wrong");
-      setTimeout(() => {
-        if (index + 1 >= Math.min(words.length, 10)) setDone(true);
-        else setIndex(i => i + 1);
-      }, 1200);
-      return;
-    }
-    const t = setTimeout(() => {
-      setTimeLeft(s => s - 1);
-      setTotalTime(s => s + 1);
-    }, 1000);
+    const t = setTimeout(() => setTotalTime(s => s + 1), 1000);
     return () => clearTimeout(t);
-  }, [timeLeft, status, done, index]);
+  }, [totalTime, status, done]);
 
   if (order.length === 0) return null;
   const total = Math.min(words.length, 10);
@@ -88,7 +75,7 @@ export function FillBlankGame({ words, color, mode }: Props) {
     setTimeout(() => {
       if (index + 1 >= total) setDone(true);
       else setIndex(i => i + 1);
-    }, 1200);
+    }, 1800);
   };
 
   const handleSkip = () => {
@@ -97,29 +84,34 @@ export function FillBlankGame({ words, color, mode }: Props) {
     setTimeout(() => {
       if (index + 1 >= total) setDone(true);
       else setIndex(i => i + 1);
-    }, 1200);
+    }, 1800);
   };
 
   const restartShuffle = () => {
     setOrder(shuffle(words.map((_, i) => i)));
     setIndex(0); setScore(0); setDone(false);
     setInput(""); setStatus("idle"); setHint(false);
-    setTimeLeft(15); setTotalTime(0);
+    setTotalTime(0);
   };
 
   const restartSame = () => {
     setOrder(words.map((_, i) => i));
     setIndex(0); setScore(0); setDone(false);
     setInput(""); setStatus("idle"); setHint(false);
-    setTimeLeft(15); setTotalTime(0);
+    setTotalTime(0);
+  };
+
+  const timeStr = () => {
+    const mins = Math.floor(totalTime / 60);
+    const secs = totalTime % 60;
+    return mins > 0
+      ? `${mins}:${secs.toString().padStart(2, "0")} นาที`
+      : `${secs} วินาที`;
   };
 
   if (done) {
     const pct = Math.round((score / total) * 100);
     const emoji = pct === 100 ? "🏆" : pct >= 70 ? "🎉" : pct >= 40 ? "💪" : "📚";
-    const mins = Math.floor(totalTime / 60);
-    const secs = totalTime % 60;
-    const timeStr = mins > 0 ? `${mins}:${secs.toString().padStart(2, "0")} นาที` : `${secs} วินาที`;
     return (
       <div style={{ textAlign: "center", padding: "40px 16px" }}>
         <div style={{ fontSize: 64, marginBottom: 12 }}>{emoji}</div>
@@ -130,7 +122,7 @@ export function FillBlankGame({ words, color, mode }: Props) {
           {pct === 100 ? "เพอร์เฟกต์! จำได้หมดเลย 🌟" : pct >= 70 ? "เก่งมาก! เกือบครบแล้ว" : pct >= 40 ? "ทำได้ดี ฝึกอีกนะ" : "ลองใหม่อีกครั้งนะ"}
         </div>
         <div style={{ fontSize: 13, color: dark.subtext, marginBottom: 28 }}>
-          ⏱ ใช้เวลา {timeStr}
+          ⏱ ใช้เวลา {timeStr()}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <button onClick={restartShuffle} style={{
@@ -149,30 +141,28 @@ export function FillBlankGame({ words, color, mode }: Props) {
     );
   }
 
+  const timerDisplay = () => {
+    const mins = Math.floor(totalTime / 60);
+    const secs = totalTime % 60;
+    return mins > 0
+      ? `${mins}:${secs.toString().padStart(2, "0")}`
+      : `${totalTime}s`;
+  };
+
   return (
     <div style={{ padding: "8px 0" }}>
       {/* Progress + Timer */}
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
         <span style={{ color: dark.subtext, fontSize: 13, fontWeight: 700 }}>{index + 1} / {total}</span>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{
-            color: timeLeft <= 5 ? "#E8433A" : timeLeft <= 10 ? "#F5A623" : "#27AE60",
-            fontSize: 14, fontWeight: 800,
-          }}>⏱ {timeLeft}s</span>
+          <span style={{ color: "#27AE60", fontSize: 14, fontWeight: 800 }}>
+            ⏱ {timerDisplay()}
+          </span>
           <span style={{ color: color, fontSize: 13, fontWeight: 800 }}>✨ {score} คะแนน</span>
         </div>
       </div>
-      {/* Timer bar */}
-      <div style={{ height: 4, background: dark.surface, borderRadius: 999, marginBottom: 6, overflow: "hidden" }}>
-        <div style={{
-          height: "100%",
-          width: `${(timeLeft / 15) * 100}%`,
-          background: timeLeft <= 5 ? "#E8433A" : timeLeft <= 10 ? "#F5A623" : "#27AE60",
-          borderRadius: 999, transition: "width 1s linear, background 0.3s",
-        }} />
-      </div>
       {/* Progress bar */}
-      <div style={{ height: 4, background: dark.surface, borderRadius: 999, marginBottom: 20, overflow: "hidden" }}>
+      <div style={{ height: 5, background: dark.surface, borderRadius: 999, marginBottom: 20, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${((index + 1) / total) * 100}%`, background: color, borderRadius: 999, transition: "width 0.3s" }} />
       </div>
 
@@ -220,51 +210,24 @@ export function FillBlankGame({ words, color, mode }: Props) {
           {status === "correct" ? "✅" : status === "wrong" ? "❌" : ""}
         </span>
       </div>
-        {/* Show result */}
+
+      {/* Show result after answer */}
       {status !== "idle" && (
         <div style={{
           background: status === "correct" ? "#27AE6022" : "#E8433A22",
           border: `1.5px solid ${status === "correct" ? "#27AE6055" : "#E8433A55"}`,
-          borderRadius: 16, padding: "14px 16px", marginBottom: 14,
+          borderRadius: 16, padding: "16px", marginBottom: 14, textAlign: "center",
         }}>
-          {status === "wrong" && (
-            <div style={{ textAlign: "center", marginBottom: 10 }}>
-              <span style={{ color: dark.subtext, fontSize: 13 }}>คำตอบที่ถูก: </span>
-              <span style={{ color: "#fff", fontSize: 14, fontWeight: 800 }}>{current.th}</span>
-            </div>
-          )}
-          {status === "correct" && (
-            <div style={{ textAlign: "center", marginBottom: 10 }}>
-              <span style={{ color: "#2ECC71", fontSize: 14, fontWeight: 800 }}>✅ ถูกต้อง!</span>
-            </div>
-          )}
-          {/* Example sentence */}
-          {current.examples && current.examples.length > 0 && (
-            <div style={{
-              background: "rgba(255,255,255,0.05)", borderRadius: 12,
-              padding: "10px 14px",
-            }}>
-              <div style={{ fontSize: 11, color: dark.subtext, fontWeight: 700, marginBottom: 6 }}>
-                📖 ตัวอย่างประโยค
-              </div>
-              <div style={{ fontSize: 17, color: "#fff", fontWeight: 700, marginBottom: 4 }}>
-                {mode === "cn"
-                  ? (current.examples[0].zhCN ?? current.examples[0].zh)
-                  : current.examples[0].zh}
-              </div>
-              <div style={{ fontSize: 11, color: color, marginBottom: 4 }}>
-                {mode === "cn"
-                  ? current.examples[0].pinyin
-                  : `${current.examples[0].zhuyin} • ${current.examples[0].pinyin}`}
-              </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", fontWeight: 600 }}>
-                {current.examples[0].th}
-              </div>
-            </div>
-          )}
+          <div style={{ fontSize: 14, fontWeight: 800, color: status === "correct" ? "#2ECC71" : "#FF6B6B", marginBottom: 10 }}>
+            {status === "correct" ? "✅ ถูกต้อง!" : "❌ ไม่ถูกต้อง"}
+          </div>
+          <div style={{ fontSize: 13, color: dark.subtext, marginBottom: 4 }}>ความหมาย</div>
+          <div style={{ fontSize: 24, color: "#fff", fontWeight: 900, marginBottom: 4 }}>{current.th}</div>
+          <div style={{ fontSize: 13, color: color, fontWeight: 600 }}>
+            {mode === "cn" ? current.pinyin : `${current.zhuyin} • ${current.pinyin}`}
+          </div>
         </div>
       )}
-
 
       {/* Buttons */}
       {status === "idle" && (
