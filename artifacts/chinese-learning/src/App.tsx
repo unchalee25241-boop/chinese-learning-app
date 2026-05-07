@@ -418,7 +418,7 @@ export default function App() {
       )}
       {/* PROFILE */}
       {screen === "profile" && (
-        <ProfileScreen isPremium={isPremium} onUpgrade={() => setShowPremium(true)} />
+        <ProfileScreen isPremium={isPremium} onUpgrade={() => setShowPremium(true)} onLogout={handleLogout} />
       )}
 
             {/* STATS */}
