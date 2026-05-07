@@ -104,16 +104,25 @@ export function ProfileScreen({ onUpgrade, isPremium, onLogout }: Props) {
         </div>
 
         {/* Upgrade button if not premium */}
-        {!isPremium && (
+                {!isPremium && (
           <button onClick={onUpgrade} style={{
             width: "100%", background: "linear-gradient(135deg,#F5A623,#E8433A)",
             borderRadius: 20, padding: "16px", border: "none", cursor: "pointer",
             color: "#fff", fontSize: 16, fontWeight: 800, fontFamily: "inherit",
-            boxShadow: "0 4px 16px rgba(245,166,35,0.4)",
+            boxShadow: "0 4px 16px rgba(245,166,35,0.4)", marginBottom: 12,
           }}>
             👑 อัปเกรดเป็น Premium
           </button>
         )}
+        <button onClick={onLogout} style={{
+          width: "100%", background: "transparent",
+          borderRadius: 20, padding: "14px", border: "1.5px solid rgba(255,255,255,0.15)",
+          cursor: "pointer", color: "rgba(255,255,255,0.5)",
+          fontSize: 15, fontWeight: 700, fontFamily: "inherit",
+        }}>
+          ออกจากระบบ
+        </button>
+
       </div>
     </div>
   );
