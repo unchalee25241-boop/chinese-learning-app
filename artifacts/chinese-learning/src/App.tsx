@@ -73,9 +73,6 @@ export default function App() {
               {streak.currentStreak}
             </span>
           </div>
-          <button onClick={handleLogout} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 999, padding: "5px 12px", color: "#fff", fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>
-            ออก
-          </button>
         </div>
       </div>
       <ModeToggle mode={mode} onToggle={toggleMode} />
