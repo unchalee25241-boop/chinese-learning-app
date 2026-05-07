@@ -28,7 +28,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, loading } = useAuth();   const [showAuth, setShowAuth] = useState(false);   const { streak, markStudied } = useStreak();
   const { mode, toggleMode } = useMode();
-  const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel, markDailyStudy } = useProgress();
+  const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel, markDailyStudy, mastery } = useProgress();   const reviewWords = categories.flatMap(c => c.words).filter(w => (mastery[w.zh] ?? 0) < 2);
 
   const cat = categories.find(c => c.id === activeCat);    const handleLogout = async () => {     await supabase.auth.signOut();   };
 
@@ -187,8 +187,27 @@ export default function App() {
               );
             })()}
 
+                  {/* Review Card */}
+            {reviewWords.length > 0 && (
+              <button onClick={() => setScreen("review")}
+                style={{
+                  width: "100%", background: dark.card, borderRadius: 20,
+                  padding: "14px 18px", marginBottom: 18, border: "1.5px solid rgba(108,58,232,0.4)",
+                  display: "flex", alignItems: "center", gap: 14, cursor: "pointer",
+                  boxShadow: "0 4px 16px rgba(108,58,232,0.2)", textAlign: "left",
+                }}>
+                <div style={{ width: 44, height: 44, borderRadius: 14, background: "linear-gradient(135deg,#6C3AE8,#9B59B6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🔁</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>ทบทวนคำที่ยังไม่แม่น</div>
+                  <div style={{ color: "#9B59B6", fontSize: 12, marginTop: 2, fontWeight: 600 }}>{reviewWords.length} คำรอทบทวน</div>
+                </div>
+                <div style={{ color: "#fff", fontSize: 20, opacity: 0.5 }}>›</div>
+              </button>
+            )}
+
             {/* Search Bar */}
             <div style={{ position: "relative", marginBottom: 18 }}>
+
 
               <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 18, pointerEvents: "none" }}>🔍</span>
               <input
@@ -374,8 +393,33 @@ export default function App() {
         </div>
       )}
 
+      {/* REVIEW */}
+      {screen === "review" && (
+        <div>
+          <div style={{ background: "linear-gradient(135deg,#6C3AE8,#9B59B6)", padding: "44px 16px 16px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div>
+                <div style={{ color: "#fff", fontWeight: 900, fontSize: 20 }}>🔁 ทบทวนคำที่ยังไม่แม่น</div>
+                <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 12, marginTop: 2 }}>{reviewWords.length} คำรอทบทวน</div>
+              </div>
+              <button onClick={() => setScreen("home")} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 999, padding: "6px 14px", color: "#fff", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>← กลับ</button>
+            </div>
+          </div>
+          <div style={{ padding: 16 }}>
+            {reviewWords.length > 0
+              ? <QuizGame key="review" words={reviewWords.slice(0, 20)} color="#6C3AE8" mode={mode} onMastery={(word, level) => setMasteryLevel(word, level)} onStudied={markStudied} />
+              : <div style={{ textAlign: "center", padding: 40 }}>
+                  <div style={{ fontSize: 40 }}>🎉</div>
+                  <div style={{ color: "#fff", fontWeight: 700, marginTop: 12 }}>ไม่มีคำรอทบทวนแล้ว!</div>
+                </div>
+            }
+          </div>
+        </div>
+      )}
+
             {/* STATS */}
       {screen === "stats" && (
+
         <StatsScreen onClose={() => setScreen("home")} />
       )}
 
