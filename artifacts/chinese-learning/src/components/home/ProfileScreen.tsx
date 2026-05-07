@@ -4,9 +4,9 @@ import { useStreak } from "../../hooks/useStreak";
 import { useProgress } from "../../hooks/useProgress";
 import { categories } from "../../data/vocabulary";
 
-interface Props { onUpgrade: () => void; isPremium: boolean; }
+interface Props { onUpgrade: () => void; isPremium: boolean; onLogout: () => void; }
 
-export function ProfileScreen({ onUpgrade, isPremium }: Props) {
+export function ProfileScreen({ onUpgrade, isPremium, onLogout }: Props) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const { streak } = useStreak();
