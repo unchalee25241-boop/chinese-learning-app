@@ -12,7 +12,7 @@ import { useMode } from "./hooks/useMode";
 import { ModeToggle } from "./components/shared/ModeToggle";
 import { BottomNav } from "./components/shared/BottomNav";
 import { PageTransition } from "./components/shared/PageTransition";
-import { useProgress } from "./hooks/useProgress"; import { StatsScreen } from "./components/home/StatsScreen";
+import { useProgress } from "./hooks/useProgress"; import { StatsScreen } from "./components/home/StatsScreen"; import { ProfileScreen } from "./components/home/ProfileScreen";
 
 const dark = {
   bg: "#12121E", card: "#1E1E30", surface: "#252538",
@@ -416,9 +416,14 @@ export default function App() {
           </div>
         </div>
       )}
+      {/* PROFILE */}
+      {screen === "profile" && (
+        <ProfileScreen isPremium={isPremium} onUpgrade={() => setShowPremium(true)} />
+      )}
 
             {/* STATS */}
       {screen === "stats" && (
+
 
         <StatsScreen onClose={() => setScreen("home")} />
       )}
