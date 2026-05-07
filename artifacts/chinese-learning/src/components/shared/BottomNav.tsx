@@ -12,7 +12,7 @@ const tabs = [
   { id: "category", label: "หมวด", icon: "📚" },
   { id: "stats", label: "สถิติ", icon: "📊" },
   { id: "chat", label: "AI ครู", icon: "🤖" },
-  { id: "premium", label: "Premium", icon: "👑" },
+  { id: "profile", label: "โปรไฟล์", icon: "👤" },
 ];
 
 
@@ -25,8 +25,7 @@ export function BottomNav({ screen, onNavigate, isPremium, onUpgrade }: Props) {
   const handlePress = (id: string) => {
     setPressed(id);
     setTimeout(() => setPressed(null), 200);
-    if (id === "premium") onUpgrade();
-    else onNavigate(id);
+     onNavigate(id);
   };
 
   return (
