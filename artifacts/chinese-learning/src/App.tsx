@@ -1,4 +1,4 @@
-import { useState } from "react"; import { useAuth } from "./hooks/useAuth"; import { AuthModal } from "./components/auth/AuthModal"; import { supabase } from "./lib/supabase";
+import { useState, useEffect } from "react"; import { useAuth } from "./hooks/useAuth"; import { AuthModal } from "./components/auth/AuthModal"; import { supabase } from "./lib/supabase";
 import { categories } from "./data/vocabulary";
 import { useStreak } from "./hooks/useStreak";
 import { FREE_WORD_LIMIT, FREE_MSG_LIMIT } from "./utils/constants";
@@ -30,7 +30,7 @@ export default function App() {
   const { mode, toggleMode } = useMode();
   const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel, markDailyStudy, mastery } = useProgress();   const reviewWords = categories.flatMap(c => c.words).filter(w => (mastery[w.zh] ?? 0) < 2);
 
-  const cat = categories.find(c => c.id === activeCat);    const handleLogout = async () => {     await supabase.auth.signOut();   };
+  const cat = categories.find(c => c.id === activeCat);    useEffect(() => {     const params = new URLSearchParams(window.location.search);     const premiumStatus = params.get("premium");     const sessionId = params.get("session_id");     if (premiumStatus === "success" && sessionId) {       fetch("https://ai-proxy.unchalee25241.workers.dev/verify-session", {         method: "POST",         headers: { "Content-Type": "application/json" },         body: JSON.stringify({ sessionId }),       })         .then(r => r.json())         .then(session => {           if (session.payment_status === "paid" || session.status === "complete") {             setIsPremium(true);             localStorage.setItem("ec_premium", "true");             window.history.replaceState({}, "", "/");             alert("🎉 ยินดีต้อนรับสู่ Premium!");           }         })         .catch(() => {});     }     if (localStorage.getItem("ec_premium") === "true") {       setIsPremium(true);     }   }, []);    const handleLogout = async () => {     await supabase.auth.signOut(); localStorage.removeItem("ec_premium");  };
 
   const navigate = (s: string) => {
     if (s === "category") {
