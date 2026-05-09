@@ -114,6 +114,30 @@ export function ProfileScreen({ onUpgrade, isPremium, onLogout }: Props) {
             👑 อัปเกรดเป็น Premium
           </button>
         )}
+                {isPremium && (
+          <button onClick={async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            const res = await fetch("https://ai-proxy.unchalee25241.workers.dev/create-portal-session", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                customerId: user?.user_metadata?.stripe_customer_id ?? "",
+                returnUrl: window.location.origin,
+              }),
+            });
+            const portal = await res.json();
+            if (portal.url) window.location.href = portal.url;
+            else alert("ไม่พบข้อมูล Subscription กรุณาติดต่อ support");
+          }} style={{
+            width: "100%", background: "linear-gradient(135deg,#6C3AE8,#9B59B6)",
+            borderRadius: 20, padding: "14px", border: "none",
+            cursor: "pointer", color: "#fff",
+            fontSize: 15, fontWeight: 700, fontFamily: "inherit",
+            marginBottom: 12,
+          }}>
+            ⚙️ จัดการ Subscription
+          </button>
+        )}
         <button onClick={onLogout} style={{
           width: "100%", background: "transparent",
           borderRadius: 20, padding: "14px", border: "1.5px solid rgba(255,255,255,0.15)",
@@ -122,6 +146,7 @@ export function ProfileScreen({ onUpgrade, isPremium, onLogout }: Props) {
         }}>
           ออกจากระบบ
         </button>
+
 
       </div>
     </div>
