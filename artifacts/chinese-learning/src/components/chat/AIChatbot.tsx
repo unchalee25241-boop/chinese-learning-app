@@ -7,7 +7,7 @@ export function AIChatbot({ isPremium, onUpgrade }: Props) {
   const [messages, setMessages] = useState([{ role: "assistant", content: "สวัสดีค่ะ! 你好! 😊\nฉันคือครู AI สอนภาษาจีนค่ะ\n\nถามได้เลยนะคะ เช่น\n- คำว่า 謝謝 แปลว่าอะไร?\n- ช่วยสร้างประโยคตัวอย่าง\n- วรรณยุกต์จีนมีกี่เสียง?" }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [msgCount, setMsgCount] = useState(0);
+  const [msgCount, setMsgCount] = useState(() => {     try { return parseInt(localStorage.getItem("ec_msg_count") ?? "0"); } catch { return 0; }   });
   const bottomRef = useRef<HTMLDivElement>(null);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
   const send = async () => {
@@ -15,7 +15,7 @@ export function AIChatbot({ isPremium, onUpgrade }: Props) {
     if (!isPremium && msgCount >= FREE_MSG_LIMIT) { onUpgrade(); return; }
     const text = input.trim(); setInput("");
     setMessages(p => [...p, { role: "user", content: text }]);
-    setMsgCount(c => c + 1); setLoading(true);
+    setMsgCount(c => {       const next = c + 1;       localStorage.setItem("ec_msg_count", String(next));       return next;     }); setLoading(true);
     try {
       const res = await fetch("https://ai-proxy.unchalee25241.workers.dev", {
         method: "POST",
