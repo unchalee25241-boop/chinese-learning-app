@@ -120,10 +120,11 @@ export function ProfileScreen({ onUpgrade, isPremium, onLogout }: Props) {
             const res = await fetch("https://ai-proxy.unchalee25241.workers.dev/create-portal-session", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                customerId: user?.user_metadata?.stripe_customer_id ?? "",
+                body: JSON.stringify({
+                customerId: localStorage.getItem("ec_stripe_customer_id") ?? "",
                 returnUrl: window.location.origin,
               }),
+
             });
             const portal = await res.json();
             if (portal.url) window.location.href = portal.url;
