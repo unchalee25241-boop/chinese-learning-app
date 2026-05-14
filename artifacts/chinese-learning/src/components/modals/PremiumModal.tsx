@@ -5,10 +5,11 @@ interface Props { onClose: () => void; onUpgrade: () => void; }
 
 const WORKER_URL = "https://ai-proxy.unchalee25241.workers.dev";
 const PRICES = {
-  monthly: { id: "price_1TV8tQGazoGTjdpYmSBmBfNC", mode: "subscription" },
-  yearly:  { id: "price_1TV8uUGazoGTjdpYMUk00W4T", mode: "subscription" },
-  lifetime:{ id: "price_1TV8xFGazoGTjdpYRUrqrc63", mode: "lifetime" },
+  monthly: { id: "price_1TWYEaGiLoBidsrUj2i0FuxC", mode: "subscription" },
+  yearly:  { id: "price_1TWYEVGiLoBidsrUKzUyWNtV", mode: "subscription" },
+  lifetime:{ id: "price_1TWYEWGiLoBidsrUxWv13nI1", mode: "lifetime" },
 };
+
 
 export function PremiumModal({ onClose, onUpgrade }: Props) {
   const [loading, setLoading] = useState<string | null>(null);
