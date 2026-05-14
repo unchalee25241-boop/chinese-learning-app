@@ -1,4 +1,4 @@
-export const FREE_WORD_LIMIT = 50;
+export const FREE_WORD_LIMIT = 10;
 export const FREE_MSG_LIMIT = 5;
 export const palette = {
   bg: "#FFF8F0", red: "#E8433A", gold: "#F5A623",
