@@ -126,5 +126,7 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "害蟲", zhSimplified: "害虫", zhuyin: "ㄏㄞˋ ㄔㄨㄥˊ", pinyin: "hài chóng", th: "แมลงศัตรูพืช", examples: [{ zh: "農夫要消滅害蟲", zhCN: "农夫要消灭害虫", zhuyin: "ㄋㄨㄥˊ ㄈㄨ ㄧㄠˋ ㄒㄧㄠ ㄇㄧㄝˋ ㄏㄞˋ ㄔㄨㄥˊ", pinyin: "nóng fū yào xiāo miè hài chóng", th: "ชาวนาต้องกำจัดแมลงศัตรูพืช" }] },
     ],
   },
-  // หมวดต่อไปจะ append ที่นี่...
+  { zh: "北極熊", zhSimplified: "北极熊", zhuyin: "ㄅㄟˇ ㄐㄧˊ ㄒㄩㄥˊ", pinyin: "běi jí xióng", th: "หมีขั้วโลก", examples: [{ zh: "北極熊住在很冷的地方", zhCN: "北极熊住在很冷的地方", zhuyin: "ㄅㄟˇ ㄐㄧˊ ㄒㄩㄥˊ ㄓㄨˋ ㄗㄞˋ ㄏㄣˇ ㄌㄥˇ ㄉㄜ˙ ㄉㄧˋ ㄈㄤ", pinyin: "běi jí xióng zhù zài hěn lěng de dì fāng", th: "หมีขั้วโลกอาศัยอยู่ในที่หนาวมาก" }] },       
+  { zh: "駱駝", zhSimplified: "骆驼", zhuyin: "ㄌㄨㄛˋ ㄊㄨㄛ˙", pinyin: "luò tuó", th: "อูฐ", examples: [{ zh: "駱駝能在沙漠生存", zhCN: "骆驼能在沙漠生存", zhuyin: "ㄌㄨㄛˋ ㄊㄨㄛ˙ ㄋㄥˊ ㄗㄞˋ ㄕㄚ ㄇㄛˋ ㄕㄥ ㄘㄨㄣˊ", pinyin: "luò tuó néng zài shā mò shēng cún", th: "อูฐสามารถอยู่รอดในทะเลทรายได้" }] },       
+  { zh: "大猩猩", zhSimplified: "大猩猩", zhuyin: "ㄉㄚˋ ㄒㄧㄥ ㄒㄧㄥ", pinyin: "dà xīng xīng", th: "กอริลลา", examples: [{ zh: "大猩猩力氣很大", zhCN: "大猩猩力气很大", zhuyin: "ㄉㄚˋ ㄒㄧㄥ ㄒㄧㄥ ㄌㄧˋ ㄑㄧˋ ㄏㄣˇ ㄉㄚˋ", pinyin: "dà xīng xīng lì qì hěn dà", th: "กอริลลามีพลังมาก" }] },       // หมวดต่อไปจะ append ที่นี่...
 ];
