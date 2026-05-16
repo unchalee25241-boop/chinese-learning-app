@@ -5,7 +5,9 @@ import { FREE_WORD_LIMIT, FREE_MSG_LIMIT } from "./utils/constants";
 import { VocabList } from "./components/home/VocabList";
 import { FlashcardGame } from "./components/games/FlashcardGame";
 import { MatchingGame } from "./components/games/MatchingGame";
-import { QuizGame } from "./components/games/QuizGame"; import { FillBlankGame } from "./components/games/FillBlankGame";
+import { QuizGame } from "./components/games/QuizGame"; 
+import { FillBlankGame } from "./components/games/FillBlankGame"; 
+import { WordOrderGame } from "./components/games/WordOrderGame";
 import { AIChatbot } from "./components/chat/AIChatbot";
 import { PremiumModal } from "./components/modals/PremiumModal";
 import { useMode } from "./hooks/useMode";
@@ -358,7 +360,8 @@ export default function App() {
               { id: "flashcard", label: "🃏", title: "Flashcard" },
               { id: "match", label: "🎯", title: "จับคู่" },
               { id: "quiz", label: "❓", title: "Quiz" },
-              { id: "fill", label: "✍️", title: "เติมคำ" },
+              { id: "fill", label: "✍️", title: "เติมคำ" },               
+              { id: "order", label: "🔀", title: "เรียงคำ" },
             ].map(t => (
               <button key={t.id} onClick={() => setCatTab(t.id)}
                 style={{
@@ -380,6 +383,7 @@ export default function App() {
             {catTab === "flashcard" && <FlashcardGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} onStudied={markStudied} mode={mode} onMastery={(word, level) => setMasteryLevel(word, level)} />}
             {catTab === "match" && <MatchingGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
             {catTab === "quiz" && <QuizGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} onMastery={(word, level) => setMasteryLevel(word, level)} onStudied={markStudied} />}
+            {catTab === "order" && <WordOrderGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}             
             {catTab === "fill" && <FillBlankGame key={cat.id} words={isPremium ? cat.words : cat.words.slice(0, FREE_WORD_LIMIT)} color={cat.color} mode={mode} />}
             {!isPremium && catTab !== "vocab" && cat.words.length > FREE_WORD_LIMIT && (
               <div onClick={() => setShowPremium(true)}
