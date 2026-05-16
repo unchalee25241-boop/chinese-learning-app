@@ -1,4 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+// src/components/games/FillBlankGame.tsx
+// FULL FILE REPLACEMENT
+
+import { useState, useEffect, useMemo } from "react";
 import { Word } from "../../data/vocabulary";
 
 interface Props {
@@ -16,99 +19,143 @@ function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
+interface Question {
+  sentenceZh: string;
+  sentenceTh: string;
+  answer: string;
+  answerTh: string;
+  reading: string;
+  options: string[];
+}
+
 export function FillBlankGame({ words, color, mode }: Props) {
-  const [order, setOrder] = useState<number[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [index, setIndex] = useState(0);
-  const [input, setInput] = useState("");
-  const [status, setStatus] = useState<"idle" | "correct" | "wrong">("idle");
-  const [hint, setHint] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
   const [totalTime, setTotalTime] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
+
+  const wordsWithEx = useMemo(
+    () => words.filter(w => w.examples && w.examples.length > 0),
+    [words]
+  );
+
+  const getZh = (w: Word) =>
+    mode === "cn" ? (w.zhCN ?? w.zhSimplified ?? w.zh) : w.zh;
+
+  const buildQuestions = (): Question[] => {
+    const pool = shuffle(wordsWithEx).slice(0, 10);
+    if (pool.length === 0) return [];
+
+    return pool.map((word): Question => {
+      const ex = word.examples![Math.floor(Math.random() * word.examples!.length)];
+      const answer = getZh(word);
+      const reading = mode === "cn" ? word.pinyin : word.zhuyin;
+      const sentenceZh = mode === "cn" ? (ex.zhCN ?? ex.zh) : ex.zh;
+      const sentenceTh = ex.th;
+
+      const others = shuffle(wordsWithEx.filter(w => w.zh !== word.zh)).slice(0, 3);
+      const wrongOptions = others.map(w => getZh(w));
+
+      return {
+        sentenceZh,
+        sentenceTh,
+        answer,
+        answerTh: word.th,
+        reading,
+        options: shuffle([answer, ...wrongOptions]),
+      };
+    });
+  };
 
   useEffect(() => {
-    setOrder(shuffle(words.map((_, i) => i)));
+    const qs = buildQuestions();
+    setQuestions(qs);
     setIndex(0); setScore(0); setDone(false);
-    setInput(""); setStatus("idle"); setHint(false);
-    setTotalTime(0);
-  }, [words]);
+    setSelected(null); setTotalTime(0);
+  }, [words, mode]);
 
   useEffect(() => {
-    setInput(""); setStatus("idle"); setHint(false);
-    setTimeout(() => inputRef.current?.focus(), 100);
-  }, [index]);
-
-  useEffect(() => {
-    if (done || status !== "idle") return;
+    if (done || selected !== null) return;
     const t = setTimeout(() => setTotalTime(s => s + 1), 1000);
     return () => clearTimeout(t);
-  }, [totalTime, status, done]);
+  }, [totalTime, selected, done]);
 
-  if (order.length === 0) return null;
-  const total = Math.min(words.length, 10);
-  const current = words[order[index]];
+  if (wordsWithEx.length === 0) {
+    return (
+      <div style={{ textAlign: "center", padding: "60px 20px", color: dark.subtext }}>
+        <div style={{ fontSize: 40, marginBottom: 12 }}>📭</div>
+        <div style={{ fontSize: 16, fontWeight: 700 }}>หมวดนี้ยังไม่มีประโยคตัวอย่าง</div>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) return null;
+
+  const total = questions.length;
+  const current = questions[index];
   if (!current) return null;
 
-  const zh = mode === "cn" ? (current.zhCN ?? current.zhSimplified ?? current.zh) : current.zh;
-  const reading = mode === "cn" ? current.pinyin : current.zhuyin;
-
-  const normalize = (s: string) =>
-    s.trim().toLowerCase().replace(/\s+/g, "").replace(/[/\-,.!?()ๆ]/g, "");
-
-  const similarity = (a: string, b: string) => {
-    const na = normalize(a);
-    const nb = normalize(b);
-    if (na === nb) return 1;
-    if (nb.includes(na) || na.includes(nb)) return 0.9;
-    let matches = 0;
-    for (const ch of na) { if (nb.includes(ch)) matches++; }
-    return matches / Math.max(na.length, nb.length);
-  };
-
-  const handleSubmit = () => {
-    if (status !== "idle") return;
-    const sim = similarity(input, current.th);
-    const isCorrect = sim >= 0.75;
-    setStatus(isCorrect ? "correct" : "wrong");
-    if (isCorrect) setScore(s => s + 1);
+  const handleSelect = (opt: string) => {
+    if (selected !== null) return;
+    setSelected(opt);
+    if (opt === current.answer) setScore(s => s + 1);
     setTimeout(() => {
       if (index + 1 >= total) setDone(true);
-      else setIndex(i => i + 1);
+      else { setIndex(i => i + 1); setSelected(null); }
     }, 1800);
   };
 
-  const handleSkip = () => {
-    if (status !== "idle") return;
-    setStatus("wrong");
-    setTimeout(() => {
-      if (index + 1 >= total) setDone(true);
-      else setIndex(i => i + 1);
-    }, 1800);
-  };
-
-  const restartShuffle = () => {
-    setOrder(shuffle(words.map((_, i) => i)));
+  const restart = () => {
+    const qs = buildQuestions();
+    setQuestions(qs);
     setIndex(0); setScore(0); setDone(false);
-    setInput(""); setStatus("idle"); setHint(false);
-    setTotalTime(0);
-  };
-
-  const restartSame = () => {
-    setOrder(words.map((_, i) => i));
-    setIndex(0); setScore(0); setDone(false);
-    setInput(""); setStatus("idle"); setHint(false);
-    setTotalTime(0);
+    setSelected(null); setTotalTime(0);
   };
 
   const timeStr = () => {
-    const mins = Math.floor(totalTime / 60);
-    const secs = totalTime % 60;
-    return mins > 0
-      ? `${mins}:${secs.toString().padStart(2, "0")} นาที`
-      : `${secs} วินาที`;
+    const m = Math.floor(totalTime / 60), s = totalTime % 60;
+    return m > 0 ? `${m}:${s.toString().padStart(2, "0")} นาที` : `${totalTime} วินาที`;
   };
 
+  // Render sentence with blank (hide the answer word)
+  const renderSentence = (sentence: string, answer: string, revealed: boolean, isZh: boolean) => {
+    if (!sentence.includes(answer)) {
+      // fallback: show full sentence
+      return <span style={{ color: dark.subtext }}>{sentence}</span>;
+    }
+    const idx = sentence.indexOf(answer);
+    const before = sentence.slice(0, idx);
+    const after = sentence.slice(idx + answer.length);
+    const blankWidth = isZh ? Math.max(answer.length * 28, 56) : Math.max(answer.length * 10, 60);
+
+    return (
+      <>
+        {before}
+        <span style={{
+          display: "inline-block",
+          minWidth: blankWidth,
+          borderBottom: `3px solid ${color}`,
+          marginBottom: -2,
+          paddingBottom: 1,
+          textAlign: "center",
+          color: revealed
+            ? (selected === current.answer ? "#2ECC71" : "#FF6B6B")
+            : "transparent",
+          fontWeight: 900,
+          transition: "color 0.3s",
+          background: revealed ? "transparent" : `${color}22`,
+          borderRadius: 4,
+        }}>
+          {revealed ? answer : (isZh ? "　".repeat(Math.max(answer.length, 2)) : "　　　")}
+        </span>
+        {after}
+      </>
+    );
+  };
+
+  // Done screen
   if (done) {
     const pct = Math.round((score / total) * 100);
     const emoji = pct === 100 ? "🏆" : pct >= 70 ? "🎉" : pct >= 40 ? "💪" : "📚";
@@ -119,144 +166,125 @@ export function FillBlankGame({ words, color, mode }: Props) {
           {score}/{total} คะแนน
         </div>
         <div style={{ fontSize: 15, color: dark.subtext, marginBottom: 6 }}>
-          {pct === 100 ? "เพอร์เฟกต์! จำได้หมดเลย 🌟" : pct >= 70 ? "เก่งมาก! เกือบครบแล้ว" : pct >= 40 ? "ทำได้ดี ฝึกอีกนะ" : "ลองใหม่อีกครั้งนะ"}
+          {pct === 100 ? "เพอร์เฟกต์! เลือกถูกหมดเลย 🌟"
+            : pct >= 70 ? "เก่งมาก! เกือบครบแล้ว"
+            : pct >= 40 ? "ทำได้ดี ลองฝึกอีกนะ"
+            : "ลองใหม่อีกครั้งนะ 💪"}
         </div>
         <div style={{ fontSize: 13, color: dark.subtext, marginBottom: 28 }}>
           ⏱ ใช้เวลา {timeStr()}
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <button onClick={restartShuffle} style={{
-            background: color, color: "#fff", border: "none",
-            borderRadius: 16, padding: "14px 40px",
-            fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
-          }}>🔀 เล่นชุดใหม่ (สุ่ม)</button>
-          <button onClick={restartSame} style={{
-            background: dark.surface, color: "#fff",
-            border: `1.5px solid ${dark.border}`,
-            borderRadius: 16, padding: "14px 40px",
-            fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
-          }}>📋 เล่นชุดเดิมตามลำดับ</button>
-        </div>
+        <button onClick={restart} style={{
+          background: color, color: "#fff", border: "none",
+          borderRadius: 16, padding: "14px 40px",
+          fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "inherit",
+        }}>🔀 เล่นใหม่</button>
       </div>
     );
   }
 
-  const timerDisplay = () => {
-    const mins = Math.floor(totalTime / 60);
-    const secs = totalTime % 60;
-    return mins > 0
-      ? `${mins}:${secs.toString().padStart(2, "0")}`
-      : `${totalTime}s`;
-  };
+  const revealed = selected !== null;
 
   return (
     <div style={{ padding: "8px 0" }}>
-      {/* Progress + Timer */}
+      {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
         <span style={{ color: dark.subtext, fontSize: 13, fontWeight: 700 }}>{index + 1} / {total}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", gap: 12 }}>
           <span style={{ color: "#27AE60", fontSize: 14, fontWeight: 800 }}>
-            ⏱ {timerDisplay()}
+            ⏱ {Math.floor(totalTime / 60) > 0
+              ? `${Math.floor(totalTime / 60)}:${(totalTime % 60).toString().padStart(2, "0")}`
+              : `${totalTime}s`}
           </span>
-          <span style={{ color: color, fontSize: 13, fontWeight: 800 }}>✨ {score} คะแนน</span>
+          <span style={{ color, fontSize: 13, fontWeight: 800 }}>✨ {score} คะแนน</span>
         </div>
       </div>
+
       {/* Progress bar */}
       <div style={{ height: 5, background: dark.surface, borderRadius: 999, marginBottom: 20, overflow: "hidden" }}>
-        <div style={{ height: "100%", width: `${((index + 1) / total) * 100}%`, background: color, borderRadius: 999, transition: "width 0.3s" }} />
+        <div style={{
+          height: "100%", width: `${((index + 1) / total) * 100}%`,
+          background: color, borderRadius: 999, transition: "width 0.3s",
+        }} />
       </div>
 
-      {/* Question */}
+      {/* Sentence card */}
       <div style={{
         background: `linear-gradient(135deg, ${color}33, ${color}11)`,
         border: `2px solid ${color}55`, borderRadius: 24,
-        padding: "28px 20px", textAlign: "center", marginBottom: 20,
+        padding: "24px 20px", marginBottom: 10,
       }}>
-        <div style={{ fontSize: 13, color: dark.subtext, marginBottom: 8, fontWeight: 700 }}>
-          ✍️ พิมพ์คำแปลภาษาไทย
+        <div style={{ fontSize: 11, color: dark.subtext, marginBottom: 12, fontWeight: 700, letterSpacing: 1, textAlign: "center" }}>
+          ✍️ เลือกคำที่หายไปในประโยค
         </div>
-        <div style={{ fontSize: 52, fontWeight: 900, color: "#fff", lineHeight: 1.2, marginBottom: 8 }}>{zh}</div>
-        <div style={{ fontSize: 16, color: color, fontWeight: 600 }}>{reading}</div>
-        {mode === "tw" && (
-          <div style={{ fontSize: 13, color: dark.subtext, marginTop: 4 }}>{current.pinyin}</div>
-        )}
-        {hint && (
-          <div style={{ marginTop: 12, background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "6px 14px", display: "inline-block" }}>
-            <span style={{ color: "#F5A623", fontSize: 13, fontWeight: 700 }}>
-              💡 ขึ้นต้นด้วย: "{current.th.slice(0, Math.ceil(current.th.length / 3))}..."
-            </span>
-          </div>
-        )}
-      </div>
 
-      {/* Input */}
-      <div style={{ position: "relative", marginBottom: 14 }}>
-        <input
-          ref={inputRef}
-          value={input}
-          onChange={e => { if (status === "idle") setInput(e.target.value); }}
-          onKeyDown={e => { if (e.key === "Enter") handleSubmit(); }}
-          placeholder="พิมพ์คำตอบที่นี่..."
-          style={{
-            width: "100%", boxSizing: "border-box",
-            background: status === "correct" ? "#27AE6033" : status === "wrong" ? "#E8433A33" : dark.card,
-            border: `2px solid ${status === "correct" ? "#27AE60" : status === "wrong" ? "#E8433A" : dark.border}`,
-            borderRadius: 16, padding: "16px 50px 16px 18px",
-            color: "#fff", fontSize: 16, fontFamily: "inherit", outline: "none",
-            transition: "all 0.2s",
-          }}
-        />
-        <span style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", fontSize: 20 }}>
-          {status === "correct" ? "✅" : status === "wrong" ? "❌" : ""}
-        </span>
-      </div>
-
-      {/* Show result after answer */}
-      {status !== "idle" && (
+        {/* Chinese sentence with blank */}
         <div style={{
-          background: status === "correct" ? "#27AE6022" : "#E8433A22",
-          border: `1.5px solid ${status === "correct" ? "#27AE6055" : "#E8433A55"}`,
-          borderRadius: 16, padding: "16px", marginBottom: 14, textAlign: "center",
+          fontSize: 22, fontWeight: 900, color: "#fff",
+          lineHeight: 1.8, marginBottom: 12, textAlign: "center", wordBreak: "break-all",
         }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: status === "correct" ? "#2ECC71" : "#FF6B6B", marginBottom: 10 }}>
-            {status === "correct" ? "✅ ถูกต้อง!" : "❌ ไม่ถูกต้อง"}
+          {renderSentence(current.sentenceZh, current.answer, revealed, true)}
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: dark.border, marginBottom: 12 }} />
+
+        {/* Thai sentence with blank */}
+        <div style={{
+          fontSize: 15, color: `${color}dd`, lineHeight: 1.8,
+          textAlign: "center", fontStyle: "italic",
+        }}>
+          {renderSentence(current.sentenceTh, current.answerTh, revealed, false)}
+        </div>
+      </div>
+
+      {/* Answer feedback */}
+      {revealed && (
+        <div style={{
+          background: selected === current.answer ? "#27AE6022" : "#E8433A22",
+          border: `1.5px solid ${selected === current.answer ? "#27AE6055" : "#E8433A55"}`,
+          borderRadius: 16, padding: "12px 16px", marginBottom: 12, textAlign: "center",
+        }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: selected === current.answer ? "#2ECC71" : "#FF6B6B", marginBottom: 4 }}>
+            {selected === current.answer ? "✅ ถูกต้อง!" : `❌ คำที่ถูกคือ "${current.answer}"`}
           </div>
-          <div style={{ fontSize: 13, color: dark.subtext, marginBottom: 4 }}>ความหมาย</div>
-          <div style={{ fontSize: 24, color: "#fff", fontWeight: 900, marginBottom: 4 }}>{current.th}</div>
-          <div style={{ fontSize: 13, color: color, fontWeight: 600 }}>
-            {mode === "cn" ? current.pinyin : `${current.zhuyin} • ${current.pinyin}`}
+          <div style={{ fontSize: 13, color: dark.subtext }}>
+            {current.answer} = {current.answerTh} • {current.reading}
           </div>
         </div>
       )}
 
-      {/* Buttons */}
-      {status === "idle" && (
-        <div style={{ display: "flex", gap: 10 }}>
-          {!hint && (
-            <button onClick={() => setHint(true)} style={{
-              flex: 1, padding: "14px", background: dark.surface,
-              border: `1.5px solid ${dark.border}`, borderRadius: 14,
-              color: "#F5A623", fontSize: 14, fontWeight: 700,
-              cursor: "pointer", fontFamily: "inherit",
-            }}>💡 ขอใบ้</button>
-          )}
-          <button onClick={handleSkip} style={{
-            flex: 1, padding: "14px", background: dark.surface,
-            border: `1.5px solid ${dark.border}`, borderRadius: 14,
-            color: dark.subtext, fontSize: 14, fontWeight: 700,
-            cursor: "pointer", fontFamily: "inherit",
-          }}>ข้าม ⏭</button>
-          <button onClick={handleSubmit} disabled={!input.trim()} style={{
-            flex: 2, padding: "14px",
-            background: input.trim() ? color : dark.surface,
-            border: "none", borderRadius: 14,
-            color: input.trim() ? "#fff" : dark.subtext,
-            fontSize: 15, fontWeight: 800,
-            cursor: input.trim() ? "pointer" : "default",
-            fontFamily: "inherit", transition: "all 0.2s",
-          }}>ตอบ ✓</button>
-        </div>
-      )}
+      {/* Options grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        {current.options.map((opt, i) => {
+          const isCorrect = opt === current.answer;
+          const isSelected = opt === selected;
+          let bg = dark.card;
+          let border = `1.5px solid ${dark.border}`;
+          let textColor: string = "#fff";
+
+          if (revealed) {
+            if (isCorrect) { bg = "#27AE6033"; border = "1.5px solid #27AE60"; textColor = "#2ECC71"; }
+            else if (isSelected) { bg = "#E8433A33"; border = "1.5px solid #E8433A"; textColor = "#FF6B6B"; }
+            else { textColor = dark.subtext; }
+          } else {
+            // highlight on hover feel — just keep default
+          }
+
+          return (
+            <button key={i} onClick={() => handleSelect(opt)} style={{
+              background: bg, border, borderRadius: 16,
+              padding: "18px 12px", color: textColor,
+              fontSize: 20, fontWeight: 900,
+              cursor: revealed ? "default" : "pointer",
+              fontFamily: "inherit", transition: "all 0.2s",
+              transform: isSelected ? "scale(0.97)" : "scale(1)",
+            }}>
+              {opt}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
