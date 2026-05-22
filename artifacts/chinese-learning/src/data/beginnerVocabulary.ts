@@ -1,6 +1,3 @@
-// src/data/beginnerVocabulary.ts
-// NEW FILE — ส่งมาทีละหมวด จะ append เพิ่มในไฟล์เดียวกัน
-
 export interface BeginnerWord {
   zh: string;
   zhSimplified?: string;
