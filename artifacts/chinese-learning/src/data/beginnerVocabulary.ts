@@ -121,11 +121,7 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "寵物", zhSimplified: "宠物", zhuyin: "ㄔㄨㄥˇ ㄨˋ", pinyin: "chǒng wù", th: "สัตว์เลี้ยง", examples: [{ zh: "你有養寵物嗎", zhCN: "你有养宠物吗", zhuyin: "ㄋㄧˇ ㄧㄡˇ ㄧㄤˇ ㄔㄨㄥˇ ㄨˋ ㄇㄚ", pinyin: "nǐ yǒu yǎng chǒng wù ma", th: "คุณเลี้ยงสัตว์เลี้ยงไหม" }] },
       { zh: "野生動物", zhSimplified: "野生动物", zhuyin: "ㄧㄝˇ ㄕㄥ ㄉㄨㄥˋ ㄨˋ", pinyin: "yě shēng dòng wù", th: "สัตว์ป่า", examples: [{ zh: "我們要保護野生動物", zhCN: "我们要保护野生动物", zhuyin: "ㄨㄛˇ ㄇㄣ ㄧㄠˋ ㄅㄠˇ ㄏㄨˋ ㄧㄝˇ ㄕㄥ ㄉㄨㄥˋ ㄨˋ", pinyin: "wǒ men yào bǎo hù yě shēng dòng wù", th: "เราต้องปกป้องสัตว์ป่า" }] },
       { zh: "害蟲", zhSimplified: "害虫", zhuyin: "ㄏㄞˋ ㄔㄨㄥˊ", pinyin: "hài chóng", th: "แมลงศัตรูพืช", examples: [{ zh: "農夫要消滅害蟲", zhCN: "农夫要消灭害虫", zhuyin: "ㄋㄨㄥˊ ㄈㄨ ㄧㄠˋ ㄒㄧㄠ ㄇㄧㄝˋ ㄏㄞˋ ㄔㄨㄥˊ", pinyin: "nóng fū yào xiāo miè hài chóng", th: "ชาวนาต้องกำจัดแมลงศัตรูพืช" }] },
-      { zh: "北極熊", zhSimplified: "北极熊", zhuyin: "ㄅㄟˇ ㄐㄧˊ ㄒㄩㄥˊ", pinyin: "běi jí xióng", th: "หมีขั้วโลก", examples: [{ zh: "北極熊住在很冷的地方", zhCN: "北极熊住在很冷的地方", zhuyin: "ㄅㄟˇ ㄐㄧˊ ㄒㄩㄥˊ ㄓㄨˋ ㄗㄞˋ ㄏㄣˇ ㄌㄥˇ ㄉㄜ˙ ㄉㄧˋ ㄈㄤ", pinyin: "běi jí xióng zhù zài hěn lěng de dì fāng", th: "หมีขั้วโลกอาศัยอยู่ในที่หนาวมาก" }] },       
-      { zh: "駱駝", zhSimplified: "骆驼", zhuyin: "ㄌㄨㄛˋ ㄊㄨㄛ˙", pinyin: "luò tuó", th: "อูฐ", examples: [{ zh: "駱駝能在沙漠生存", zhCN: "骆驼能在沙漠生存", zhuyin: "ㄌㄨㄛˋ ㄊㄨㄛ˙ ㄋㄥˊ ㄗㄞˋ ㄕㄚ ㄇㄛˋ ㄕㄥ ㄘㄨㄣˊ", pinyin: "luò tuó néng zài shā mò shēng cún", th: "อูฐสามารถอยู่รอดในทะเลทรายได้" }] },       
-      { zh: "大猩猩", zhSimplified: "大猩猩", zhuyin: "ㄉㄚˋ ㄒㄧㄥ ㄒㄧㄥ", pinyin: "dà xīng xīng", th: "กอริลลา", examples: [{ zh: "大猩猩力氣很大", zhCN: "大猩猩力气很大", zhuyin: "ㄉㄚˋ ㄒㄧㄥ ㄒㄧㄥ ㄌㄧˋ ㄑㄧˋ ㄏㄣˇ ㄉㄚˋ", pinyin: "dà xīng xīng lì qì hěn dà", th: "กอริลลามีพลังมาก" }] },
     ],
-  },
   },
    
     {
@@ -231,6 +227,8 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "家規", zhSimplified: "家规", zhuyin: "ㄐㄧㄚ ㄍㄨㄟ", pinyin: "jiā guī", th: "กฎของบ้าน", examples: [{ zh: "我家的家規是晚上十點前回家", zhCN: "我家的家规是晚上十点前回家", zhuyin: "ㄨㄛˇ ㄐㄧㄚ ㄉㄜ˙ ㄐㄧㄚ ㄍㄨㄟ ㄕˋ ㄨㄢˇ ㄕㄤˋ ㄕˊ ㄉㄧㄢˇ ㄑㄧㄢˊ ㄏㄨㄟˊ ㄐㄧㄚ", pinyin: "wǒ jiā de jiā guī shì wǎn shàng shí diǎn qián huí jiā", th: "กฎของบ้านฉันคือต้องกลับบ้านก่อนสี่ทุม" }] },
       { zh: "家務", zhSimplified: "家务", zhuyin: "ㄐㄧㄚ ㄨˋ", pinyin: "jiā wù", th: "งานบ้าน", examples: [{ zh: "我每天幫媽媽做家務", zhCN: "我每天帮妈妈做家务", zhuyin: "ㄨㄛˇ ㄇㄟˇ ㄊㄧㄢ ㄅㄤ ㄇㄚ ㄇㄚ ㄗㄨㄛˋ ㄐㄧㄚ ㄨˋ", pinyin: "wǒ měi tiān bāng mā ma zuò jiā wù", th: "ฉันช่วยแม่ทำงานบ้านทุกวัน" }] },
       { zh: "幸福", zhuyin: "ㄒㄧㄥˋ ㄈㄨˊ", pinyin: "xìng fú", th: "มีความสุข / อบอุ่น", examples: [{ zh: "有家人陪伴真的很幸福", zhCN: "有家人陪伴真的很幸福", zhuyin: "ㄧㄡˇ ㄐㄧㄚ ㄖㄣˊ ㄆㄟˊ ㄅㄢˋ ㄓㄣ ㄉㄜ ㄏㄣˇ ㄒㄧㄥˋ ㄈㄨˊ", pinyin: "yǒu jiā rén péi bàn zhēn de hěn xìng fú", th: "มีครอบครัวอยู่เคียงข้างมีความสุขมากจริงๆ" }] },
+      ],
+  },
         {
     id: "colors", label: "สี", emoji: "🎨", color: "#9B59B6", bg: "#F5EEF8",
     words: [
@@ -334,6 +332,8 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "眼睛顏色", zhSimplified: "眼睛颜色", zhuyin: "ㄧㄢˇ ㄐㄧㄥ ㄧㄢˊ ㄙㄜˋ", pinyin: "yǎn jīng yán sè", th: "สีตา", examples: [{ zh: "她的眼睛顏色是棕色的", zhCN: "她的眼睛颜色是棕色的", zhuyin: "ㄊㄚ ㄉㄜ˙ ㄧㄢˇ ㄐㄧㄥ ㄧㄢˊ ㄙㄜˋ ㄕˋ ㄗㄨㄥ ㄙㄜˋ ㄉㄜ˙", pinyin: "tā de yǎn jīng yán sè shì zōng sè de", th: "สีตาของเธอเป็นสีน้ำตาล" }] },
       { zh: "什麼顏色", zhSimplified: "什么颜色", zhuyin: "ㄕㄣˊ ㄇㄜ ㄧㄢˊ ㄙㄜˋ", pinyin: "shén me yán sè", th: "สีอะไร", examples: [{ zh: "這是什麼顏色？是藍色嗎", zhCN: "这是什么颜色？是蓝色吗", zhuyin: "ㄓㄜˋ ㄕˋ ㄕㄣˊ ㄇㄜ ㄧㄢˊ ㄙㄜˋ ㄕˋ ㄌㄢˊ ㄙㄜˋ ㄇㄚ", pinyin: "zhè shì shén me yán sè? shì lán sè ma", th: "นี่สีอะไร? เป็นสีน้ำเงินไหม" }] },
       { zh: "我最喜歡的顏色是", zhSimplified: "我最喜欢的颜色是", zhuyin: "ㄨㄛˇ ㄗㄨㄟˋ ㄒㄧˇ ㄏㄨㄢ ㄉㄜ˙ ㄧㄢˊ ㄙㄜˋ ㄕˋ", pinyin: "wǒ zuì xǐ huān de yán sè shì", th: "สีที่ฉันชอบที่สุดคือ", examples: [{ zh: "我最喜歡的顏色是藍色", zhCN: "我最喜欢的颜色是蓝色", zhuyin: "ㄨㄛˇ ㄗㄨㄟˋ ㄒㄧˇ ㄏㄨㄢ ㄉㄜ˙ ㄧㄢˊ ㄙㄜˋ ㄕˋ ㄌㄢˊ ㄙㄜˋ", pinyin: "wǒ zuì xǐ huān de yán sè shì lán sè", th: "สีที่ฉันชอบที่สุดคือสีน้ำเงิน" }] },
+      ],
+  },
         {
     id: "body", label: "ร่างกาย", emoji: "🫀", color: "#E53E3E", bg: "#FFF5F5",
     words: [
@@ -457,6 +457,8 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "左手", zhSimplified: "左手", zhuyin: "ㄗㄨㄛˇ ㄕㄡˇ", pinyin: "zuǒ shǒu", th: "มือซ้าย", examples: [{ zh: "他是左手寫字的人", zhCN: "他是左手写字的人", zhuyin: "ㄊㄚ ㄕˋ ㄗㄨㄛˇ ㄕㄡˇ ㄒㄧㄝˇ ㄗˋ ㄉㄜ˙ ㄖㄣˊ", pinyin: "tā shì zuǒ shǒu xiě zì de rén", th: "เขาเป็นคนถนัดมือซ้าย" }] },
       { zh: "右手", zhSimplified: "右手", zhuyin: "ㄧㄡˋ ㄕㄡˇ", pinyin: "yòu shǒu", th: "มือขวา", examples: [{ zh: "大多數人都是右手寫字", zhCN: "大多数人都是右手写字", zhuyin: "ㄉㄚˋ ㄉㄨㄛ ㄕㄨˋ ㄖㄣˊ ㄉㄡ ㄕˋ ㄧㄡˋ ㄕㄡˇ ㄒㄧㄝˇ ㄗˋ", pinyin: "dà duō shù rén dōu shì yòu shǒu xiě zì", th: "คนส่วนใหญ่ถนดมือขวา" }] },
       { zh: "全身", zhSimplified: "全身", zhuyin: "ㄑㄩㄢˊ ㄕㄣ", pinyin: "quán shēn", th: "ทั้งตัว / ทั้งร่างกาย", examples: [{ zh: "運動後全身都是汗", zhCN: "运动后全身都是汗", zhuyin: "ㄩㄣˋ ㄉㄨㄥˋ ㄏㄡˋ ㄑㄩㄢˊ ㄕㄣ ㄉㄡ ㄕˋ ㄏㄢˋ", pinyin: "yùn dòng hòu quán shēn dōu shì hàn", th: "หลังออกกำลังกายเหงื่อออกทั้งตัว" }] },
+      ],
+  },
         {
     id: "home", label: "ของใช้ในบ้าน", emoji: "🏠", color: "#27AE60", bg: "#F0FFF4",
     words: [
@@ -560,6 +562,8 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "空氣清淨機", zhSimplified: "空气清净机", zhCN: "空气净化器", zhuyin: "ㄎㄨㄥ ㄑㄧˋ ㄑㄧㄥ ㄐㄧㄥˋ ㄐㄧ", pinyin: "kōng qì qīng jìng jī", pinyinCN: "kōng qì jìng huà qì", th: "เครื่องฟอกอากาศ", examples: [{ zh: "開空氣清淨機讓空氣更好", zhCN: "开空气净化器让空气更好", zhuyin: "ㄎㄞ ㄎㄨㄥ ㄑㄧˋ ㄑㄧㄥ ㄐㄧㄥˋ ㄐㄧ ㄖㄤˋ ㄎㄨㄥ ㄑㄧˋ ㄍㄥˋ ㄏㄠˇ", pinyin: "kāi kōng qì qīng jìng jī ràng kōng qì gèng hǎo", th: "เปิดเครื่องฟอกอากาศให้อากาศดขึ้น" }] },
       { zh: "除濕機", zhSimplified: "除湿机", zhuyin: "ㄔㄨˊ ㄕ ㄐㄧ", pinyin: "chú shī jī", th: "เครื่องดูดความชื้น", examples: [{ zh: "梅雨季開除濕機", zhCN: "梅雨季开除湿机", zhuyin: "ㄇㄟˊ ㄩˇ ㄐㄧˋ ㄎㄞ ㄔㄨˊ ㄕ ㄐㄧ", pinyin: "méi yǔ jì kāi chú shī jī", th: "ฤดูฝนเปิดเครื่องดูดความชื้น" }] },
       { zh: "家電", zhSimplified: "家电", zhuyin: "ㄐㄧㄚ ㄉㄧㄢˋ", pinyin: "jiā diàn", th: "เครื่องใช้ไฟฟ้าในบ้าน", examples: [{ zh: "這家店專賣家電", zhCN: "这家店专卖家电", zhuyin: "ㄓㄜˋ ㄐㄧㄚ ㄉㄧㄢˋ ㄓㄨㄢ ㄇㄞˋ ㄐㄧㄚ ㄉㄧㄢˋ", pinyin: "zhè jiā diàn zhuān mài jiā diàn", th: "ร้านนี้ขายเครื่องใช้ไฟฟ้าในบ้านโดยเฉพาะ" }] },
+      ],
+  },
         {
     id: "weather", label: "อากาศ", emoji: "☁️", color: "#4ECDC4", bg: "#F0FFFE",
     words: [
@@ -663,6 +667,8 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "多雲轉晴", zhSimplified: "多云转晴", zhuyin: "ㄉㄨㄛ ㄩㄣˊ ㄓㄨㄢˇ ㄑㄧㄥˊ", pinyin: "duō yún zhuǎn qíng", th: "มีเมฆมากแล้วแจ่มใส", examples: [{ zh: "下午多雲轉晴，可以出去玩", zhCN: "下午多云转晴，可以出去玩", zhuyin: "ㄒㄧㄚˋ ㄨˇ ㄉㄨㄛ ㄩㄣˊ ㄓㄨㄢˇ ㄑㄧㄥˊ ㄎㄜˇ ㄧˇ ㄔㄨ ㄑㄩˋ ㄨㄢˊ", pinyin: "xià wǔ duō yún zhuǎn qíng, kě yǐ chū qù wán", th: "ตอนบ่ายมีเมฆมากแล้วแจ่มใส สามารถออกไปเล่นได้" }] },
       { zh: "天氣真好", zhSimplified: "天气真好", zhuyin: "ㄊㄧㄢ ㄑㄧˋ ㄓㄣ ㄏㄠˇ", pinyin: "tiān qì zhēn hǎo", th: "อากาศดีจริงๆ", examples: [{ zh: "今天天氣真好，出去走走吧", zhCN: "今天天气真好，出去走走吧", zhuyin: "ㄐㄧㄣ ㄊㄧㄢ ㄊㄧㄢ ㄑㄧˋ ㄓㄣ ㄏㄠˇ ㄔㄨ ㄑㄩˋ ㄗㄡˇ ㄗㄡˇ ㄅㄚ", pinyin: "jīn tiān tiān qì zhēn hǎo, chū qù zǒu zǒu ba", th: "วันนี้อากาศดีจริงๆ ออกไปเดินเล่นกันเถอะ" }] },
       { zh: "天氣很糟", zhSimplified: "天气很糟", zhuyin: "ㄊㄧㄢ ㄑㄧˋ ㄏㄣˇ ㄗㄠ", pinyin: "tiān qì hěn zāo", th: "อากาศแย่มาก", examples: [{ zh: "今天天氣很糟，又下雨又刮風", zhCN: "今天天气很糟，又下雨又刮风", zhuyin: "ㄐㄧㄣ ㄊㄧㄢ ㄊㄧㄢ ㄑㄧˋ ㄏㄣˇ ㄗㄠ ㄧㄡˋ ㄒㄧㄚˋ ㄩˇ ㄧㄡˋ ㄍㄨㄚ ㄈㄥ", pinyin: "jīn tiān tiān qì hěn zāo, yòu xià yǔ yòu guā fēng", th: "วันนี้อากาศแย่มาก ทั้งฝนตกทั้งลมพัด" }] },
+      ],
+  },
         {
     id: "numbers", label: "ตัวเลข", emoji: "🔢", color: "#3498DB", bg: "#EBF5FB",
     words: [
@@ -770,13 +776,3 @@ export const beginnerCategories: BeginnerCategory[] = [
   },
 ];
 
-
-
-
-
-
-
-
-
-
-];
