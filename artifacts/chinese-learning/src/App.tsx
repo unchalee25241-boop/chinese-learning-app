@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"; import { useAuth } from "./hooks/us
 import { categories } from "./data/vocabulary"; 
 import { beginnerCategories, type BeginnerCategory } from "./data/beginnerVocabulary";
 import { useStreak } from "./hooks/useStreak";
-import { FREE_WORD_LIMIT, FREE_MSG_LIMIT } from "./utils/constants";
+import { FREE_WORD_LIMIT, FREE_MSG_LIMIT, FREE_BEGINNER_LIMIT } from "./utils/constants";
 import { VocabList } from "./components/home/VocabList";
 import { FlashcardGame } from "./components/games/FlashcardGame";
 import { MatchingGame } from "./components/games/MatchingGame";
@@ -538,7 +538,7 @@ export default function App() {
             {begTab === "vocab" && (
               <VocabList
                 words={activeBegCat.words}
-                isPremium={true}
+                isPremium={isPremium}
                 color={activeBegCat.color}
                 onUpgrade={() => {}}
                 mode={mode}
@@ -548,7 +548,7 @@ export default function App() {
             {begTab === "flashcard" && (
                 <FlashcardGame
                 key={`beg-fc-${activeBegCat.id}`}
-                words={activeBegCat.words}
+                words={isPremium ? activeBegCat.words : activeBegCat.words.slice(0, FREE_BEGINNER_LIMIT)}
                 color={activeBegCat.color}
                 onStudied={markStudied}
                 mode={mode}
@@ -558,12 +558,18 @@ export default function App() {
             {begTab === "quiz" && (
               <QuizGame
                 key={`beg-qz-${activeBegCat.id}`}
-                words={activeBegCat.words}
+                words={isPremium ? activeBegCat.words : activeBegCat.words.slice(0, FREE_BEGINNER_LIMIT)}
                 color={activeBegCat.color}
                 mode={mode}
                 onMastery={(word, level) => setMasteryLevel(word, level)}
                 onStudied={markStudied}
               />
+            )}
+                      {!isPremium && (
+              <div onClick={() => setShowPremium(true)}
+                style={{ marginTop: 16, padding: "14px", background: dark.surface, borderRadius: 16, border: "1.5px dashed #38ef7d", textAlign: "center", cursor: "pointer" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>👑 อัปเกรดเพื่อปลดล็อคครบ 100 คำ/หมวด</div>
+              </div>
             )}
           </div>
         </div>
@@ -572,9 +578,7 @@ export default function App() {
       {/* STATS */}
       {screen === "stats" && (
 
-
-
-        <StatsScreen onClose={() => setScreen("home")} />
+      <StatsScreen onClose={() => setScreen("home")} />
       )}
 
       {/* CHAT */}
