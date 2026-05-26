@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"; import { useAuth } from "./hooks/useAuth"; import { AuthModal } from "./components/auth/AuthModal"; import { supabase } from "./lib/supabase";
-import { categories } from "./data/vocabulary";
+import { categories } from "./data/vocabulary"; 
+import { beginnerCategories, type BeginnerCategory } from "./data/beginnerVocabulary";
 import { useStreak } from "./hooks/useStreak";
 import { FREE_WORD_LIMIT, FREE_MSG_LIMIT } from "./utils/constants";
 import { VocabList } from "./components/home/VocabList";
@@ -24,7 +25,9 @@ const dark = {
 export default function App() {
   const [screen, setScreen] = useState("home");
   const [activeCat, setActiveCat] = useState<string | null>(null);
-  const [catTab, setCatTab] = useState("vocab");
+  const [catTab, setCatTab] = useState("vocab");   
+  const [activeBegCat, setActiveBegCat] = useState<BeginnerCategory | null>(null);   
+  const [begTab, setBegTab] = useState<"flashcard" | "quiz">("flashcard");
   const [isPremium, setIsPremium] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -272,10 +275,31 @@ export default function App() {
                 )}
               </div>
             ) : (
-              <div>
+                            <div>
+                {/* Beginner Mode Banner */}
+                <button onClick={() => setScreen("beginner")}
+                  style={{
+                    width: "100%", background: "linear-gradient(135deg,#11998e,#38ef7d)",
+                    borderRadius: 20, padding: "18px 18px", display: "flex",
+                    alignItems: "center", gap: 14, cursor: "pointer", textAlign: "left",
+                    marginBottom: 16, border: "none", position: "relative", overflow: "hidden",
+                    boxShadow: "0 4px 20px rgba(17,153,142,0.45)",
+                  }}>
+                  <div style={{ position: "absolute", right: 44, top: "50%", transform: "translateY(-50%)", fontSize: 64, color: "rgba(255,255,255,0.12)", lineHeight: 1, pointerEvents: "none" }}>🌱</div>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>🌱</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                      <div style={{ fontSize: 17, fontWeight: 800, color: "#fff" }}>เริ่มต้น (Beginner)</div>
+                      <span style={{ background: "rgba(255,255,255,0.3)", color: "#fff", borderRadius: 999, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>700 คำ</span>
+                    </div>
+                    <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12 }}>พื้นฐาน 7 หมวด · สัตว์ ครอบครัว สี ร่างกาย บ้าน อากาศ ตัวเลข</div>
+                  </div>
+                  <div style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 16, flexShrink: 0 }}>›</div>
+                </button>
+
                 <div style={{ color: dark.subtext, fontSize: 12, fontWeight: 700, letterSpacing: 1, marginBottom: 10, textTransform: "uppercase" }}>หมวดคำศัพท์</div>
                 {categories.map(c => (
-                  <button key={c.id}
+               <button key={c.id}
                     className="cat-card" onClick={() => { setActiveCat(c.id); setCatTab("vocab"); setScreen("category"); }}
                     style={{
                       width: "100%", background: c.color, borderRadius: 20,
@@ -423,8 +447,120 @@ export default function App() {
         <ProfileScreen isPremium={isPremium} onUpgrade={() => setShowPremium(true)} onLogout={handleLogout} />
       )}
 
-            {/* STATS */}
+                {/* BEGINNER — เลือกหมวด */}
+      {screen === "beginner" && (
+        <div>
+          <div style={{
+            background: "linear-gradient(135deg,#11998e,#38ef7d)",
+            padding: "44px 16px 20px", position: "relative", overflow: "hidden",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div>
+                <button onClick={() => setScreen("home")} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 999, padding: "5px 14px", color: "#fff", fontSize: 13, cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>← กลับ</button>
+                <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 900, margin: 0 }}>🌱 เริ่มต้น</h2>
+                <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, margin: "4px 0 0" }}>พื้นฐาน 7 หมวด · 700 คำ</p>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.2)", borderRadius: 999, padding: "5px 14px", display: "flex", alignItems: "center", gap: 6 }}>
+                <span>🔥</span><span style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>{streak.currentStreak}</span>
+              </div>
+            </div>
+            <ModeToggle mode={mode} onToggle={toggleMode} />
+          </div>
+          <div style={{ padding: "16px" }}>
+            {beginnerCategories.map(c => (
+              <button key={c.id} onClick={() => { setActiveBegCat(c); setBegTab("flashcard"); setScreen("beginnerCat"); }}
+                style={{
+                  width: "100%", background: c.color, borderRadius: 20,
+                  padding: "18px 18px", display: "flex", alignItems: "center",
+                  gap: 14, cursor: "pointer", textAlign: "left", marginBottom: 12,
+                  border: "none", position: "relative", overflow: "hidden",
+                  boxShadow: `0 4px 16px ${c.color}55`,
+                }}>
+                <div style={{ position: "absolute", right: 48, top: "50%", transform: "translateY(-50%)", fontSize: 64, fontWeight: 900, color: "rgba(255,255,255,0.15)", lineHeight: 1, pointerEvents: "none" }}>
+                  {c.words[0]?.zh ?? "字"}
+                </div>
+                <div style={{ width: 44, height: 44, borderRadius: 14, background: "rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>{c.emoji}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 17, fontWeight: 800, color: "#fff" }}>{c.label}</div>
+                  <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12, marginTop: 2 }}>{c.words.length} คำ</div>
+                </div>
+                <div style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 16, flexShrink: 0 }}>›</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* BEGINNER CAT — Flashcard / Quiz */}
+      {screen === "beginnerCat" && activeBegCat && (
+        <div>
+          <div style={{
+            background: activeBegCat.color,
+            padding: "44px 16px 16px", position: "relative", overflow: "hidden",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div>
+                <button onClick={() => setScreen("beginner")} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 999, padding: "5px 14px", color: "#fff", fontSize: 13, cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>← กลับ</button>
+                <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 900, margin: 0 }}>
+                  {activeBegCat.emoji} {activeBegCat.label}
+                </h2>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.2)", borderRadius: 999, padding: "5px 14px", display: "flex", alignItems: "center", gap: 6 }}>
+                <span>🔥</span><span style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>{streak.currentStreak}</span>
+              </div>
+            </div>
+            <ModeToggle mode={mode} onToggle={toggleMode} />
+          </div>
+
+          {/* Tab: Flashcard / Quiz */}
+          <div style={{ display: "flex", margin: "8px 16px 0", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.3)" }}>
+            {[
+              { id: "flashcard" as const, label: "🃏", title: "Flashcard" },
+              { id: "quiz" as const, label: "❓", title: "Quiz" },
+            ].map(t => (
+              <button key={t.id} onClick={() => setBegTab(t.id)}
+                style={{
+                  flex: 1, padding: "12px 4px", border: "none",
+                  background: begTab === t.id ? activeBegCat.color : dark.card,
+                  color: begTab === t.id ? "#fff" : dark.subtext,
+                  fontWeight: 700, fontSize: 13, cursor: "pointer",
+                  fontFamily: "inherit", display: "flex", flexDirection: "column",
+                  alignItems: "center", gap: 2,
+                }}>
+                <span style={{ fontSize: 18 }}>{t.label}</span>
+                <span>{t.title}</span>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ padding: "16px" }}>
+            {begTab === "flashcard" && (
+              <FlashcardGame
+                key={`beg-fc-${activeBegCat.id}`}
+                words={activeBegCat.words}
+                color={activeBegCat.color}
+                onStudied={markStudied}
+                mode={mode}
+                onMastery={(word, level) => setMasteryLevel(word, level)}
+              />
+            )}
+            {begTab === "quiz" && (
+              <QuizGame
+                key={`beg-qz-${activeBegCat.id}`}
+                words={activeBegCat.words}
+                color={activeBegCat.color}
+                mode={mode}
+                onMastery={(word, level) => setMasteryLevel(word, level)}
+                onStudied={markStudied}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* STATS */}
       {screen === "stats" && (
+
 
 
         <StatsScreen onClose={() => setScreen("home")} />
