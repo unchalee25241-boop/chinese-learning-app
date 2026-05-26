@@ -27,7 +27,7 @@ export default function App() {
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [catTab, setCatTab] = useState("vocab");   
   const [activeBegCat, setActiveBegCat] = useState<BeginnerCategory | null>(null);   
-  const [begTab, setBegTab] = useState<"flashcard" | "quiz">("flashcard");
+  const [begTab, setBegTab] = useState<"vocab" | "flashcard" | "quiz">("vocab");
   const [isPremium, setIsPremium] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -512,9 +512,10 @@ export default function App() {
             <ModeToggle mode={mode} onToggle={toggleMode} />
           </div>
 
-          {/* Tab: Flashcard / Quiz */}
+          {/* Tab: Vocab / Flashcard / Quiz */}
           <div style={{ display: "flex", margin: "8px 16px 0", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.3)" }}>
             {[
+              { id: "vocab" as const, label: "📖", title: "คำศัพท์" },
               { id: "flashcard" as const, label: "🃏", title: "Flashcard" },
               { id: "quiz" as const, label: "❓", title: "Quiz" },
             ].map(t => (
@@ -533,9 +534,19 @@ export default function App() {
             ))}
           </div>
 
-          <div style={{ padding: "16px" }}>
+            <div style={{ padding: "16px" }}>
+            {begTab === "vocab" && (
+              <VocabList
+                words={activeBegCat.words}
+                isPremium={true}
+                color={activeBegCat.color}
+                onUpgrade={() => {}}
+                mode={mode}
+                onView={(word) => { markWord(activeBegCat.id, word); markDailyStudy(1); }}
+              />
+            )}
             {begTab === "flashcard" && (
-              <FlashcardGame
+                <FlashcardGame
                 key={`beg-fc-${activeBegCat.id}`}
                 words={activeBegCat.words}
                 color={activeBegCat.color}
