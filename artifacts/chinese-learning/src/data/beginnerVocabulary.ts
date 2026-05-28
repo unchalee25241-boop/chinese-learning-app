@@ -774,7 +774,6 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "一共", zhSimplified: "一共", zhuyin: "ㄧ ㄍㄨㄥˋ", pinyin: "yī gòng", th: "รวมทั้งหมด", examples: [{ zh: "一共多少錢，我來付", zhCN: "一共多少钱，我来付", zhuyin: "ㄧ ㄍㄨㄥˋ ㄉㄨㄛ ㄕㄠˇ ㄑㄧㄢˊ ㄨㄛˇ ㄌㄞˊ ㄈㄨˋ", pinyin: "yī gòng duō shǎo qián, wǒ lái fù", th: "รวมทั้งหมดเท่าไหร่ ฉันจ่ายเอง" }] },
     ],
   },
-  ,
   {
     id: "kitchenware",label: "ของใช้ในครัว",emoji: "🍽️",color: "#E67E22",bg: "#FEF9E7",
     words: [
@@ -876,8 +875,8 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "玻璃杯", zhuyin: "ㄅㄛ ㄌㄧ ㄅㄟ", pinyin: "bō lí bēi", th: "แก้วน้ำ (แก้วใส)" },
       { zh: "砂鍋", zhSimplified: "砂锅", zhuyin: "ㄕㄚ ㄍㄨㄛ", pinyin: "shā guō", th: "หม้อดิน" },
       { zh: "洗碗布", zhuyin: "ㄒㄧˇ ㄨㄢˇ ㄅㄨˋ", pinyin: "xǐ wǎn bù", th: "ผ้าเช็ดจาน" },
-  }
-];
+    ],
+  },
   {
     id: "clothing",label: "เสื้อผ้า/เครื่องแต่งกาย",emoji: "👗",color: "#9B59B6",bg: "#F5EEF8",
     words: [
