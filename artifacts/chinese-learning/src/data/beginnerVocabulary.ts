@@ -878,7 +878,6 @@ export const beginnerCategories: BeginnerCategory[] = [
       { zh: "洗碗布", zhuyin: "ㄒㄧˇ ㄨㄢˇ ㄅㄨˋ", pinyin: "xǐ wǎn bù", th: "ผ้าเช็ดจาน" },
   }
 ];
-,
   {
     id: "clothing",label: "เสื้อผ้า/เครื่องแต่งกาย",emoji: "👗",color: "#9B59B6",bg: "#F5EEF8",
     words: [
@@ -984,6 +983,4 @@ export const beginnerCategories: BeginnerCategory[] = [
   }
 ];
 
-
-];
 
