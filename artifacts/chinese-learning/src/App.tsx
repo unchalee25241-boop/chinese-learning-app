@@ -299,7 +299,7 @@ export default function App() {
                       <div style={{ fontSize: 17, fontWeight: 800, color: "#fff" }}>เริ่มต้น (Beginner)</div>
                       <span style={{ background: "rgba(255,255,255,0.3)", color: "#fff", borderRadius: 999, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>700 คำ</span>
                     </div>
-                    <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12 }}>พื้นฐาน 7 หมวด · สัตว์ ครอบครัว สี ร่างกาย บ้าน อากาศ ตัวเลข</div>
+                    <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12 }}>พื้นฐาน 5 หมวด · สัตว์ ครอบครัว สี  อากาศ ตัวเลข</div>
                   </div>
                   <div style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 16, flexShrink: 0 }}>›</div>
                 </button>
@@ -465,7 +465,7 @@ export default function App() {
               <div>
                 <button onClick={() => setScreen("home")} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 999, padding: "5px 14px", color: "#fff", fontSize: 13, cursor: "pointer", fontFamily: "inherit", marginBottom: 8 }}>← กลับ</button>
                 <h2 style={{ color: "#fff", fontSize: 22, fontWeight: 900, margin: 0 }}>🌱 เริ่มต้น</h2>
-                <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, margin: "4px 0 0" }}>พื้นฐาน 7 หมวด · 700 คำ</p>
+                <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, margin: "4px 0 0" }}>พื้นฐาน 5 หมวด · 500 คำ</p>
               </div>
               <div style={{ background: "rgba(255,255,255,0.2)", borderRadius: 999, padding: "5px 14px", display: "flex", alignItems: "center", gap: 6 }}>
                 <span>🔥</span><span style={{ color: "#fff", fontWeight: 800, fontSize: 14 }}>{streak.currentStreak}</span>
