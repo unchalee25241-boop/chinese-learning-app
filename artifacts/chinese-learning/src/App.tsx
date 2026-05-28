@@ -15,7 +15,10 @@ import { useMode } from "./hooks/useMode";
 import { ModeToggle } from "./components/shared/ModeToggle";
 import { BottomNav } from "./components/shared/BottomNav";
 import { PageTransition } from "./components/shared/PageTransition";
-import { useProgress } from "./hooks/useProgress"; import { StatsScreen } from "./components/home/StatsScreen"; import { ProfileScreen } from "./components/home/ProfileScreen";
+import { useProgress } from "./hooks/useProgress"; 
+import { StatsScreen } from "./components/home/StatsScreen"; 
+import { ProfileScreen } from "./components/home/ProfileScreen"; 
+import { OnboardingScreen } from "./components/home/OnboardingScreen";
 
 const dark = {
   bg: "#12121E", card: "#1E1E30", surface: "#252538",
@@ -27,12 +30,16 @@ export default function App() {
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const [catTab, setCatTab] = useState("vocab");   
   const [activeBegCat, setActiveBegCat] = useState<BeginnerCategory | null>(null);   
-  const [begTab, setBegTab] = useState<"vocab" | "flashcard" | "quiz">("vocab");
+  const [begTab, setBegTab] = useState<"vocab" | "flashcard" | "quiz" | "match" | "fill" | "order">("flashcard");
   const [isPremium, setIsPremium] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { user, loading } = useAuth();   const [showAuth, setShowAuth] = useState(false);   const { streak, markStudied } = useStreak();
-  const { mode, toggleMode } = useMode();
+  const { user, loading } = useAuth();   
+  const [showAuth, setShowAuth] = useState(false);   
+  const { streak, markStudied } = useStreak();
+  const { mode, toggleMode } = useMode();   
+  const [showOnboarding, setShowOnboarding] = useState(() => {     return !localStorage.getItem("ec_onboarding_done");   });    
+  const handleOnboardingComplete = (level: "beginner" | "intermediate") => {     localStorage.setItem("ec_onboarding_done", "true");     setShowOnboarding(false);     if (level === "beginner") setScreen("beginner");     else setScreen("home");   };
   const { markWord, getCount, getTotalStudied, getMasteryStats, setMasteryLevel, markDailyStudy, mastery } = useProgress();   const reviewWords = categories.flatMap(c => c.words).filter(w => (mastery[w.zh] ?? 0) < 2);
 
   const cat = categories.find(c => c.id === activeCat);    useEffect(() => {     const params = new URLSearchParams(window.location.search);     const premiumStatus = params.get("premium");     const sessionId = params.get("session_id");     if (premiumStatus === "success" && sessionId) {       fetch("https://ai-proxy.unchalee25241.workers.dev/verify-session", {         method: "POST",         headers: { "Content-Type": "application/json" },         body: JSON.stringify({ sessionId }),       })         .then(r => r.json())         .then(session => {           if (session.payment_status === "paid" || session.status === "complete") {             setIsPremium(true);             localStorage.setItem("ec_premium", "true");    if (session.customer) { localStorage.setItem("ec_stripe_customer_id", session.customer); }
@@ -93,7 +100,7 @@ export default function App() {
   );
 
   if (!user) return <AuthModal onClose={() => {}} />;
-
+  if (showOnboarding) return <OnboardingScreen onComplete={handleOnboardingComplete} />;
   return (
     <div style={{
       minHeight: "100vh", background: dark.bg,
