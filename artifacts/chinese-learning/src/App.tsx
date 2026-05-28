@@ -519,12 +519,15 @@ export default function App() {
             <ModeToggle mode={mode} onToggle={toggleMode} />
           </div>
 
-          {/* Tab: Vocab / Flashcard / Quiz */}
-          <div style={{ display: "flex", margin: "8px 16px 0", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.3)" }}>
+          {/* Tab: vocab + 5 games */}
+           <div style={{ display: "flex", margin: "8px 16px 0", borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.3)" }}>
             {[
               { id: "vocab" as const, label: "📖", title: "คำศัพท์" },
               { id: "flashcard" as const, label: "🃏", title: "Flashcard" },
+              { id: "match" as const, label: "🎯", title: "จับคู่" },
               { id: "quiz" as const, label: "❓", title: "Quiz" },
+              { id: "fill" as const, label: "✍️", title: "เติมคำ" },
+              { id: "order" as const, label: "🔀", title: "เรียงคำ" },
             ].map(t => (
               <button key={t.id} onClick={() => setBegTab(t.id)}
                 style={{
@@ -547,7 +550,7 @@ export default function App() {
                 words={activeBegCat.words}
                 isPremium={isPremium}
                 color={activeBegCat.color}
-                onUpgrade={() => {}}
+                onUpgrade={() => setShowPremium(true)}
                 mode={mode}
                 onView={(word) => { markWord(activeBegCat.id, word); markDailyStudy(1); }}
               />
@@ -570,6 +573,30 @@ export default function App() {
                 mode={mode}
                 onMastery={(word, level) => setMasteryLevel(word, level)}
                 onStudied={markStudied}
+              />
+            )}
+              {begTab === "match" && (
+              <MatchingGame
+                key={`beg-mt-${activeBegCat.id}`}
+                words={isPremium ? activeBegCat.words : activeBegCat.words.slice(0, FREE_BEGINNER_LIMIT)}
+                color={activeBegCat.color}
+                mode={mode}
+              />
+            )}
+            {begTab === "fill" && (
+              <FillBlankGame
+                key={`beg-fb-${activeBegCat.id}`}
+                words={isPremium ? activeBegCat.words : activeBegCat.words.slice(0, FREE_BEGINNER_LIMIT)}
+                color={activeBegCat.color}
+                mode={mode}
+              />
+            )}
+            {begTab === "order" && (
+              <WordOrderGame
+                key={`beg-wo-${activeBegCat.id}`}
+                words={isPremium ? activeBegCat.words : activeBegCat.words.slice(0, FREE_BEGINNER_LIMIT)}
+                color={activeBegCat.color}
+                mode={mode}
               />
             )}
                       {!isPremium && (
