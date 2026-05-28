@@ -686,6 +686,32 @@ export const categories: Category[] = [
       { zh: "叫救護車", zhSimplified: "叫救护车", zhuyin: "ㄐㄧㄠˋ ㄐㄧㄡˋ ㄏㄨˋ ㄔㄜ", th: "เรียกรถพยาบาล", pinyin: "jiào jiù hù chē", examples: [{ zh: "他突然昏倒了，快叫救護車", zhCN: "他突然昏倒了，快叫救护车", zhuyin: "ㄊㄚ ㄊㄨˊ ㄖㄢˊ ㄏㄨㄣ ㄉㄠˇ ㄌㄜ ㄎㄨㄞˋ ㄐㄧㄠˋ ㄐㄧㄡˋ ㄏㄨˋ ㄔㄜ", pinyin: "tā tū rán hūn dǎo le, kuài jiào jiù hù chē", th: "เขาหมดสติกะทันหัน รีบเรียกรถพยาบาลเลย" }] },
     ],
   },
+  {
+    id: "kitchenware",label: "ของใช้ในครัว",emoji: "🍽️",color: "#E67E22",bg: "#FEF9E7",
+    words: [
+      { zh: "碗", zhuyin: "ㄨㄢˇ", pinyin: "wǎn", th: "ชาม", examples: [{ zh: "這個碗很漂亮", zhCN: "这个碗很漂亮", zhuyin: "ㄓㄜˋ ㄍㄜ˙ ㄨㄢˇ ㄏㄣˇ ㄆㄧㄠˋ ㄌㄧㄤ˙", pinyin: "zhè ge wǎn hěn piào liàng", th: "ชามใบนี้สวยมาก" }] },
+      { zh: "盤子", zhSimplified: "盘子", zhuyin: "ㄆㄢˊ ㄗ˙", pinyin: "pán zi", th: "จาน" },
+      { zh: "杯子", zhuyin: "ㄅㄟ ㄗ˙", pinyin: "bēi zi", th: "แก้ว/ถ้วย", examples: [{ zh: "給我一杯水", zhCN: "给我一杯水", zhuyin: "ㄍㄟˇ ㄨㄛˇ ㄧˋ ㄅㄟ ㄕㄨㄟˇ", pinyin: "gěi wǒ yī bēi shuǐ", th: "ขอน้ำหนึ่งแก้ว" }] },
+      { zh: "茶杯", zhuyin: "ㄔㄚˊ ㄅㄟ", pinyin: "chá bēi", th: "ถ้วยชา" },
+      { zh: "馬克杯", zhSimplified: "马克杯", zhuyin: "ㄇㄚˇ ㄎㄜˋ ㄅㄟ", pinyin: "mǎ kè bēi", th: "แก้วมัค" },
+      { zh: "筷子", zhuyin: "ㄎㄨㄞˋ ㄗ˙", pinyin: "kuài zi", th: "ตะเกียบ", examples: [{ zh: "你會用筷子嗎", zhCN: "你会用筷子吗", zhuyin: "ㄋㄧˇ ㄏㄨㄟˋ ㄩㄥˋ ㄎㄨㄞˋ ㄗ˙ ㄇㄚ", pinyin: "nǐ huì yòng kuài zi ma", th: "คุณใช้ตะเกียบเป็นไหม" }] },
+      { zh: "湯匙", zhSimplified: "汤匙", zhuyin: "ㄊㄤ ㄔˊ", pinyin: "tāng chí", th: "ช้อน" },
+      { zh: "叉子", zhuyin: "ㄔㄚ ㄗ˙", pinyin: "chā zi", th: "ส้อม" },
+      { zh: "刀子", zhuyin: "ㄉㄠ ㄗ˙", pinyin: "dāo zi", th: "มีด" },
+      { zh: "鍋子", zhSimplified: "锅子", zhuyin: "ㄍㄨㄛ ㄗ˙", pinyin: "guō zi", th: "หม้อ" },
+      { zh: "平底鍋", zhSimplified: "平底锅", zhuyin: "ㄆㄧㄥˊ ㄉㄧˇ ㄍㄨㄛ", pinyin: "píng dǐ guō", th: "กระทะ" },
+      { zh: "炒鍋", zhSimplified: "炒锅", zhuyin: "ㄔㄠˇ ㄍㄨㄛ", pinyin: "chǎo guō", th: "กระทะเหล็ก/กระทะผัด" },
+      { zh: "砧板", zhuyin: "ㄓㄣ ㄅㄢˇ", pinyin: "zhēn bǎn", th: "เขียง" },
+      { zh: "菜刀", zhuyin: "ㄘㄞˋ ㄉㄠ", pinyin: "cài dāo", th: "มีดทำครัว" },
+      { zh: "剪刀", zhuyin: "ㄐㄧㄢˇ ㄉㄠ", pinyin: "jiǎn dāo", th: "กรรไกร" },
+      { zh: "開瓶器", zhSimplified: "开瓶器", zhuyin: "ㄎㄞ ㄆㄧㄥˊ ㄑㄧˋ", pinyin: "kāi píng qì", th: "ที่เปิดขวด" },
+      { zh: "開罐器", zhSimplified: "开罐器", zhuyin: "ㄎㄞ ㄍㄨㄢˋ ㄑㄧˋ", pinyin: "kāi guàn qì", th: "ที่เปิดกระป๋อง" },
+      { zh: "瓶子", zhuyin: "ㄆㄧㄥˊ ㄗ˙", pinyin: "píng zi", th: "ขวด" },
+      { zh: "罐子", zhuyin: "ㄍㄨㄢˋ ㄗ˙", pinyin: "guàn zi", th: "กระป๋อง/โหล" },
+      { zh: "保鮮盒", zhSimplified: "保鲜盒", zhuyin: "ㄅㄠˇ ㄒㄧㄢ ㄏㄜˊ", pinyin: "bǎo xiān hé", th: "กล่องถนอมอาหาร" },
+    ]
+  }
+];
 ];
 
 
