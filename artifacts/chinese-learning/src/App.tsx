@@ -297,7 +297,7 @@ export default function App() {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
                       <div style={{ fontSize: 17, fontWeight: 800, color: "#fff" }}>เริ่มต้น (Beginner)</div>
-                      <span style={{ background: "rgba(255,255,255,0.3)", color: "#fff", borderRadius: 999, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>700 คำ</span>
+                      <span style={{ background: "rgba(255,255,255,0.3)", color: "#fff", borderRadius: 999, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>500 คำ</span>
                     </div>
                     <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12 }}>พื้นฐาน 5 หมวด · สัตว์ ครอบครัว สี  อากาศ ตัวเลข</div>
                   </div>
