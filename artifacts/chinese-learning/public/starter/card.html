@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Chinese — Flashcard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card-page">
+    <header class="card-header">
+      <a href="index.html" class="back-link" aria-label="กลับหน้าหลัก">←</a>
+      <div class="progress">
+        <span class="progress-current" id="progressCurrent">1</span>
+        <span class="progress-sep">/</span>
+        <span class="progress-total" id="progressTotal">3</span>
+      </div>
+    </header>
+
+    <section class="card" id="card">
+      <p class="label">Traditional</p>
+      <h1 class="hanzi" id="traditional">—</h1>
+
+      <p class="label">Simplified</p>
+      <h2 class="hanzi-sm" id="simplified">—</h2>
+
+      <p class="pinyin" id="pinyin">—</p>
+      <p class="zhuyin" id="zhuyin">—</p>
+
+      <button class="audio-btn" id="playBtn" aria-label="ฟังเสียงคำอ่าน">
+        <span class="audio-icon" id="audioIcon">▶</span>
+        <span class="audio-label" id="audioLabel">ฟังออกเสียง</span>
+      </button>
+
+      <div class="meaning">
+        <p class="label">คำแปล</p>
+        <div class="thai-box">
+          <p class="thai" id="thai">—</p>
+        </div>
+      </div>
+
+      <div class="example">
+        <p class="label">ตัวอย่างประโยค</p>
+        <p class="example-zh" id="exampleZh">—</p>
+        <p class="example-pinyin" id="examplePinyin">—</p>
+        <p class="example-thai" id="exampleThai">—</p>
+      </div>
+
+      <!-- Reserved space for future "memory tip" feature — do not implement yet -->
+      <div class="memory-tip" id="memoryTip"></div>
+    </section>
+
+    <nav class="card-nav">
+      <button class="nav-btn" id="prevBtn">‹ ก่อนหน้า</button>
+      <button class="nav-btn" id="nextBtn">ถัดไป ›</button>
+    </nav>
+
+    <audio id="audioPlayer" preload="none"></audio>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
