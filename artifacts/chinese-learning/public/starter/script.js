@@ -36,6 +36,9 @@
     var audioPlayer = document.getElementById('audioPlayer');
     audioPlayer.src = card.audio ? ('audio/' + card.audio) : '';
 
+    var playBtn = document.getElementById('playBtn');
+    playBtn.classList.toggle('audio-unavailable', !card.audio);
+
     var isFirst = id <= 1;
     var isLast = id >= cards.length;
 
@@ -45,6 +48,13 @@
     nextBtn.disabled = isLast;
     prevBtn.onclick = function () { if (!isFirst) navigateTo(id - 1, 'prev'); };
     nextBtn.onclick = function () { if (!isLast) navigateTo(id + 1, 'next'); };
+
+    // Friendly completion state instead of a dead-looking disabled Next button
+    if (isLast) {
+      document.getElementById('cardNav').hidden = true;
+      document.getElementById('completeNav').hidden = false;
+      document.getElementById('completeMsg').hidden = false;
+    }
 
     // Entrance animation, direction-aware based on how the user arrived
     var dir = getQueryParam('dir');
@@ -76,7 +86,6 @@
     });
 
     // Real audio playback + playing feedback, fails safely if audio is missing
-    var playBtn = document.getElementById('playBtn');
     var audioLabel = document.getElementById('audioLabel');
 
     function resetAudioState() {
@@ -104,13 +113,28 @@
     audioPlayer.addEventListener('error', resetAudioState);
   }
 
+  function showLoadError() {
+    document.querySelector('.card').hidden = true;
+    document.getElementById('cardNav').hidden = true;
+    document.getElementById('loadError').hidden = false;
+  }
+
+  document.getElementById('retryBtn').onclick = function () {
+    window.location.reload();
+  };
+
   fetch('data/cards.json')
-    .then(function (res) { return res.json(); })
+    .then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
     .then(function (cards) {
+      if (!Array.isArray(cards) || cards.length === 0) throw new Error('cards.json มีข้อมูลว่างเปล่า');
       var card = resolveCard(cards, getRequestedId());
       renderCard(cards, card);
     })
     .catch(function (err) {
       console.error('โหลด cards.json ไม่สำเร็จ:', err);
+      showLoadError();
     });
 })();
