@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "traditional": "你好",
+    "simplified": "你好",
+    "pinyin": "nǐ hǎo",
+    "zhuyin": "ㄋㄧˇ ㄏㄠˇ",
+    "thai": "สวัสดี",
+    "exampleZh": "你好，很高興認識你。",
+    "examplePinyin": "Nǐ hǎo, hěn gāoxìng rènshi nǐ.",
+    "exampleThai": "สวัสดี ดีใจที่ได้รู้จักคุณ",
+    "audio": "001.mp3"
+  },
+  {
+    "id": 2,
+    "traditional": "謝謝",
+    "simplified": "谢谢",
+    "pinyin": "xiè xiè",
+    "zhuyin": "ㄒㄧㄝˋ ㄒㄧㄝˋ",
+    "thai": "ขอบคุณ",
+    "exampleZh": "謝謝你的幫忙。",
+    "examplePinyin": "Xièxiè nǐ de bāngmáng.",
+    "exampleThai": "ขอบคุณสหรับความช่วยเหลือของคุณ",
+    "audio": "002.mp3"
+  },
+  {
+    "id": 3,
+    "traditional": "再見",
+    "simplified": "再见",
+    "pinyin": "zài jiàn",
+    "zhuyin": "ㄗㄞˋ ㄐㄧㄢˋ",
+    "thai": "ลากอน",
+    "exampleZh": "再見，明天見。",
+    "examplePinyin": "Zàijiàn, míngtiān jiàn.",
+    "exampleThai": "ลาก่อน พรุ่งนี้เจอกัน",
+    "audio": "003.mp3"
+  }
+]
