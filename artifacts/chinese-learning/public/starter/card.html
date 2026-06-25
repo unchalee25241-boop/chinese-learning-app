@@ -28,7 +28,7 @@
       <p class="zhuyin" id="zhuyin">—</p>
 
       <button class="audio-btn" id="playBtn" aria-label="ฟังเสียงคำอ่าน">
-        <span class="audio-icon" id="audioIcon">▶</span>
+        <span class="audio-icon">▶</span>
         <span class="audio-label" id="audioLabel">ฟังออกเสียง</span>
       </button>
 
@@ -50,9 +50,24 @@
       <div class="memory-tip" id="memoryTip"></div>
     </section>
 
-    <nav class="card-nav">
+    <!-- Shown only when the user reaches the last card -->
+    <p class="complete-msg" id="completeMsg" hidden>🎉 เยี่ยมมาก! คุณฟังครบทุกคำใน Starter Pack แล้ว</p>
+
+    <!-- Shown only if cards.json fails to load or returns no data -->
+    <div class="load-error" id="loadError" hidden>
+      <p>ขออภัย ขณะนี้โหลดข้อมูลคำศัพท์ไม่สำเร็จ</p>
+      <button class="nav-btn nav-btn-primary" id="retryBtn">ลองใหม่</button>
+      <a href="index.html" class="nav-btn">กลับหน้าหลัก</a>
+    </div>
+
+    <nav class="card-nav" id="cardNav">
       <button class="nav-btn" id="prevBtn">‹ ก่อนหน้า</button>
       <button class="nav-btn" id="nextBtn">ถัดไป ›</button>
+    </nav>
+
+    <nav class="card-nav" id="completeNav" hidden>
+      <a href="index.html" class="nav-btn">🏠 กลับหน้าหลัก</a>
+      <a href="card.html?id=1&dir=prev" class="nav-btn nav-btn-primary">🔁 ทบทวนอีกครั้ง</a>
     </nav>
 
     <audio id="audioPlayer" preload="none"></audio>
