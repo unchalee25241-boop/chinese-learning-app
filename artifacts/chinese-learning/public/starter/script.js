@@ -13,15 +13,15 @@
     window.location.href = 'card.html?id=' + id + '&dir=' + dir;
   }
 
-  // Falls back to the first card if the requested id doesn't exist
+  // Resolves the requested 1-based position to a card + its clamped position.
+  // Falls back to the first card if the requested position is out of range.
   function resolveCard(cards, requestedId) {
-    var found = cards.find(function (c) { return c.id === requestedId; });
-    return found || cards[0];
+    var index = requestedId - 1;
+    if (index < 0 || index >= cards.length) index = 0;
+    return { card: cards[index], position: index + 1 };
   }
 
-  function renderCard(cards, card) {
-    var id = card.id;
-
+  function renderCard(cards, card, position) {
     document.getElementById('traditional').textContent = card.traditional;
     document.getElementById('simplified').textContent = card.simplified;
     document.getElementById('pinyin').textContent = card.pinyin;
@@ -30,7 +30,7 @@
     document.getElementById('exampleZh').textContent = card.exampleZh;
     document.getElementById('examplePinyin').textContent = card.examplePinyin;
     document.getElementById('exampleThai').textContent = card.exampleThai;
-    document.getElementById('progressCurrent').textContent = id;
+    document.getElementById('progressCurrent').textContent = card.id;
     document.getElementById('progressTotal').textContent = cards.length;
 
     var audioPlayer = document.getElementById('audioPlayer');
@@ -39,15 +39,17 @@
     var playBtn = document.getElementById('playBtn');
     playBtn.classList.toggle('audio-unavailable', !card.audio);
 
-    var isFirst = id <= 1;
-    var isLast = id >= cards.length;
+    // All navigation math uses the numeric deck position, never card.id
+    // (card.id is a display label like "EC0001" and is not safe to do arithmetic on)
+    var isFirst = position <= 1;
+    var isLast = position >= cards.length;
 
     var prevBtn = document.getElementById('prevBtn');
     var nextBtn = document.getElementById('nextBtn');
     prevBtn.disabled = isFirst;
     nextBtn.disabled = isLast;
-    prevBtn.onclick = function () { if (!isFirst) navigateTo(id - 1, 'prev'); };
-    nextBtn.onclick = function () { if (!isLast) navigateTo(id + 1, 'next'); };
+    prevBtn.onclick = function () { if (!isFirst) navigateTo(position - 1, 'prev'); };
+    nextBtn.onclick = function () { if (!isLast) navigateTo(position + 1, 'next'); };
 
     // Friendly completion state instead of a dead-looking disabled Next button
     if (isLast) {
@@ -80,8 +82,8 @@
       var dy = e.clientY - startY;
       var dt = Date.now() - startTime;
       if (Math.abs(dx) >= SWIPE_MIN_X && Math.abs(dy) <= SWIPE_MAX_Y && dt <= SWIPE_MAX_TIME) {
-        if (dx < 0 && !isLast) navigateTo(id + 1, 'next');
-        if (dx > 0 && !isFirst) navigateTo(id - 1, 'prev');
+        if (dx < 0 && !isLast) navigateTo(position + 1, 'next');
+        if (dx > 0 && !isFirst) navigateTo(position - 1, 'prev');
       }
     });
 
@@ -130,8 +132,8 @@
     })
     .then(function (cards) {
       if (!Array.isArray(cards) || cards.length === 0) throw new Error('cards.json มีข้อมูลว่างเปล่า');
-      var card = resolveCard(cards, getRequestedId());
-      renderCard(cards, card);
+      var resolved = resolveCard(cards, getRequestedId());
+      renderCard(cards, resolved.card, resolved.position);
     })
     .catch(function (err) {
       console.error('โหลด cards.json ไม่สำเร็จ:', err);
