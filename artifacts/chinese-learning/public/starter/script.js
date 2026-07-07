@@ -33,13 +33,20 @@
     document.getElementById('progressCurrent').textContent = card.id;
     document.getElementById('progressTotal').textContent = cards.length;
 
-    // Audio files are generated per-card as "<id>_word.mp3" and "<id>_sentence.mp3"
-    // (see audio-manifest.json). The word audio is used here for the main play button.
+        // Audio files are generated per-card as "<id>_word.mp3" and "<id>_sentence.mp3"
+    // (see audio-manifest.json).
     var audioPlayer = document.getElementById('audioPlayer');
     audioPlayer.src = 'audio/' + card.id + '_word.mp3';
 
+    var sentenceAudioPlayer = document.getElementById('sentenceAudioPlayer');
+    sentenceAudioPlayer.src = 'audio/' + card.id + '_sentence.mp3';
+
     var playBtn = document.getElementById('playBtn');
     playBtn.classList.toggle('audio-unavailable', false);
+
+    var playSentenceBtn = document.getElementById('playSentenceBtn');
+    playSentenceBtn.classList.toggle('audio-unavailable', false);
+
 
     // All navigation math uses the numeric deck position, never card.id
     // (card.id is a display label like "EC0001" and is not safe to do arithmetic on)
@@ -90,11 +97,17 @@
     });
 
     // Real audio playback + playing feedback, fails safely if audio is missing
-    var audioLabel = document.getElementById('audioLabel');
+       var audioLabel = document.getElementById('audioLabel');
+    var sentenceAudioLabel = document.getElementById('sentenceAudioLabel');
 
     function resetAudioState() {
       playBtn.classList.remove('playing');
       audioLabel.textContent = 'ฟังออกเสียง';
+    }
+
+    function resetSentenceAudioState() {
+      playSentenceBtn.classList.remove('playing');
+      sentenceAudioLabel.textContent = 'ฟังประโยค';
     }
 
     playBtn.onclick = function () {
@@ -114,6 +127,24 @@
     audioPlayer.addEventListener('pause', resetAudioState);
     audioPlayer.addEventListener('ended', resetAudioState);
     audioPlayer.addEventListener('error', resetAudioState);
+
+    playSentenceBtn.onclick = function () {
+      sentenceAudioPlayer.currentTime = 0;
+      var playPromise = sentenceAudioPlayer.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(function (err) {
+          console.warn('เล่นเสียงประโยคไม่สำเร็จ:', err);
+          resetSentenceAudioState();
+        });
+      }
+    };
+    sentenceAudioPlayer.addEventListener('play', function () {
+      playSentenceBtn.classList.add('playing');
+      sentenceAudioLabel.textContent = 'กำลังเล่น...';
+    });
+    sentenceAudioPlayer.addEventListener('pause', resetSentenceAudioState);
+    sentenceAudioPlayer.addEventListener('ended', resetSentenceAudioState);
+    sentenceAudioPlayer.addEventListener('error', resetSentenceAudioState);
   }
 
   function showLoadError() {
