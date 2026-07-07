@@ -33,11 +33,13 @@
     document.getElementById('progressCurrent').textContent = card.id;
     document.getElementById('progressTotal').textContent = cards.length;
 
+    // Audio files are generated per-card as "<id>_word.mp3" and "<id>_sentence.mp3"
+    // (see audio-manifest.json). The word audio is used here for the main play button.
     var audioPlayer = document.getElementById('audioPlayer');
-    audioPlayer.src = card.audio ? ('audio/' + card.audio) : '';
+    audioPlayer.src = 'audio/' + card.id + '_word.mp3';
 
     var playBtn = document.getElementById('playBtn');
-    playBtn.classList.toggle('audio-unavailable', !card.audio);
+    playBtn.classList.toggle('audio-unavailable', false);
 
     // All navigation math uses the numeric deck position, never card.id
     // (card.id is a display label like "EC0001" and is not safe to do arithmetic on)
@@ -96,7 +98,6 @@
     }
 
     playBtn.onclick = function () {
-      if (!card.audio) return;
       audioPlayer.currentTime = 0;
       var playPromise = audioPlayer.play();
       if (playPromise && typeof playPromise.catch === 'function') {
