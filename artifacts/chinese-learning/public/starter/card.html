@@ -39,12 +39,17 @@
         </div>
       </div>
 
-      <div class="example">
+          <div class="example">
         <p class="label">ตัวอย่างประโยค</p>
         <p class="example-zh" id="exampleZh">—</p>
         <p class="example-pinyin" id="examplePinyin">—</p>
         <p class="example-thai" id="exampleThai">—</p>
+        <button class="audio-btn audio-btn-sm" id="playSentenceBtn" aria-label="ฟังเสียงประโยคตัวอย่าง">
+          <span class="audio-icon">▶</span>
+          <span class="audio-label" id="sentenceAudioLabel">ฟังประโยค</span>
+        </button>
       </div>
+
 
       <!-- Reserved space for future "memory tip" feature — do not implement yet -->
       <div class="memory-tip" id="memoryTip"></div>
@@ -70,7 +75,9 @@
       <a href="card.html?id=1&dir=prev" class="nav-btn nav-btn-primary">🔁 ทบทวนอีกครั้ง</a>
     </nav>
 
-    <audio id="audioPlayer" preload="none"></audio>
+       <audio id="audioPlayer" preload="none"></audio>
+    <audio id="sentenceAudioPlayer" preload="none"></audio>
+
   </main>
 
   <script src="script.js"></script>
