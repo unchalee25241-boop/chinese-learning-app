@@ -36,7 +36,10 @@
         // Audio files are generated per-card as "<id>_word.mp3" and "<id>_sentence.mp3"
     // (see audio-manifest.json).
     var audioPlayer = document.getElementById('audioPlayer');
-    audioPlayer.src = 'audio/' + card.id + '_word.mp3';
+    var WAV_OVERRIDE_IDS = ["EC0020", "EC0023", "EC0024", "EC0025", "EC0027", "EC0037", "EC0039", "EC0045", "EC0048"];
+var wordExt = WAV_OVERRIDE_IDS.indexOf(card.id) !== -1 ? '.wav' : '.mp3';
+audioPlayer.src = 'audio/' + card.id + '_word' + wordExt;
+
 
     var sentenceAudioPlayer = document.getElementById('sentenceAudioPlayer');
     sentenceAudioPlayer.src = 'audio/' + card.id + '_sentence.mp3';
